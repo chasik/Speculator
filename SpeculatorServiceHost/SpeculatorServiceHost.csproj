@@ -61,9 +61,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SpeculatorService\SpeculatorService.csproj">
+    <ProjectReference Include="..\SpeculatorServices\SpeculatorServices.csproj">
       <Project>{8088370c-9be5-4715-b92a-45f2754a924b}</Project>
-      <Name>SpeculatorService</Name>
+      <Name>SpeculatorServices</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

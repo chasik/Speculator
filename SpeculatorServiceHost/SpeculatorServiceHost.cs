@@ -1,5 +1,6 @@
 ﻿using System.ServiceModel;
 using System.ServiceProcess;
+using SpeculatorServices;
 
 namespace SpeculatorServiceHost
 {
@@ -13,7 +14,7 @@ namespace SpeculatorServiceHost
 
         protected override void OnStart(string[] args)
         {
-            _host = new ServiceHost(typeof(SpeculatorService));
+            _host = new ServiceHost(typeof(SmartComData));
             _host.Opening += _host_Opening;
             _host.Open();
         }

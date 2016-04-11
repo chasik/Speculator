@@ -21,11 +21,12 @@
   app.config file. System.Configuration does not support config files for libraries. -->
   <system.serviceModel>
     <services>
-      <service name="SpeculatorService.SpeculatorService" behaviorConfiguration="SpeculatorServiceBehavior">
-        <!-- This endpoint is exposed at the base address provided by host: net.pipe://localhost/servicemodelsamples/service.svc  -->
-        <endpoint address="net.pipe://localhost/Speculator" binding="netNamedPipeBinding" bindingConfiguration="SpeculatorNamePipeBinding" contract="SpeculatorService.ISpeculator" />
-        <!-- the mex endpoint is explosed at net.pipe://localhost/servicemodelsamples/service.svc/mex -->
-        <endpoint address="net.pipe://localhost/Speculatormex" binding="mexNamedPipeBinding" contract="IMetadataExchange" />
+      <service behaviorConfiguration="SpeculatorServiceBehavior" name="SpeculatorServices.SmartComData">
+        <endpoint address="net.pipe://localhost/Speculator/SmartCom"
+          binding="netNamedPipeBinding" bindingConfiguration="SpeculatorNamePipeBinding"
+          contract="SpeculatorServices.ISmartComData" />
+        <endpoint address="net.pipe://localhost/Speculator/SmartCom/mex"
+          binding="mexNamedPipeBinding" contract="IMetadataExchange" />
       </service>
     </services>
     <bindings>
@@ -39,13 +40,11 @@
     </bindings>
     <!--For debugging purposes set the includeExceptionDetailInFaults attribute to true-->
     <behaviors>
-      <serviceBehaviors>
-        <behavior name="SpeculatorServiceBehavior">
+      <serviceBehaviors><behavior name="SpeculatorServiceBehavior">
           <serviceMetadata />
           <serviceDebug includeExceptionDetailInFaults="False" />
         </behavior>
-      </serviceBehaviors>
-    </behaviors>
+      </serviceBehaviors></behaviors>
   </system.serviceModel>
   <startup>
     <supportedRuntime version="v4.0" sku=".NETFramework,Version=v4.6.1" />

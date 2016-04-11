@@ -1,0 +1,78 @@
+﻿<dx:DXWindow x:Class="Speculator.Views.MainWindow"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core"
+             xmlns:dxnav="http://schemas.devexpress.com/winfx/2008/xaml/navigation"
+             xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm" 
+             xmlns:viewModels="clr-namespace:Speculator.ViewModels"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:dxwui="http://schemas.devexpress.com/winfx/2008/xaml/windowsui"
+             xmlns:navigation="http://schemas.devexpress.com/winfx/2008/xaml/windowsui/navigation"
+             mc:Ignorable="d" Height="625" Width="1100" MinWidth="1100"
+             DataContext="{dxmvvm:ViewModelSource Type={x:Type viewModels:MainViewModel}}" ShowIcon="False">
+    <Grid d:DataContext="{Binding}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <dxnav:TileNavPane x:Name="MainTileNavPane" d:IsLocked="True" Margin="0,0,0,-0.5" d:LayoutOverrides="Height">
+            <dxnav:TileNavPane.NavButtons>
+                <dxnav:NavButton Content="Меню" IsMain="True" Glyph="{dx:DXImageGrayscale Image=Home_32x32.png}"
+					AllowGlyphTheming="True" />
+                <dxnav:NavButton Content="Добавить инструмент..." HorizontalAlignment="Left" AllowGlyphTheming="True" 
+					Glyph="{dx:DXImageGrayscale Image=Add_32x32.png}">
+                    <dxnav:TileNavItem Content="Staff">
+                        <dxnav:TileNavSubItem Content="Manager" />
+                        <dxnav:TileNavSubItem Content="Seller" />
+                        <!-- add sub-items here, if required -->
+                    </dxnav:TileNavItem>
+                    <dxnav:TileNavItem Content="Client" />
+                    <!-- add items here, if required -->
+                </dxnav:NavButton>
+
+                <dxnav:NavButton Content="Аналитика..." HorizontalAlignment="Right" AllowGlyphTheming="True" 
+					Glyph="{dx:DXImageGrayscale Image=Pie_32x32.png}">
+                    <dxnav:TileNavItem Content="Staff">
+                        <dxnav:TileNavSubItem Content="Manager" />
+                        <dxnav:TileNavSubItem Content="Seller" />
+                        <!-- add sub-items here, if required -->
+                    </dxnav:TileNavItem>
+                    <dxnav:TileNavItem Content="Client" />
+                    <!-- add items here, if required -->
+                </dxnav:NavButton>
+                
+                <dxnav:NavButton Content="Тестерирование" Glyph="{dx:DXImageGrayscale Image=ShowWorkTimeOnly_32x32.png}"
+					AllowGlyphTheming="True" HorizontalAlignment="Right"/>
+
+                <dxnav:NavButton Content="Данные" Glyph="{dx:DXImageGrayscale Image=EditDataSource_32x32.png}"
+                                 AllowGlyphTheming="True" HorizontalAlignment="Right"
+                                 CommandParameter="DataView" Command="{Binding NaveButtonClickCommand}"/>
+
+                <dxnav:NavButton Content="Настройки" GlyphAlignment="Right" HorizontalContentAlignment="Right"
+                                 Glyph="{dx:DXImageGrayscale Image=Customization_32x32.png}" 
+                                 AllowGlyphTheming="True" HorizontalAlignment="Right"
+                                 CommandParameter="SettingsView" Command="{Binding NaveButtonClickCommand}" />
+
+            </dxnav:TileNavPane.NavButtons>
+            <dxnav:TileNavCategory Content="Sales">
+                <dxnav:TileNavItem Content="Dashboards" TileGlyph="{dx:DXImageGrayscale Image=Pie_32x32.png}"
+					AllowGlyphTheming="True">
+                    <dxnav:TileNavSubItem Content="Sales pipeline" />
+                    <dxnav:TileNavSubItem Content="Estimated revenue" />
+                    <!-- add sub-items here, if required -->
+                </dxnav:TileNavItem>
+                <!-- add items here, if required -->
+            </dxnav:TileNavCategory>
+            <!-- add categories here, if required -->
+        </dxnav:TileNavPane>
+        <dxwui:NavigationFrame Grid.Row="1" Padding="0,6,0,0"
+                               AnimationType="SlideHorizontal"
+                               NavigationCacheMode="Required" BackNavigationMode="PreviousScreen">
+            <dxmvvm:Interaction.Behaviors>
+                <navigation:FrameNavigationService />
+            </dxmvvm:Interaction.Behaviors>
+        </dxwui:NavigationFrame>
+    </Grid>
+</dx:DXWindow>
+
