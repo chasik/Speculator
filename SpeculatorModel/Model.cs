@@ -4,8 +4,8 @@ namespace SpeculatorModel
 {
     public class SpeculatorContext : DbContext
     {
-        //public DbSet<Blog> Blogs { get; set; }
-        //public DbSet<Post> Posts { get; set; }
+        public DbSet<SmartComSymbol> SmartComSymbols { get; set; }
+        public DbSet<SmartComBidAskValue> SmartComBidAskValues { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
