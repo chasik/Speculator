@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.ServiceModel;
@@ -8,18 +9,21 @@ using SpeculatorModel;
 
 namespace SpeculatorServices
 {
-    [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, ConcurrencyMode = ConcurrencyMode.Multiple)]
+    [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, ConcurrencyMode = ConcurrencyMode.Single)]
     public class SmartComData : ISmartComData
     {
         private const string SuffixSymbols = "-6.16_FT";
+        private const string SuffixSymbolsForOil = "-5.16_FT";
         private List<string> _symbolsForSaveToDb = new List<string> {"RTS", "Si", "Eu", "ED", "SBRF", "LKOH", "GAZR", "ROSN", "VTBR", "GOLD"};
         private List<SmartComSymbol> _symbolsInJob;
-        private Dictionary<string, Dictionary<double, double>> _glasses = new Dictionary<string, Dictionary<double, double>>();
+
+        private readonly ConcurrentDictionary<string, ConcurrentDictionary<double, SmartComBidAskValue>> _glasses =
+            new ConcurrentDictionary<string, ConcurrentDictionary<double, SmartComBidAskValue>>();
 
         private StServerClass _smartCom;
         private SpeculatorContext _dbContext;
         private List<SmartComSymbol> _smartComSymbols;
-        private int _smartComBidOrAskAddedCounter;
+        private int _smartComAddedCounter;
 
         public void ConnectToSmartCom()
         {
@@ -28,6 +32,8 @@ namespace SpeculatorServices
                 symb = symb + SuffixSymbols;
                 return symb;
             }).ToList();
+            // фьючерс на нефть
+            _symbolsForSaveToDb.Add("BR" + SuffixSymbolsForOil);
 
             _smartCom = new StServerClass();
             _smartCom.Connected += SmartCom_Connected;
@@ -39,6 +45,8 @@ namespace SpeculatorServices
             _smartCom.AddTick += _smartCom_AddTick;
 
             _dbContext = new SpeculatorContext();
+            _dbContext.ChangeTracker.AutoDetectChangesEnabled = false;
+
             _smartComSymbols = _dbContext.SmartComSymbols.ToList();
 
             _smartCom.connect(Settings.Default.SmartComHost, Settings.Default.SmartComPort, Settings.Default.SmartComLogin, Settings.Default.SmartComPassword);
@@ -47,32 +55,77 @@ namespace SpeculatorServices
         private void _smartCom_UpdateBidAsk(string symbol, int row, int nrows, double bid, double bidsize, double ask, double asksize)
         {
             var currentSymbol = _symbolsInJob.Single(s => s.Symbol == symbol);
-            var newBid = new SmartComBidAskValue { SmartComSymbolId = currentSymbol.Id, IsBid = true, RowId = (byte)row, Price = bid, Volume = (int)bidsize };
-            var newAsk = new SmartComBidAskValue { SmartComSymbolId = currentSymbol.Id, IsBid = false, RowId = (byte)row, Price = ask, Volume = (int)asksize };
+            var newBid = new SmartComBidAskValue
+            {
+                SmartComSymbolId = currentSymbol.Id,
+                IsBid = true,
+                RowId = (byte) row,
+                Price = bid, Volume = (int)bidsize
+            };
+            var newAsk = new SmartComBidAskValue
+            {
+                SmartComSymbolId = currentSymbol.Id,
+                IsBid = false,
+                RowId = (byte) row,
+                Price = ask,
+                Volume = (int) asksize
+            };
 
-            var bidChanged = true;
-            var askChanged = true;
+            var bidChanged = false;
+            var askChanged = false;
 
-            var oldBid = _glasses[currentSymbol.Symbol]?[bid];
-            var oldAsk = _glasses[currentSymbol.Symbol]?[ask];
+            _glasses[currentSymbol.Symbol].GetOrAdd(bid, new SmartComBidAskValue());
+            _glasses[currentSymbol.Symbol].GetOrAdd(ask, new SmartComBidAskValue());
 
-            if (oldBid != bidsize) bidChanged = false;
-            if (oldAsk != asksize) askChanged = false;
+            var oldBid = _glasses[currentSymbol.Symbol][bid];
+            var oldAsk = _glasses[currentSymbol.Symbol][ask];
 
-            if (bidChanged)
-                _dbContext.SmartComBidAskValues.Add(newBid);
-            if (askChanged)
-                _dbContext.SmartComBidAskValues.Add(newAsk);
+            if ((oldBid?.Volume != bidsize || !oldBid.IsBid) && oldBid != null)
+            {
+                oldBid.Volume = (int)bidsize;
+                oldBid.IsBid = true;
+                bidChanged = true;
+                _smartComAddedCounter++;
+            }
+            if ((oldAsk?.Volume != asksize || oldAsk.IsBid) && oldAsk != null)
+            {
+                oldAsk.Volume = (int)asksize;
+                oldAsk.IsBid = false;
+                askChanged = true;
+                _smartComAddedCounter++;
+            }
+            using (var dbContext = new SpeculatorContext())
+            {
+                if (bidChanged)
+                    dbContext.SmartComBidAskValues.Add(newBid);
+                if (askChanged)
+                    dbContext.SmartComBidAskValues.Add(newAsk);
+                dbContext.SaveChanges();
+            }
 
-            _smartComBidOrAskAddedCounter++;
-            if (_smartComBidOrAskAddedCounter%200 == 0)
-                _dbContext.SaveChangesAsync();
         }
 
         private void _smartCom_AddTick(string symbol, DateTime datetime, double price, double volume, string tradeno,
             [System.Runtime.InteropServices.ComAliasName("SmartCOM3Lib.StOrder_Action")] StOrder_Action action)
         {
-            throw new NotImplementedException();
+            var currentSymbol = _symbolsInJob.Single(s => s.Symbol == symbol);
+            long tradenoLong;
+            long.TryParse(tradeno, out tradenoLong);
+            _smartComAddedCounter++;
+            var tick = new SmartComTick
+            {
+                SmartComSymbolId = currentSymbol.Id,
+                TradeNo = tradenoLong,
+                Price = price,
+                Volume = (int) volume,
+                OrderAction = (byte) action,
+                TradeDateTime = datetime
+            };
+            using (var dbContext = new SpeculatorContext())
+            {
+                dbContext.SmartComTicks.Add(tick);
+                dbContext.SaveChanges();
+            }
         }
 
         private void _smartCom_UpdateQuote(string symbol, DateTime datetime, double open, double high, double low,
@@ -80,7 +133,26 @@ namespace SpeculatorServices
             double asksize, double openInt, double goBuy, double goSell, double goBase, double goBaseBacked,
             double highLimit, double lowLimit, int tradingStatus, double volat, double theorPrice)
         {
-            throw new NotImplementedException();
+            var currentSymbol = _symbolsInJob.Single(s => s.Symbol == symbol);
+            _smartComAddedCounter++;
+            var quote = new SmartComQuote
+            {
+                SmartComSymbolId = currentSymbol.Id,
+                LastTradeDateTime = datetime,
+                LastTradePrice = last,
+                LastTradeVolume = (int) size,
+                Bid = bid,
+                Ask = ask,
+                BidSize = (int) bidsize,
+                AskSize = (int) asksize,
+                OpenInterest = (int) openInt,
+                Volatility = volat
+            };
+            using (var dbContext = new SpeculatorContext())
+            {
+                dbContext.SmartComQuotes.Add(quote);
+                dbContext.SaveChanges();
+            }
         }
 
         private async void _smartCom_AddSymbol(int row, int nrows, string symbol, string shortName, string longName, string type, int decimals, int lotSize, double punkt, double step, string secExtId, string secExchName, DateTime expiryDate, double daysBeforeExpiry, double strike)
@@ -110,8 +182,10 @@ namespace SpeculatorServices
             _symbolsInJob = _smartComSymbols.Where(scs => _symbolsForSaveToDb.Contains(scs.Symbol)).DistinctBy(scs => scs.Symbol).ToList();
             _symbolsInJob.ForEach(s =>
                 {
-                    //_smartCom.ListenTicks(s.Symbol);
-                    //_smartCom.ListenQuotes(s.Symbol);
+                    _glasses.GetOrAdd(s.Symbol, new ConcurrentDictionary<double, SmartComBidAskValue>());
+
+                    _smartCom.ListenTicks(s.Symbol);
+                    _smartCom.ListenQuotes(s.Symbol);
                     _smartCom.ListenBidAsks(s.Symbol);
                 });
         }

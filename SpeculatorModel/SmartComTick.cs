@@ -5,24 +5,32 @@ using System.Runtime.Serialization;
 
 namespace SpeculatorModel
 {
-    [DataContract, Table("SmartComBidAskValues")]
-    public class SmartComBidAskValue
+    [DataContract, Table("SmartComTicks")]
+    public class SmartComTick
     {
-        [DataMember, Key]
-        public int Id { get; set; }
+        [DataMember, Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
+        public long TradeNo { get; set; }
+
         [DataMember]
         public int SmartComSymbolId { get; set; }
-        [DataMember]
-        public byte RowId { get; set; }
-        [DataMember]
-        public bool IsBid { get; set; }
+
         [DataMember]
         public double Price { get; set; }
+
         [DataMember]
         public int Volume { get; set; }
-        [DataMember, Column(TypeName = "datetime2")]
-        public DateTime Added { get; set; }
 
+        [DataMember]
+        public byte OrderAction { get; set; }
+
+        [DataMember, Column(TypeName = "datetime2")]
+        public DateTime TradeDateTime { get; set; }
+
+        [DataMember, Column(TypeName = "datetime2")]
+        public DateTime TradeAdded { get; set; }
+
+
+        [DataMember]
         public virtual SmartComSymbol SmartComSymbol { get; set; }
     }
 }
