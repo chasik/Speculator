@@ -284,8 +284,8 @@ $RECYCLE.BIN/
 
 *App.config
 *App.config.main
-**/Properties/Settings.settings
-**/Properties/Settings.Designer.cs
+#**/Properties/Settings.settings
+#**/Properties/Settings.Designer.cs
 
 #devexpress licenses
 **/licenses.licx

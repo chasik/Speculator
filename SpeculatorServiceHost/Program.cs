@@ -6,7 +6,7 @@ namespace SpeculatorServiceHost
     {
         public static void Main()
         {
-            var servicesToRun = new ServiceBase[] {new SpeculatorServiceHost()};
+            var servicesToRun = new ServiceBase[] {new SmartComDataServiceHost()};
             ServiceBase.Run(servicesToRun);
         }
     }

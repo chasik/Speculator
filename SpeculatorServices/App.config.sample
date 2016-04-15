@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <configuration>
+  <configSections>
+    <sectionGroup name="applicationSettings" type="System.Configuration.ApplicationSettingsGroup, System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+      <section name="SpeculatorServices.Properties.Settings" type="System.Configuration.ClientSettingsSection, System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" requirePermission="false" />
+    </sectionGroup>
+  </configSections>
   <appSettings>
     <add key="aspnet:UseTaskFriendlySynchronizationContext" value="true" />
     <add key="ClientSettingsProvider.ServiceUri" value="" />
@@ -21,12 +26,13 @@
   app.config file. System.Configuration does not support config files for libraries. -->
   <system.serviceModel>
     <services>
-      <service behaviorConfiguration="SpeculatorServiceBehavior" name="SpeculatorServices.SmartComData">
-        <endpoint address="net.pipe://localhost/Speculator/SmartCom"
-          binding="netNamedPipeBinding" bindingConfiguration="SpeculatorNamePipeBinding"
-          contract="SpeculatorServices.ISmartComData" />
-        <endpoint address="net.pipe://localhost/Speculator/SmartCom/mex"
-          binding="mexNamedPipeBinding" contract="IMetadataExchange" />
+      <!--service behaviorConfiguration="SpeculatorServicesBehavior" name="SpeculatorServices.SmartComData">
+        <endpoint address="net.pipe://localhost/Speculator/SmartComData" binding="netNamedPipeBinding" bindingConfiguration="SpeculatorNamePipeBinding" contract="SpeculatorServices.ISmartComData" />
+        <endpoint address="net.pipe://localhost/Speculator/SmartComData/mex" binding="mexNamedPipeBinding" contract="IMetadataExchange" />
+      </service-->
+      <service behaviorConfiguration="SpeculatorServicesBehavior" name="SpeculatorServices.TransaqData">
+        <endpoint address="net.pipe://localhost/Speculator/TransaqData" binding="netNamedPipeBinding" bindingConfiguration="SpeculatorNamePipeBinding" contract="SpeculatorServices.ITransaqData" />
+        <endpoint address="net.pipe://localhost/Speculator/TransaqData/mex" binding="mexNamedPipeBinding" contract="IMetadataExchange" />
       </service>
     </services>
     <bindings>
@@ -40,13 +46,51 @@
     </bindings>
     <!--For debugging purposes set the includeExceptionDetailInFaults attribute to true-->
     <behaviors>
-      <serviceBehaviors><behavior name="SpeculatorServiceBehavior">
+      <serviceBehaviors>
+        <behavior name="SpeculatorServicesBehavior">
           <serviceMetadata />
           <serviceDebug includeExceptionDetailInFaults="False" />
         </behavior>
-      </serviceBehaviors></behaviors>
+      </serviceBehaviors>
+    </behaviors>
   </system.serviceModel>
   <startup>
     <supportedRuntime version="v4.0" sku=".NETFramework,Version=v4.6.1" />
   </startup>
+  <applicationSettings>
+    <SpeculatorServices.Properties.Settings>
+      <setting name="SmartComLogin" serializeAs="String">
+        <value>---</value>
+      </setting>
+      <setting name="SmartComPassword" serializeAs="String">
+        <value>---</value>
+      </setting>
+      <setting name="SmartComHost" serializeAs="String">
+        <value>mxr.ittrade.ru</value>
+      </setting>
+      <setting name="SmartComPort" serializeAs="String">
+        <value>8443</value>
+      </setting>
+      <setting name="TransaqLogin" serializeAs="String">
+        <value>---</value>
+      </setting>
+      <setting name="TransaqPassword" serializeAs="String">
+        <value>---</value>
+      </setting>
+      <setting name="TransaqHost" serializeAs="String">
+        <value>78.41.194.72</value>
+      </setting>
+      <setting name="TransaqPort" serializeAs="String">
+        <value>3939</value>
+      </setting>
+    </SpeculatorServices.Properties.Settings>
+  </applicationSettings>
+  <runtime>
+    <assemblyBinding xmlns="urn:schemas-microsoft-com:asm.v1">
+      <dependentAssembly>
+        <assemblyIdentity name="System.Collections.Immutable" publicKeyToken="b03f5f7f11d50a3a" culture="neutral" />
+        <bindingRedirect oldVersion="0.0.0.0-1.1.37.0" newVersion="1.1.37.0" />
+      </dependentAssembly>
+    </assemblyBinding>
+  </runtime>
 </configuration>
