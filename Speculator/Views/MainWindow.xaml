@@ -11,6 +11,7 @@
              xmlns:navigation="http://schemas.devexpress.com/winfx/2008/xaml/windowsui/navigation"
              mc:Ignorable="d" Height="625" Width="1100" MinWidth="1100"
              DataContext="{dxmvvm:ViewModelSource Type={x:Type viewModels:MainViewModel}}" ShowIcon="False">
+    
     <Grid d:DataContext="{Binding}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -20,16 +21,9 @@
             <dxnav:TileNavPane.NavButtons>
                 <dxnav:NavButton Content="Меню" IsMain="True" Glyph="{dx:DXImageGrayscale Image=Home_32x32.png}"
 					AllowGlyphTheming="True" />
-                <dxnav:NavButton Content="Добавить инструмент..." HorizontalAlignment="Left" AllowGlyphTheming="True" 
-					Glyph="{dx:DXImageGrayscale Image=Add_32x32.png}">
-                    <dxnav:TileNavItem Content="Staff">
-                        <dxnav:TileNavSubItem Content="Manager" />
-                        <dxnav:TileNavSubItem Content="Seller" />
-                        <!-- add sub-items here, if required -->
-                    </dxnav:TileNavItem>
-                    <dxnav:TileNavItem Content="Client" />
-                    <!-- add items here, if required -->
-                </dxnav:NavButton>
+                <dxnav:NavButton Content="Инструменты" HorizontalAlignment="Left" AllowGlyphTheming="True"
+                                 Glyph="{dx:DXImageGrayscale Image=Add_32x32.png}"
+                                 CommandParameter="SymbolsView" Command="{Binding NaveButtonClickCommand}" />
 
                 <dxnav:NavButton Content="Аналитика..." HorizontalAlignment="Right" AllowGlyphTheming="True" 
 					Glyph="{dx:DXImageGrayscale Image=Pie_32x32.png}">

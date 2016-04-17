@@ -46,7 +46,6 @@ namespace SpeculatorServices
             return result;
         }
 
-
         public static bool ConnectorInitialize(string path, short logLevel)
         {
             var pPath = MarshalUtf8.StringToHGlobalUtf8(path);
@@ -67,21 +66,20 @@ namespace SpeculatorServices
 
         public static void ConnectorUnInitialize()
         {
-
             //if (statusDisconnected.WaitOne(statusTimeout))
             //{
-                var pResult = UnInitialize();
+            var pResult = UnInitialize();
 
-                if (!pResult.Equals(IntPtr.Zero))
-                {
-                    var result = MarshalUtf8.PtrToStringUtf8(pResult);
-                    FreeMemory(pResult);
-                    //log.WriteLog(result);
-                }
-                else
-                {
-                    //log.WriteLog("UnInitialize() OK");
-                }
+            if (!pResult.Equals(IntPtr.Zero))
+            {
+                var result = MarshalUtf8.PtrToStringUtf8(pResult);
+                FreeMemory(pResult);
+                //log.WriteLog(result);
+            }
+            else
+            {
+                //log.WriteLog("UnInitialize() OK");
+            }
             //}
             //else
             //{
@@ -116,7 +114,6 @@ namespace SpeculatorServices
         {
             // обработка данных, полученных коннектором от сервера Транзак
             var info = "";
-
             var textForWindow = data;
 
             var xs = new XmlReaderSettings
@@ -141,25 +138,32 @@ namespace SpeculatorServices
                 {
                     case XmlNodeType.Element:
                     case XmlNodeType.EndElement:
-                        ename = xr.Name; break;
+                        ename = xr.Name;
+                        break;
                     case XmlNodeType.Text:
                     case XmlNodeType.CDATA:
                     case XmlNodeType.Comment:
                     case XmlNodeType.XmlDeclaration:
-                        evalue = xr.Value; break;
+                        evalue = xr.Value;
+                        break;
                     case XmlNodeType.DocumentType:
-                        ename = xr.Name; evalue = xr.Value; break;
-                    default: break;
+                        ename = xr.Name;
+                        evalue = xr.Value;
+                        break;
+                    default:
+                        break;
                 }
 
-                // определяем узел верхнего уровня - "секцию"
+                #region определяем узел верхнего уровня - "секцию"
+
                 if (xr.Depth == 0)
                 {
                     if (xr.NodeType == XmlNodeType.Element)
                     {
                         section = ename;
 
-                        if ((section != "boards") && (section != "securities") && (section != "pits") && (section != "sec_info_upd") && (textForWindow.Length > 0))
+                        if ((section != "boards") && (section != "securities") && (section != "pits") &&
+                            (section != "sec_info_upd") && (textForWindow.Length > 0))
                         {
                             //Form_AddText(textForWindow);
                             textForWindow = "";
@@ -183,7 +187,10 @@ namespace SpeculatorServices
                     }
                 }
 
-                // данные для рынков
+                #endregion
+
+                #region данные для рынков
+
                 if (section == "markets")
                 {
                     //xe = (XElement)XNode.ReadFrom(xr);
@@ -211,7 +218,10 @@ namespace SpeculatorServices
                     }
                 }
 
-                // данные для таймфреймов
+                #endregion
+
+                #region данные для таймфреймов
+
                 if (section == "candlekinds")
                 {
                     if (ename == "kind")
@@ -237,7 +247,10 @@ namespace SpeculatorServices
                     }
                 }
 
-                // данные для инструментов
+                #endregion
+
+                #region данные для инструментов
+
                 if (section == "securities")
                 {
                     if (ename == "security")
@@ -274,20 +287,24 @@ namespace SpeculatorServices
                     }
                 }
 
-                // данные по свечам
+                #endregion
+
+                #region данные по свечам
+
                 if (section == "candles")
                 {
                     if (ename == "candles")
                     {
-
                     }
                     if (ename == "candle")
                     {
-
                     }
                 }
 
-                // данные по клиенту
+                #endregion
+
+                #region данные по клиенту
+
                 if (section == "client")
                 {
                     if (ename == "client")
@@ -320,7 +337,10 @@ namespace SpeculatorServices
                     }
                 }
 
-                // данные для позиций
+                #endregion
+
+                #region данные для позиций
+
                 if (section == "positions")
                 {
                     line = "";
@@ -329,6 +349,8 @@ namespace SpeculatorServices
                         line = ename + ": " + evalue;
                     }
                 }
+
+                #endregion
 
                 if (section == "overnight")
                 {
@@ -344,7 +366,8 @@ namespace SpeculatorServices
                     }
                 }
 
-                // данные о статусе соединения с сервером
+                #region данные о статусе соединения с сервером
+
                 if (section == "server_status")
                 {
                     if (xr.NodeType == XmlNodeType.Element)
@@ -363,24 +386,23 @@ namespace SpeculatorServices
                     }
                 }
 
+                #endregion
+
                 if (section == "orders") //обрабатываем заявки
                 {
-
                 }
 
                 if (section == "alltrades")
                 {
-
                 }
                 if (section == "ticks")
                 {
-
                 }
 
                 if (line.Length > 0)
                 {
                     //line = new string(' ',xr.Depth*2) + line;
-                    if (info.Length > 0) info = info + (char)13 + (char)10;
+                    if (info.Length > 0) info = info + (char) 13 + (char) 10;
                     info = info + line;
                 }
             }

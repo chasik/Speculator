@@ -132,6 +132,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="SpeculatorData.cs" />
+    <Compile Include="ISpeculatorData.cs" />
     <Compile Include="ISmartComData.cs" />
     <Compile Include="ITransaqData.cs" />
     <Compile Include="MarshalUtf8.cs" />
