@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.ServiceModel;
 using SpeculatorServices.Properties;
@@ -26,7 +28,9 @@ namespace SpeculatorServices
 
         static SmartComData()
         {
-            //new SmartComData().ConnectToSmartCom();
+            //#if !DEBUG
+                new SmartComData().ConnectToSmartCom();
+            //#endif
         }
 
         public void ConnectToSmartCom()
@@ -36,6 +40,7 @@ namespace SpeculatorServices
                 symb = symb + SuffixSymbols;
                 return symb;
             }).ToList();
+
             // фьючерс на нефть
             _symbolsForSaveToDb.Add("BR" + SuffixSymbolsForOil);
 
@@ -53,8 +58,16 @@ namespace SpeculatorServices
 
             _smartComSymbols = _dbContext.SmartComSymbols.ToList();
 
+            if (!Directory.Exists(Settings.Default.LogPathSmartCom)) 
+                Directory.CreateDirectory(Settings.Default.LogPathSmartCom);
+
+            _smartCom.ConfigureClient("logFilePath=" + Settings.Default.LogPathSmartCom);
+            _smartCom.ConfigureServer("logFilePath=" + Settings.Default.LogPathSmartCom);
             _smartCom.connect(Settings.Default.SmartComHost, Settings.Default.SmartComPort, Settings.Default.SmartComLogin, Settings.Default.SmartComPassword);
             //throw new FaultException($"!{Settings.Default.SmartComHost} {Settings.Default.SmartComPort} {Settings.Default.SmartComLogin} {Settings.Default.SmartComPassword}");
+            if (!EventLog.SourceExists("SmartComDataServiceHost"))
+                EventLog.CreateEventSource("SmartComDataServiceHost", "Application");
+             EventLog.WriteEntry("SmartComDataServiceHost", $"!{Settings.Default.SmartComHost} {Settings.Default.SmartComPort} {Settings.Default.SmartComLogin} {Settings.Default.SmartComPassword}");
         }
 
         private void _smartCom_UpdateBidAsk(string symbol, int row, int nrows, double bid, double bidsize, double ask, double asksize)
