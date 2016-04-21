@@ -1,7 +1,6 @@
-﻿using System;
-using SpeculatorServices.Properties;
+﻿using SpeculatorServices.Properties;
 
-namespace SpeculatorServices
+namespace SpeculatorServices.Transaq
 {
     public class TransaqData : ITransaqData
     {

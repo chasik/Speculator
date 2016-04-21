@@ -131,6 +131,17 @@
     <Compile Include="SmartComQuote.cs" />
     <Compile Include="SmartComSymbol.cs" />
     <Compile Include="SmartComTick.cs" />
+    <Compile Include="Transaq\CandleKind.cs" />
+    <Compile Include="Transaq\ClientTrade.cs" />
+    <Compile Include="Transaq\ClientNegDeal.cs" />
+    <Compile Include="Transaq\ClientOrder.cs" />
+    <Compile Include="Transaq\Quote.cs" />
+    <Compile Include="Transaq\Security.cs" />
+    <Compile Include="Transaq\Board.cs" />
+    <Compile Include="Transaq\Market.cs" />
+    <Compile Include="Transaq\ClientStopOrder.cs" />
+    <Compile Include="Transaq\Tick.cs" />
+    <Compile Include="Transaq\Trade.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

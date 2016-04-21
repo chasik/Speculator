@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace SpeculatorServices
+namespace SpeculatorServices.Transaq
 {
     public static class MarshalUtf8
     {

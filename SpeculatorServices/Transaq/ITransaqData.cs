@@ -1,6 +1,6 @@
 ﻿using System.ServiceModel;
 
-namespace SpeculatorServices
+namespace SpeculatorServices.Transaq
 {
     [ServiceContract]
     public interface ITransaqData

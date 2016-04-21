@@ -35,6 +35,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject>
@@ -140,21 +141,25 @@
     <Compile Include="SpeculatorData.cs" />
     <Compile Include="ISpeculatorData.cs" />
     <Compile Include="ISmartComData.cs" />
-    <Compile Include="ITransaqData.cs" />
-    <Compile Include="MarshalUtf8.cs" />
+    <Compile Include="Transaq\ITransaqData.cs" />
+    <Compile Include="Transaq\MarshalUtf8.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SmartComData.cs" />
-    <Compile Include="TransaqConnector.cs" />
-    <Compile Include="TransaqData.cs" />
+    <Compile Include="Transaq\TransaqConnector.cs" />
+    <Compile Include="Transaq\TransaqData.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config.sample" />
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+    <None Include="Properties\Settings.Designer.cs.sample" />
+    <None Include="Properties\Settings.settings.sample" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SpeculatorModel\SpeculatorModel.csproj">
@@ -171,6 +176,7 @@
       <WrapperTool>tlbimp</WrapperTool>
       <Isolated>False</Isolated>
       <EmbedInteropTypes>False</EmbedInteropTypes>
+      <Private>False</Private>
     </COMReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

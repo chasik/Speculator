@@ -28,9 +28,9 @@ namespace SpeculatorServices
 
         static SmartComData()
         {
-            //#if !DEBUG
+            #if !DEBUG
                 new SmartComData().ConnectToSmartCom();
-            //#endif
+            #endif
         }
 
         public void ConnectToSmartCom()
