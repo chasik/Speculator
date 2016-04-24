@@ -108,9 +108,8 @@ namespace SpeculatorServices.Transaq
             var data = MarshalUtf8.PtrToStringUtf8(pData);
             FreeMemory(pData);
 
-            var res = TransaqHandleData(data);
-            //if (res == "server_status")
-            //    New_Status();
+            TransaqHandleData(data);
+
             return true;
         }
 

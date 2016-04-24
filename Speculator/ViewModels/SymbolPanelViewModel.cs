@@ -1,11 +1,11 @@
-﻿using System;
-using DevExpress.Mvvm.DataAnnotations;
-using DevExpress.Mvvm;
+﻿using DevExpress.Mvvm.DataAnnotations;
+
 
 namespace Speculator.ViewModels
 {
     [POCOViewModel]
     public class SymbolPanelViewModel
     {
+
     }
 }
