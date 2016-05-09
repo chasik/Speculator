@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.Data.Entity;
+using SpeculatorModel.MoexHistory;
 using SpeculatorModel.Transaq;
 
 namespace SpeculatorModel
@@ -22,6 +23,14 @@ namespace SpeculatorModel
         public DbSet<Trade> Trades { get; set; }
         public DbSet<Tick> Ticks { get; set; }
         public DbSet<Quote> Quotes { get; set; }
+
+        public DbSet<MoexSystem> MoexSystems { get; set; }
+        public DbSet<MoexSymbol> MoexSymbols { get; set; }
+        public DbSet<MoexClaimType> MoexClaimTypes { get; set; }
+        public DbSet<MoexClaimAction> MoexClaimActions { get; set; }
+        public DbSet<MoexTradeDiraction> MoexTradeDiractions { get; set; }
+        public DbSet<MoexTrade> MoexTrades { get; set; }
+        public DbSet<MoexClaim> MoexClaims { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

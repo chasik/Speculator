@@ -1,6 +1,6 @@
 ﻿using System.ServiceModel;
 using System.ServiceProcess;
-using SpeculatorServices;
+using SpeculatorServices.SmartCom;
 
 namespace SpeculatorServiceHost
 {

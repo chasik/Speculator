@@ -1,6 +1,6 @@
 ﻿using System.ServiceModel;
 
-namespace SpeculatorServices
+namespace SpeculatorServices.SmartCom
 {
     [ServiceContract]
     public interface ISmartComData

@@ -1,4 +1,4 @@
-﻿<dx:DXWindow x:Class="Speculator.Views.MainWindow"
+﻿<dx:DXWindow x:Class="Speculator.Views.MainView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core"
@@ -9,8 +9,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:dxwui="http://schemas.devexpress.com/winfx/2008/xaml/windowsui"
              xmlns:navigation="http://schemas.devexpress.com/winfx/2008/xaml/windowsui/navigation"
-             mc:Ignorable="d" Height="625" Width="1100" MinWidth="1100"
-             DataContext="{dxmvvm:ViewModelSource Type={x:Type viewModels:MainViewModel}}" ShowIcon="False">
+             mc:Ignorable="d" Height="625" Width="1100" MinWidth="1100" ShowIcon="False"
+             DataContext="{dxmvvm:ViewModelSource Type={x:Type viewModels:MainViewModel}}" >
     
     <Grid d:DataContext="{Binding}">
         <Grid.RowDefinitions>
@@ -40,8 +40,18 @@
 					AllowGlyphTheming="True" HorizontalAlignment="Right"/>
 
                 <dxnav:NavButton Content="Данные" Glyph="{dx:DXImageGrayscale Image=EditDataSource_32x32.png}"
-                                 AllowGlyphTheming="True" HorizontalAlignment="Right"
-                                 CommandParameter="DataView" Command="{Binding NaveButtonClickCommand}"/>
+                                 AllowGlyphTheming="True" HorizontalAlignment="Right">
+                    <dxnav:TileNavItem Content="SmartCom" CommandParameter="SmartComDataView"
+                                       Command="{Binding NaveButtonClickCommand}" />
+                    <dxnav:TileNavItem Content="Transaq" CommandParameter="TransaqDataView"
+                                       Command="{Binding NaveButtonClickCommand}" />
+                    <dxnav:TileNavItem Content="Quik" CommandParameter="QuikDataView"
+                                       Command="{Binding NaveButtonClickCommand}" />
+                    <dxnav:TileNavItem Content="Plaza II" CommandParameter="PlazaDataView"
+                                       Command="{Binding NaveButtonClickCommand}" />
+                    <dxnav:TileNavItem Content="Данные Moex.com" CommandParameter="MoexDataView"
+                                       Command="{Binding NaveButtonClickCommand}" />
+                </dxnav:NavButton>
 
                 <dxnav:NavButton Content="Настройки" GlyphAlignment="Right" HorizontalContentAlignment="Right"
                                  Glyph="{dx:DXImageGrayscale Image=Customization_32x32.png}" 

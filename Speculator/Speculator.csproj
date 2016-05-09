@@ -17,7 +17,7 @@
     <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>x64</PlatformTarget>
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -27,6 +27,7 @@
     <WarningLevel>4</WarningLevel>
     <RunCodeAnalysis>true</RunCodeAnalysis>
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -38,15 +39,19 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="DevExpress.Data.v15.2, Version=15.2.9.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
     <Reference Include="DevExpress.Mvvm.v15.2, Version=15.2.9.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Printing.v15.2.Core, Version=15.2.9.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
     <Reference Include="DevExpress.Xpf.Controls.v15.2, Version=15.2.9.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
     <Reference Include="DevExpress.Xpf.Core.v15.2, Version=15.2.9.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
     <Reference Include="DevExpress.Xpf.Docking.v15.2, Version=15.2.9.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Xpf.Grid.v15.2, Version=15.2.9.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
+    <Reference Include="DevExpress.Xpf.Grid.v15.2.Core, Version=15.2.9.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
     <Reference Include="DevExpress.Xpf.LayoutControl.v15.2, Version=15.2.9.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
     <Reference Include="DevExpress.Xpf.NavBar.v15.2, Version=15.2.9.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
-    <Reference Include="InfragisticsWPF4.Controls.Charts.XamDataChart.v15.1, Version=15.1.20151.2251, Culture=neutral, PublicKeyToken=7dd5c3163f2cd0cb, processorArchitecture=MSIL" />
-    <Reference Include="InfragisticsWPF4.DataVisualization.v15.1, Version=15.1.20151.2251, Culture=neutral, PublicKeyToken=7dd5c3163f2cd0cb, processorArchitecture=MSIL" />
-    <Reference Include="InfragisticsWPF4.v15.1, Version=15.1.20151.2251, Culture=neutral, PublicKeyToken=7dd5c3163f2cd0cb, processorArchitecture=MSIL" />
+    <Reference Include="InfragisticsWPF4.Controls.Charts.XamDataChart.v15.2, Version=15.2.20152.2100, Culture=neutral, PublicKeyToken=7dd5c3163f2cd0cb, processorArchitecture=MSIL" />
+    <Reference Include="InfragisticsWPF4.DataVisualization.v15.2, Version=15.2.20152.2100, Culture=neutral, PublicKeyToken=7dd5c3163f2cd0cb, processorArchitecture=MSIL" />
+    <Reference Include="InfragisticsWPF4.v15.2, Version=15.2.20152.2100, Culture=neutral, PublicKeyToken=7dd5c3163f2cd0cb, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -71,9 +76,29 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="ViewModels\Converters\AddSymbolCommandParamsConverter.cs" />
+    <Compile Include="ViewModels\Data\MoexDataViewModel.cs" />
+    <Compile Include="ViewModels\Data\PlazaDataViewModel.cs" />
+    <Compile Include="ViewModels\Data\QuikDataViewModel.cs" />
+    <Compile Include="ViewModels\Data\SmartComDataViewModel.cs" />
+    <Compile Include="ViewModels\Data\TransaqDataViewModel.cs" />
     <Compile Include="ViewModels\GlassViewModel.cs" />
     <Compile Include="ViewModels\SymbolPanelViewModel.cs" />
     <Compile Include="ViewModels\SymbolsViewModel.cs" />
+    <Compile Include="Views\Data\MoexDataView.xaml.cs">
+      <DependentUpon>MoexDataView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Data\PlazaDataView.xaml.cs">
+      <DependentUpon>PlazaDataView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Data\QuikDataView.xaml.cs">
+      <DependentUpon>QuikDataView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Data\SmartComDataView.xaml.cs">
+      <DependentUpon>SmartComDataView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Data\TransaqDataView.xaml.cs">
+      <DependentUpon>TransaqDataView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\GlassView.xaml.cs">
       <DependentUpon>GlassView.xaml</DependentUpon>
     </Compile>
@@ -86,7 +111,23 @@
     <Compile Include="Views\SymbolsView.xaml.cs">
       <DependentUpon>SymbolsView.xaml</DependentUpon>
     </Compile>
-    <Page Include="Views\DataView.xaml">
+    <Page Include="Views\Data\MoexDataView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Data\PlazaDataView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Data\QuikDataView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Data\SmartComDataView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Data\TransaqDataView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -94,7 +135,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\MainWindow.xaml">
+    <Page Include="Views\MainView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -102,14 +143,10 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ViewModels\DataViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\SettingsViewModel.cs" />
-    <Compile Include="Views\DataView.xaml.cs">
-      <DependentUpon>DataView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\MainWindow.xaml.cs">
-      <DependentUpon>MainWindow.xaml</DependentUpon>
+    <Compile Include="Views\MainView.xaml.cs">
+      <DependentUpon>MainView.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
     <Page Include="Views\SettingsView.xaml">
@@ -155,6 +192,12 @@
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SpeculatorModel\SpeculatorModel.csproj">
+      <Project>{0A069BB9-5383-4760-971B-17765F5F8262}</Project>
+      <Name>SpeculatorModel</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.

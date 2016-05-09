@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Runtime.Serialization;
 
 namespace SpeculatorModel.Transaq
@@ -9,7 +10,7 @@ namespace SpeculatorModel.Transaq
         [DataMember]
         public int Id { get; set; }
 
-        [DataMember]
+        [DataMember, MaxLength(200)]
         public string InnerId { get; set; }
 
         [DataMember]

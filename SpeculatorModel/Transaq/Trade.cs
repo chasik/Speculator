@@ -6,6 +6,8 @@ namespace SpeculatorModel.Transaq
     [DataContract, Table("TransaqTrades")]
     public class Trade
     {
+        [DataMember]
+        public int Id { get; set; }
     }
 }
 

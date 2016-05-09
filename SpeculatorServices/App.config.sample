@@ -30,9 +30,13 @@
         <endpoint address="net.pipe://localhost/Speculator/SmartComData" binding="netNamedPipeBinding" bindingConfiguration="SpeculatorNamePipeBinding" contract="SpeculatorServices.ISmartComData" />
         <endpoint address="net.pipe://localhost/Speculator/SmartComData/mex" binding="mexNamedPipeBinding" contract="IMetadataExchange" />
       </service-->
-      <service behaviorConfiguration="SpeculatorServicesBehavior" name="SpeculatorServices.TransaqData">
-        <endpoint address="net.pipe://localhost/Speculator/TransaqData" binding="netNamedPipeBinding" bindingConfiguration="SpeculatorNamePipeBinding" contract="SpeculatorServices.ITransaqData" />
+      <service behaviorConfiguration="SpeculatorServicesBehavior" name="SpeculatorServices.Transaq.TransaqData">
+        <endpoint address="net.pipe://localhost/Speculator/TransaqData" binding="netNamedPipeBinding" bindingConfiguration="SpeculatorNamePipeBinding" contract="SpeculatorServices.Transaq.ITransaqData" />
         <endpoint address="net.pipe://localhost/Speculator/TransaqData/mex" binding="mexNamedPipeBinding" contract="IMetadataExchange" />
+      </service>
+      <service behaviorConfiguration="SpeculatorServicesBehavior" name="SpeculatorServices.Moex.MoexData">
+        <endpoint address="net.pipe://localhost/Speculator/MoexData" binding="netNamedPipeBinding" bindingConfiguration="SpeculatorNamePipeBinding" contract="SpeculatorServices.Moex.IMoexData" />
+        <endpoint address="net.pipe://localhost/Speculator/MoexData/mex" binding="mexNamedPipeBinding" contract="IMetadataExchange" />
       </service>
     </services>
     <bindings>

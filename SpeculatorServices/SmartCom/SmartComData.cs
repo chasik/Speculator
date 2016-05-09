@@ -5,11 +5,11 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.ServiceModel;
-using SpeculatorServices.Properties;
 using SmartCOM3Lib;
 using SpeculatorModel;
+using SpeculatorServices.Properties;
 
-namespace SpeculatorServices
+namespace SpeculatorServices.SmartCom
 {
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, ConcurrencyMode = ConcurrencyMode.Multiple)]
     public class SmartComData : ISmartComData
