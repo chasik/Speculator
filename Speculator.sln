@@ -8,6 +8,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpeculatorModel", "SpeculatorModel\SpeculatorModel.csproj", "{0A069BB9-5383-4760-971B-17765F5F8262}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Speculator", "Speculator\Speculator.csproj", "{AB6830DD-0B29-4BE3-8B86-ECADD2F9A3E3}"
+	ProjectSection(ProjectDependencies) = postProject
+		{835FB2E7-45FC-4EA2-8FDF-8DB93B77D4B1} = {835FB2E7-45FC-4EA2-8FDF-8DB93B77D4B1}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpeculatorServices", "SpeculatorServices\SpeculatorServices.csproj", "{835FB2E7-45FC-4EA2-8FDF-8DB93B77D4B1}"
 EndProject

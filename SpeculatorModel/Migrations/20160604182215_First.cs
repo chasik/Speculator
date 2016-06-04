@@ -1,7 +1,7 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
-using Microsoft.Data.Entity.Migrations;
-using Microsoft.Data.Entity.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
+using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace SpeculatorModel.Migrations
 {
@@ -9,6 +9,18 @@ namespace SpeculatorModel.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "DataSources",
+                columns: table => new
+                {
+                    Id = table.Column<byte>(nullable: false),
+                    Name = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DataSources", x => x.Id);
+                });
+
             migrationBuilder.CreateTable(
                 name: "MoexClaimActions",
                 columns: table => new
@@ -18,9 +30,9 @@ namespace SpeculatorModel.Migrations
                     Name = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
-                {
-                    table.PrimaryKey("PK_MoexClaimAction", x => x.Id);
+                {table.PrimaryKey("PK_MoexClaimActions", x => x.Id);
                 });
+
             migrationBuilder.CreateTable(
                 name: "MoexClaimTypes",
                 columns: table => new
@@ -31,8 +43,9 @@ namespace SpeculatorModel.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_MoexClaimType", x => x.Id);
+                    table.PrimaryKey("PK_MoexClaimTypes", x => x.Id);
                 });
+
             migrationBuilder.CreateTable(
                 name: "MoexSymbols",
                 columns: table => new
@@ -43,8 +56,9 @@ namespace SpeculatorModel.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_MoexSymbol", x => x.Id);
+                    table.PrimaryKey("PK_MoexSymbols", x => x.Id);
                 });
+
             migrationBuilder.CreateTable(
                 name: "MoexSystems",
                 columns: table => new
@@ -55,8 +69,9 @@ namespace SpeculatorModel.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_MoexSystem", x => x.Id);
+                    table.PrimaryKey("PK_MoexSystems", x => x.Id);
                 });
+
             migrationBuilder.CreateTable(
                 name: "MoexTradeDiractions",
                 columns: table => new
@@ -67,8 +82,9 @@ namespace SpeculatorModel.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_MoexTradeDiraction", x => x.Id);
+                    table.PrimaryKey("PK_MoexTradeDiractions", x => x.Id);
                 });
+
             migrationBuilder.CreateTable(
                 name: "SmartComSymbols",
                 columns: table => new
@@ -90,8 +106,9 @@ namespace SpeculatorModel.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_SmartComSymbol", x => x.Id);
+                    table.PrimaryKey("PK_SmartComSymbols", x => x.Id);
                 });
+
             migrationBuilder.CreateTable(
                 name: "TransaqCandleKinds",
                 columns: table => new
@@ -102,8 +119,9 @@ namespace SpeculatorModel.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CandleKind", x => x.Id);
+                    table.PrimaryKey("PK_TransaqCandleKinds", x => x.Id);
                 });
+
             migrationBuilder.CreateTable(
                 name: "TransaqClientNegDeals",
                 columns: table => new
@@ -112,8 +130,9 @@ namespace SpeculatorModel.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ClientNegDeal", x => x.TransactionId);
+                    table.PrimaryKey("PK_TransaqClientNegDeals", x => x.TransactionId);
                 });
+
             migrationBuilder.CreateTable(
                 name: "TransaqClientOrders",
                 columns: table => new
@@ -122,8 +141,9 @@ namespace SpeculatorModel.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ClientOrder", x => x.TransactionId);
+                    table.PrimaryKey("PK_TransaqClientOrders", x => x.TransactionId);
                 });
+
             migrationBuilder.CreateTable(
                 name: "TransaqClientStopOrders",
                 columns: table => new
@@ -132,8 +152,9 @@ namespace SpeculatorModel.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ClientStopOrder", x => x.TransactionId);
+                    table.PrimaryKey("PK_TransaqClientStopOrders", x => x.TransactionId);
                 });
+
             migrationBuilder.CreateTable(
                 name: "TransaqClientTrades",
                 columns: table => new
@@ -143,8 +164,9 @@ namespace SpeculatorModel.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ClientTrade", x => x.Id);
+                    table.PrimaryKey("PK_TransaqClientTrades", x => x.Id);
                 });
+
             migrationBuilder.CreateTable(
                 name: "TransaqMarkets",
                 columns: table => new
@@ -154,8 +176,9 @@ namespace SpeculatorModel.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Market", x => x.Id);
+                    table.PrimaryKey("PK_TransaqMarkets", x => x.Id);
                 });
+
             migrationBuilder.CreateTable(
                 name: "TransaqQuotes",
                 columns: table => new
@@ -165,8 +188,9 @@ namespace SpeculatorModel.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Quote", x => x.Id);
+                    table.PrimaryKey("PK_TransaqQuotes", x => x.Id);
                 });
+
             migrationBuilder.CreateTable(
                 name: "TransaqTicks",
                 columns: table => new
@@ -176,8 +200,9 @@ namespace SpeculatorModel.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Tick", x => x.Id);
+                    table.PrimaryKey("PK_TransaqTicks", x => x.Id);
                 });
+
             migrationBuilder.CreateTable(
                 name: "TransaqTrades",
                 columns: table => new
@@ -187,46 +212,65 @@ namespace SpeculatorModel.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Trade", x => x.Id);
+                    table.PrimaryKey("PK_TransaqTrades", x => x.Id);
                 });
+
             migrationBuilder.CreateTable(
                 name: "MoexClaims",
                 columns: table => new
                 {
                     Id = table.Column<long>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    MoexSymbolId = table.Column<byte>(nullable: false),
+                    MoexSymbolId1 = table.Column<int>(nullable: true),
                     MoexSystemId = table.Column<byte>(nullable: false),
                     Moment = table.Column<DateTime>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_MoexClaim", x => x.Id);
+                    table.PrimaryKey("PK_MoexClaims", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_MoexClaim_MoexSystem_MoexSystemId",
+                        name: "FK_MoexClaims_MoexSymbols_MoexSymbolId1",
+                        column: x => x.MoexSymbolId1,
+                        principalTable: "MoexSymbols",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_MoexClaims_MoexSystems_MoexSystemId",
                         column: x => x.MoexSystemId,
                         principalTable: "MoexSystems",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
+
             migrationBuilder.CreateTable(
                 name: "MoexTrades",
                 columns: table => new
                 {
                     Id = table.Column<long>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    MoexSymbolId = table.Column<byte>(nullable: false),
+                    MoexSymbolId1 = table.Column<int>(nullable: true),
                     MoexSystemId = table.Column<byte>(nullable: false),
                     Moment = table.Column<DateTime>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_MoexTrade", x => x.Id);
+                    table.PrimaryKey("PK_MoexTrades", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_MoexTrade_MoexSystem_MoexSystemId",
+                        name: "FK_MoexTrades_MoexSymbols_MoexSymbolId1",
+                        column: x => x.MoexSymbolId1,
+                        principalTable: "MoexSymbols",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_MoexTrades_MoexSystems_MoexSystemId",
                         column: x => x.MoexSystemId,
                         principalTable: "MoexSystems",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
+
             migrationBuilder.CreateTable(
                 name: "SmartComBidAskValues",
                 columns: table => new
@@ -242,14 +286,15 @@ namespace SpeculatorModel.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_SmartComBidAskValue", x => x.Id);
+                    table.PrimaryKey("PK_SmartComBidAskValues", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_SmartComBidAskValue_SmartComSymbol_SmartComSymbolId",
+                        name: "FK_SmartComBidAskValues_SmartComSymbols_SmartComSymbolId",
                         column: x => x.SmartComSymbolId,
                         principalTable: "SmartComSymbols",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
+
             migrationBuilder.CreateTable(
                 name: "SmartComQuotes",
                 columns: table => new
@@ -270,14 +315,15 @@ namespace SpeculatorModel.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_SmartComQuote", x => x.Id);
+                    table.PrimaryKey("PK_SmartComQuotes", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_SmartComQuote_SmartComSymbol_SmartComSymbolId",
+                        name: "FK_SmartComQuotes_SmartComSymbols_SmartComSymbolId",
                         column: x => x.SmartComSymbolId,
                         principalTable: "SmartComSymbols",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
+
             migrationBuilder.CreateTable(
                 name: "SmartComTicks",
                 columns: table => new
@@ -292,14 +338,15 @@ namespace SpeculatorModel.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_SmartComTick", x => x.TradeNo);
+                    table.PrimaryKey("PK_SmartComTicks", x => x.TradeNo);
                     table.ForeignKey(
-                        name: "FK_SmartComTick_SmartComSymbol_SmartComSymbolId",
+                        name: "FK_SmartComTicks_SmartComSymbols_SmartComSymbolId",
                         column: x => x.SmartComSymbolId,
                         principalTable: "SmartComSymbols",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
+
             migrationBuilder.CreateTable(
                 name: "TransaqBoards",
                 columns: table => new
@@ -313,14 +360,15 @@ namespace SpeculatorModel.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Board", x => x.Id);
+                    table.PrimaryKey("PK_TransaqBoards", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Board_Market_MarketId",
+                        name: "FK_TransaqBoards_TransaqMarkets_MarketId",
                         column: x => x.MarketId,
                         principalTable: "TransaqMarkets",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
+
             migrationBuilder.CreateTable(
                 name: "TransaqSecurities",
                 columns: table => new
@@ -338,51 +386,148 @@ namespace SpeculatorModel.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Security", x => x.Id);
+                    table.PrimaryKey("PK_TransaqSecurities", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Security_Board_BoardId",
+                        name: "FK_TransaqSecurities_TransaqBoards_BoardId",
                         column: x => x.BoardId,
                         principalTable: "TransaqBoards",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Security_Market_MarketId",
+                        name: "FK_TransaqSecurities_TransaqMarkets_MarketId",
                         column: x => x.MarketId,
                         principalTable: "TransaqMarkets",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
+
             migrationBuilder.CreateIndex(
-                name: "IX_Board_InnerId",
+                name: "IX_MoexClaims_MoexSymbolId1",
+                table: "MoexClaims",
+                column: "MoexSymbolId1");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_MoexClaims_MoexSystemId",
+                table: "MoexClaims",
+                column: "MoexSystemId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_MoexTrades_MoexSymbolId1",
+                table: "MoexTrades",
+                column: "MoexSymbolId1");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_MoexTrades_MoexSystemId",
+                table: "MoexTrades",
+                column: "MoexSystemId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SmartComBidAskValues_SmartComSymbolId",
+                table: "SmartComBidAskValues",
+                column: "SmartComSymbolId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SmartComQuotes_SmartComSymbolId",
+                table: "SmartComQuotes",
+                column: "SmartComSymbolId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SmartComTicks_SmartComSymbolId",
+                table: "SmartComTicks",
+                column: "SmartComSymbolId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TransaqBoards_InnerId",
                 table: "TransaqBoards",
                 column: "InnerId",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TransaqBoards_MarketId",
+                table: "TransaqBoards",
+                column: "MarketId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TransaqSecurities_BoardId",
+                table: "TransaqSecurities",
+                column: "BoardId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TransaqSecurities_MarketId",
+                table: "TransaqSecurities",
+                column: "MarketId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable("MoexClaims");
-            migrationBuilder.DropTable("MoexClaimActions");
-            migrationBuilder.DropTable("MoexClaimTypes");
-            migrationBuilder.DropTable("MoexSymbols");
-            migrationBuilder.DropTable("MoexTrades");
-            migrationBuilder.DropTable("MoexTradeDiractions");
-            migrationBuilder.DropTable("SmartComBidAskValues");
-            migrationBuilder.DropTable("SmartComQuotes");
-            migrationBuilder.DropTable("SmartComTicks");
-            migrationBuilder.DropTable("TransaqCandleKinds");
-            migrationBuilder.DropTable("TransaqClientNegDeals");
-            migrationBuilder.DropTable("TransaqClientOrders");
-            migrationBuilder.DropTable("TransaqClientStopOrders");
-            migrationBuilder.DropTable("TransaqClientTrades");
-            migrationBuilder.DropTable("TransaqQuotes");
-            migrationBuilder.DropTable("TransaqSecurities");
-            migrationBuilder.DropTable("TransaqTicks");
-            migrationBuilder.DropTable("TransaqTrades");
-            migrationBuilder.DropTable("MoexSystems");
-            migrationBuilder.DropTable("SmartComSymbols");
-            migrationBuilder.DropTable("TransaqBoards");
-            migrationBuilder.DropTable("TransaqMarkets");
+            migrationBuilder.DropTable(
+                name: "DataSources");
+
+            migrationBuilder.DropTable(
+                name: "MoexClaims");
+
+            migrationBuilder.DropTable(
+                name: "MoexClaimActions");
+
+            migrationBuilder.DropTable(
+                name: "MoexClaimTypes");
+
+            migrationBuilder.DropTable(
+                name: "MoexTrades");
+
+            migrationBuilder.DropTable(
+                name: "MoexTradeDiractions");
+
+            migrationBuilder.DropTable(
+                name: "SmartComBidAskValues");
+
+            migrationBuilder.DropTable(
+                name: "SmartComQuotes");
+
+            migrationBuilder.DropTable(
+                name: "SmartComTicks");
+
+            migrationBuilder.DropTable(
+                name: "TransaqCandleKinds");
+
+            migrationBuilder.DropTable(
+                name: "TransaqClientNegDeals");
+
+            migrationBuilder.DropTable(
+                name: "TransaqClientOrders");
+
+            migrationBuilder.DropTable(
+                name: "TransaqClientStopOrders");
+
+            migrationBuilder.DropTable(
+                name: "TransaqClientTrades");
+
+            migrationBuilder.DropTable(
+                name: "TransaqQuotes");
+
+            migrationBuilder.DropTable(
+                name: "TransaqSecurities");
+
+            migrationBuilder.DropTable(
+                name: "TransaqTicks");
+
+            migrationBuilder.DropTable(
+                name: "TransaqTrades");
+
+            migrationBuilder.DropTable(
+                name: "MoexSymbols");
+
+            migrationBuilder.DropTable(
+                name: "MoexSystems");
+
+            migrationBuilder.DropTable(
+                name: "SmartComSymbols");
+
+            migrationBuilder.DropTable(
+                name: "TransaqBoards");
+
+            migrationBuilder.DropTable(
+                name: "TransaqMarkets");
         }
     }
 }

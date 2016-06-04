@@ -1,12 +1,15 @@
-﻿using System;
-using Microsoft.Data.Entity;
+﻿using Microsoft.EntityFrameworkCore;
+using SpeculatorModel.MainData;
 using SpeculatorModel.MoexHistory;
+using SpeculatorModel.SmartCom;
 using SpeculatorModel.Transaq;
 
 namespace SpeculatorModel
 {
     public class SpeculatorContext : DbContext
     {
+        public DbSet<DataSource> DataSources { get; set; }
+
         public DbSet<SmartComSymbol> SmartComSymbols { get; set; }
         public DbSet<SmartComBidAskValue> SmartComBidAskValues { get; set; }
         public DbSet<SmartComTick> SmartComTicks { get; set; }

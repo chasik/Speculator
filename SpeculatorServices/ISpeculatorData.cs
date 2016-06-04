@@ -1,4 +1,5 @@
 ﻿using System.ServiceModel;
+using SpeculatorModel.MainData;
 
 namespace SpeculatorServices
 {
@@ -7,5 +8,8 @@ namespace SpeculatorServices
     {
         [OperationContract]
         void GetHistory(string symbol);
+
+        [OperationContract]
+        DataSource[] DataSources();
     }
 }

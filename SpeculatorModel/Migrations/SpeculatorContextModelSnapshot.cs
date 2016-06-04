@@ -1,8 +1,8 @@
-using System;
-using Microsoft.Data.Entity;
-using Microsoft.Data.Entity.Infrastructure;
-using Microsoft.Data.Entity.Metadata;
-using Microsoft.Data.Entity.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using SpeculatorModel;
 
 namespace SpeculatorModel.Migrations
@@ -13,13 +13,29 @@ namespace SpeculatorModel.Migrations
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.0-rc1-16348")
+                .HasAnnotation("ProductVersion", "1.0.0-rc2-20896")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+            modelBuilder.Entity("SpeculatorModel.MainData.DataSource", b =>
+                {
+                    b.Property<byte>("Id");
+
+                    b.Property<string>("Name")
+                        .HasAnnotation("MaxLength", 100);
+
+                    b.HasKey("Id");
+
+                    b.ToTable("DataSources");
+                });
 
             modelBuilder.Entity("SpeculatorModel.MoexHistory.MoexClaim", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd();
+
+                    b.Property<byte>("MoexSymbolId");
+
+                    b.Property<int?>("MoexSymbolId1");
 
                     b.Property<byte>("MoexSystemId");
 
@@ -27,7 +43,11 @@ namespace SpeculatorModel.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasAnnotation("Relational:TableName", "MoexClaims");
+                    b.HasIndex("MoexSymbolId1");
+
+                    b.HasIndex("MoexSystemId");
+
+                    b.ToTable("MoexClaims");
                 });
 
             modelBuilder.Entity("SpeculatorModel.MoexHistory.MoexClaimAction", b =>
@@ -40,7 +60,7 @@ namespace SpeculatorModel.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasAnnotation("Relational:TableName", "MoexClaimActions");
+                    b.ToTable("MoexClaimActions");
                 });
 
             modelBuilder.Entity("SpeculatorModel.MoexHistory.MoexClaimType", b =>
@@ -53,7 +73,7 @@ namespace SpeculatorModel.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasAnnotation("Relational:TableName", "MoexClaimTypes");
+                    b.ToTable("MoexClaimTypes");
                 });
 
             modelBuilder.Entity("SpeculatorModel.MoexHistory.MoexSymbol", b =>
@@ -66,7 +86,7 @@ namespace SpeculatorModel.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasAnnotation("Relational:TableName", "MoexSymbols");
+                    b.ToTable("MoexSymbols");
                 });
 
             modelBuilder.Entity("SpeculatorModel.MoexHistory.MoexSystem", b =>
@@ -79,7 +99,7 @@ namespace SpeculatorModel.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasAnnotation("Relational:TableName", "MoexSystems");
+                    b.ToTable("MoexSystems");
                 });
 
             modelBuilder.Entity("SpeculatorModel.MoexHistory.MoexTrade", b =>
@@ -87,13 +107,21 @@ namespace SpeculatorModel.Migrations
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<byte>("MoexSymbolId");
+
+                    b.Property<int?>("MoexSymbolId1");
+
                     b.Property<byte>("MoexSystemId");
 
                     b.Property<DateTime>("Moment");
 
                     b.HasKey("Id");
 
-                    b.HasAnnotation("Relational:TableName", "MoexTrades");
+                    b.HasIndex("MoexSymbolId1");
+
+                    b.HasIndex("MoexSystemId");
+
+                    b.ToTable("MoexTrades");
                 });
 
             modelBuilder.Entity("SpeculatorModel.MoexHistory.MoexTradeDiraction", b =>
@@ -106,18 +134,18 @@ namespace SpeculatorModel.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasAnnotation("Relational:TableName", "MoexTradeDiractions");
+                    b.ToTable("MoexTradeDiractions");
                 });
 
-            modelBuilder.Entity("SpeculatorModel.SmartComBidAskValue", b =>
+            modelBuilder.Entity("SpeculatorModel.SmartCom.SmartComBidAskValue", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<DateTime>("Added")
                         .ValueGeneratedOnAdd()
-                        .HasAnnotation("Relational:ColumnType", "datetime2")
-                        .HasAnnotation("Relational:GeneratedValueSql", "getdate()");
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("getdate()");
 
                     b.Property<bool>("IsBid");
 
@@ -131,10 +159,12 @@ namespace SpeculatorModel.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasAnnotation("Relational:TableName", "SmartComBidAskValues");
+                    b.HasIndex("SmartComSymbolId");
+
+                    b.ToTable("SmartComBidAskValues");
                 });
 
-            modelBuilder.Entity("SpeculatorModel.SmartComQuote", b =>
+            modelBuilder.Entity("SpeculatorModel.SmartCom.SmartComQuote", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
@@ -148,7 +178,7 @@ namespace SpeculatorModel.Migrations
                     b.Property<int>("BidSize");
 
                     b.Property<DateTime>("LastTradeDateTime")
-                        .HasAnnotation("Relational:ColumnType", "datetime2");
+                        .HasColumnType("datetime2");
 
                     b.Property<double>("LastTradePrice");
 
@@ -158,8 +188,8 @@ namespace SpeculatorModel.Migrations
 
                     b.Property<DateTime>("QuoteAdded")
                         .ValueGeneratedOnAdd()
-                        .HasAnnotation("Relational:ColumnType", "datetime2")
-                        .HasAnnotation("Relational:GeneratedValueSql", "getdate()");
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("getdate()");
 
                     b.Property<int>("SmartComSymbolId");
 
@@ -167,10 +197,12 @@ namespace SpeculatorModel.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasAnnotation("Relational:TableName", "SmartComQuotes");
+                    b.HasIndex("SmartComSymbolId");
+
+                    b.ToTable("SmartComQuotes");
                 });
 
-            modelBuilder.Entity("SpeculatorModel.SmartComSymbol", b =>
+            modelBuilder.Entity("SpeculatorModel.SmartCom.SmartComSymbol", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
@@ -201,10 +233,10 @@ namespace SpeculatorModel.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasAnnotation("Relational:TableName", "SmartComSymbols");
+                    b.ToTable("SmartComSymbols");
                 });
 
-            modelBuilder.Entity("SpeculatorModel.SmartComTick", b =>
+            modelBuilder.Entity("SpeculatorModel.SmartCom.SmartComTick", b =>
                 {
                     b.Property<long>("TradeNo");
 
@@ -216,17 +248,19 @@ namespace SpeculatorModel.Migrations
 
                     b.Property<DateTime>("TradeAdded")
                         .ValueGeneratedOnAdd()
-                        .HasAnnotation("Relational:ColumnType", "datetime2")
-                        .HasAnnotation("Relational:GeneratedValueSql", "getdate()");
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("getdate()");
 
                     b.Property<DateTime>("TradeDateTime")
-                        .HasAnnotation("Relational:ColumnType", "datetime2");
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("Volume");
 
                     b.HasKey("TradeNo");
 
-                    b.HasAnnotation("Relational:TableName", "SmartComTicks");
+                    b.HasIndex("SmartComSymbolId");
+
+                    b.ToTable("SmartComTicks");
                 });
 
             modelBuilder.Entity("SpeculatorModel.Transaq.Board", b =>
@@ -248,7 +282,9 @@ namespace SpeculatorModel.Migrations
                     b.HasIndex("InnerId")
                         .IsUnique();
 
-                    b.HasAnnotation("Relational:TableName", "TransaqBoards");
+                    b.HasIndex("MarketId");
+
+                    b.ToTable("TransaqBoards");
                 });
 
             modelBuilder.Entity("SpeculatorModel.Transaq.CandleKind", b =>
@@ -258,11 +294,11 @@ namespace SpeculatorModel.Migrations
                     b.Property<int>("Period");
 
                     b.Property<string>("PeriodName")
-                        .HasAnnotation("Relational:ColumnType", "nvarchar(20)");
+                        .HasColumnType("nvarchar(20)");
 
                     b.HasKey("Id");
 
-                    b.HasAnnotation("Relational:TableName", "TransaqCandleKinds");
+                    b.ToTable("TransaqCandleKinds");
                 });
 
             modelBuilder.Entity("SpeculatorModel.Transaq.ClientNegDeal", b =>
@@ -271,7 +307,7 @@ namespace SpeculatorModel.Migrations
 
                     b.HasKey("TransactionId");
 
-                    b.HasAnnotation("Relational:TableName", "TransaqClientNegDeals");
+                    b.ToTable("TransaqClientNegDeals");
                 });
 
             modelBuilder.Entity("SpeculatorModel.Transaq.ClientOrder", b =>
@@ -280,7 +316,7 @@ namespace SpeculatorModel.Migrations
 
                     b.HasKey("TransactionId");
 
-                    b.HasAnnotation("Relational:TableName", "TransaqClientOrders");
+                    b.ToTable("TransaqClientOrders");
                 });
 
             modelBuilder.Entity("SpeculatorModel.Transaq.ClientStopOrder", b =>
@@ -289,7 +325,7 @@ namespace SpeculatorModel.Migrations
 
                     b.HasKey("TransactionId");
 
-                    b.HasAnnotation("Relational:TableName", "TransaqClientStopOrders");
+                    b.ToTable("TransaqClientStopOrders");
                 });
 
             modelBuilder.Entity("SpeculatorModel.Transaq.ClientTrade", b =>
@@ -299,7 +335,7 @@ namespace SpeculatorModel.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasAnnotation("Relational:TableName", "TransaqClientTrades");
+                    b.ToTable("TransaqClientTrades");
                 });
 
             modelBuilder.Entity("SpeculatorModel.Transaq.Market", b =>
@@ -311,7 +347,7 @@ namespace SpeculatorModel.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasAnnotation("Relational:TableName", "TransaqMarkets");
+                    b.ToTable("TransaqMarkets");
                 });
 
             modelBuilder.Entity("SpeculatorModel.Transaq.Quote", b =>
@@ -321,7 +357,7 @@ namespace SpeculatorModel.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasAnnotation("Relational:TableName", "TransaqQuotes");
+                    b.ToTable("TransaqQuotes");
                 });
 
             modelBuilder.Entity("SpeculatorModel.Transaq.Security", b =>
@@ -348,7 +384,11 @@ namespace SpeculatorModel.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasAnnotation("Relational:TableName", "TransaqSecurities");
+                    b.HasIndex("BoardId");
+
+                    b.HasIndex("MarketId");
+
+                    b.ToTable("TransaqSecurities");
                 });
 
             modelBuilder.Entity("SpeculatorModel.Transaq.Tick", b =>
@@ -358,7 +398,7 @@ namespace SpeculatorModel.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasAnnotation("Relational:TableName", "TransaqTicks");
+                    b.ToTable("TransaqTicks");
                 });
 
             modelBuilder.Entity("SpeculatorModel.Transaq.Trade", b =>
@@ -368,42 +408,55 @@ namespace SpeculatorModel.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasAnnotation("Relational:TableName", "TransaqTrades");
+                    b.ToTable("TransaqTrades");
                 });
 
             modelBuilder.Entity("SpeculatorModel.MoexHistory.MoexClaim", b =>
                 {
+                    b.HasOne("SpeculatorModel.MoexHistory.MoexSymbol")
+                        .WithMany()
+                        .HasForeignKey("MoexSymbolId1");
+
                     b.HasOne("SpeculatorModel.MoexHistory.MoexSystem")
                         .WithMany()
-                        .HasForeignKey("MoexSystemId");
+                        .HasForeignKey("MoexSystemId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("SpeculatorModel.MoexHistory.MoexTrade", b =>
                 {
+                    b.HasOne("SpeculatorModel.MoexHistory.MoexSymbol")
+                        .WithMany()
+                        .HasForeignKey("MoexSymbolId1");
+
                     b.HasOne("SpeculatorModel.MoexHistory.MoexSystem")
                         .WithMany()
-                        .HasForeignKey("MoexSystemId");
+                        .HasForeignKey("MoexSystemId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("SpeculatorModel.SmartComBidAskValue", b =>
+            modelBuilder.Entity("SpeculatorModel.SmartCom.SmartComBidAskValue", b =>
                 {
-                    b.HasOne("SpeculatorModel.SmartComSymbol")
+                    b.HasOne("SpeculatorModel.SmartCom.SmartComSymbol")
                         .WithMany()
-                        .HasForeignKey("SmartComSymbolId");
+                        .HasForeignKey("SmartComSymbolId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("SpeculatorModel.SmartComQuote", b =>
+            modelBuilder.Entity("SpeculatorModel.SmartCom.SmartComQuote", b =>
                 {
-                    b.HasOne("SpeculatorModel.SmartComSymbol")
+                    b.HasOne("SpeculatorModel.SmartCom.SmartComSymbol")
                         .WithMany()
-                        .HasForeignKey("SmartComSymbolId");
+                        .HasForeignKey("SmartComSymbolId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("SpeculatorModel.SmartComTick", b =>
+            modelBuilder.Entity("SpeculatorModel.SmartCom.SmartComTick", b =>
                 {
-                    b.HasOne("SpeculatorModel.SmartComSymbol")
+                    b.HasOne("SpeculatorModel.SmartCom.SmartComSymbol")
                         .WithMany()
-                        .HasForeignKey("SmartComSymbolId");
+                        .HasForeignKey("SmartComSymbolId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("SpeculatorModel.Transaq.Board", b =>
@@ -417,11 +470,13 @@ namespace SpeculatorModel.Migrations
                 {
                     b.HasOne("SpeculatorModel.Transaq.Board")
                         .WithMany()
-                        .HasForeignKey("BoardId");
+                        .HasForeignKey("BoardId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("SpeculatorModel.Transaq.Market")
                         .WithMany()
-                        .HasForeignKey("MarketId");
+                        .HasForeignKey("MarketId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
         }
     }

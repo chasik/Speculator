@@ -7,7 +7,9 @@
              xmlns:viewModels="clr-namespace:Speculator.ViewModels" 
              xmlns:dxdo="http://schemas.devexpress.com/winfx/2008/xaml/docking"
              xmlns:converters="clr-namespace:Speculator.ViewModels.Converters"
-             
+             xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core"
+             xmlns:dialogs="clr-namespace:Speculator.Views.Dialogs"
+
              mc:Ignorable="d" d:DesignHeight="500" d:DesignWidth="700" 
              DataContext="{dxmvvm:ViewModelSource Type={x:Type viewModels:SymbolsViewModel}}">
     
@@ -15,10 +17,27 @@
         <converters:AddSymbolCommandParamsConverter x:Key="AddSymbolCommandParamsConverter"/>
     </UserControl.Resources>
     
+    <dxmvvm:Interaction.Behaviors>
+        <dx:DialogService x:Name="ChoiceSymbolDialogService" DialogWindowStartupLocation="CenterOwner">
+            <dx:DialogService.ViewTemplate>
+                <DataTemplate>
+                    <dialogs:ChoiceSymbolDialogView/>
+                </DataTemplate>
+            </dx:DialogService.ViewTemplate>
+            <dx:DialogService.DialogStyle>
+                <Style TargetType="dx:DXDialogWindow">
+                    <Setter Property="Width" Value="700"/>
+                    <Setter Property="Height" Value="400"/>
+                    <Setter Property="ShowIcon" Value="False"/>
+                </Style>
+            </dx:DialogService.DialogStyle>
+        </dx:DialogService>
+    </dxmvvm:Interaction.Behaviors>
+    
     <Grid>
         <dxdo:DockLayoutManager Margin="12" FloatingMode="Desktop">
             <dxdo:LayoutGroup Orientation="Horizontal">
-                <dxdo:LayoutPanel Caption="ToolBox" ItemWidth="180" MaxWidth="180">
+                <dxdo:LayoutPanel Caption="Графики" ItemWidth="180" MaxWidth="180">
                     <Button Content="Добавить" VerticalAlignment="Bottom"
                             Command="{Binding AddSymbolCommand}">
                         <Button.CommandParameter>

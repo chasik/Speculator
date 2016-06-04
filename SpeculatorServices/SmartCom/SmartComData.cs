@@ -7,6 +7,7 @@ using System.Linq;
 using System.ServiceModel;
 using SmartCOM3Lib;
 using SpeculatorModel;
+using SpeculatorModel.SmartCom;
 using SpeculatorServices.Properties;
 
 namespace SpeculatorServices.SmartCom
@@ -15,7 +16,7 @@ namespace SpeculatorServices.SmartCom
     public class SmartComData : ISmartComData
     {
         private const string SuffixSymbols = "-6.16_FT";
-        private const string SuffixSymbolsForOil = "-5.16_FT";
+        private const string SuffixSymbolsForOil = "-7.16_FT";
         private List<string> _symbolsForSaveToDb = new List<string> {"RTS", "Si", "Eu", "ED", "SBRF", "LKOH", "GAZR", "ROSN", "VTBR", "GOLD"};
         private List<SmartComSymbol> _symbolsInJob;
 
@@ -167,8 +168,7 @@ namespace SpeculatorServices.SmartCom
             {
                 dbContext.SmartComQuotes.Add(quote);
                 dbContext.SaveChanges();
-            }
-        }
+            }}
 
         private async void _smartCom_AddSymbol(int row, int nrows, string symbol, string shortName, string longName, string type, int decimals, int lotSize, double punkt, double step, string secExtId, string secExchName, DateTime expiryDate, double daysBeforeExpiry, double strike)
         {

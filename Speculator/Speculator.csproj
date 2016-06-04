@@ -47,6 +47,7 @@
     <Reference Include="DevExpress.Xpf.Docking.v15.2, Version=15.2.9.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
     <Reference Include="DevExpress.Xpf.Grid.v15.2, Version=15.2.9.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
     <Reference Include="DevExpress.Xpf.Grid.v15.2.Core, Version=15.2.9.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
+    <Reference Include="DevExpress.Xpf.Layout.v15.2.Core, Version=15.2.9.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
     <Reference Include="DevExpress.Xpf.LayoutControl.v15.2, Version=15.2.9.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
     <Reference Include="DevExpress.Xpf.NavBar.v15.2, Version=15.2.9.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
     <Reference Include="InfragisticsWPF4.Controls.Charts.XamDataChart.v15.2, Version=15.2.20152.2100, Culture=neutral, PublicKeyToken=7dd5c3163f2cd0cb, processorArchitecture=MSIL" />
@@ -55,6 +56,8 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
@@ -75,12 +78,18 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Service References\SpeculatorData\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
     <Compile Include="ViewModels\Converters\AddSymbolCommandParamsConverter.cs" />
     <Compile Include="ViewModels\Data\MoexDataViewModel.cs" />
     <Compile Include="ViewModels\Data\PlazaDataViewModel.cs" />
     <Compile Include="ViewModels\Data\QuikDataViewModel.cs" />
     <Compile Include="ViewModels\Data\SmartComDataViewModel.cs" />
     <Compile Include="ViewModels\Data\TransaqDataViewModel.cs" />
+    <Compile Include="ViewModels\Dialogs\ChoiceSymbolDialogViewModel.cs" />
     <Compile Include="ViewModels\GlassViewModel.cs" />
     <Compile Include="ViewModels\SymbolPanelViewModel.cs" />
     <Compile Include="ViewModels\SymbolsViewModel.cs" />
@@ -98,6 +107,9 @@
     </Compile>
     <Compile Include="Views\Data\TransaqDataView.xaml.cs">
       <DependentUpon>TransaqDataView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Dialogs\ChoiceSymbolDialogView.xaml.cs">
+      <DependentUpon>ChoiceSymbolDialogView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\GlassView.xaml.cs">
       <DependentUpon>GlassView.xaml</DependentUpon>
@@ -128,6 +140,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Data\TransaqDataView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Dialogs\ChoiceSymbolDialogView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -184,11 +200,22 @@
     <None Include="App.config">
       <SubType>Designer</SubType>
     </None>
+    <None Include="Properties\DataSources\SpeculatorModel.MainData.DataSource.datasource" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
+    <None Include="Service References\SpeculatorData\service.wsdl" />
+    <None Include="Service References\SpeculatorData\service.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\SpeculatorData\service1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\SpeculatorData\SpeculatorModel.MainData.xsd">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
@@ -198,6 +225,21 @@
       <Project>{0A069BB9-5383-4760-971B-17765F5F8262}</Project>
       <Name>SpeculatorModel</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadataStorage Include="Service References\SpeculatorData\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\SpeculatorData\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\SpeculatorData\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\SpeculatorData\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.

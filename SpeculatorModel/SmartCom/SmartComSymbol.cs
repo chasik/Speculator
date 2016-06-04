@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Runtime.Serialization;
 
-namespace SpeculatorModel
+namespace SpeculatorModel.SmartCom
 {
     [DataContract, Table("SmartComSymbols")]
     public class SmartComSymbol
