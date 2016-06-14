@@ -248,7 +248,8 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="SmartCom\ISmartComDataCallBacks.cs" />
+    <Compile Include="IDataBase.cs" />
+    <Compile Include="ISmartComDataCallBacks.cs" />
     <Compile Include="ISpeculatorData.cs" />
     <Compile Include="Moex\IMoexData.cs" />
     <Compile Include="Moex\MoexData.cs" />

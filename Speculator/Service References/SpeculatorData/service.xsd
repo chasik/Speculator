@@ -25,4 +25,18 @@
       </xs:sequence>
     </xs:complexType>
   </xs:element>
+  <xs:element name="GetSymbols">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q2="http://schemas.datacontract.org/2004/07/SpeculatorModel.MainData" minOccurs="0" name="selecteDataSource" nillable="true" type="q2:DataSource" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetSymbolsResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q3="http://schemas.datacontract.org/2004/07/SpeculatorModel.MainData" minOccurs="0" name="GetSymbolsResult" nillable="true" type="q3:ArrayOfSymbol" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
 </xs:schema>

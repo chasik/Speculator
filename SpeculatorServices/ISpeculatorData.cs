@@ -11,5 +11,8 @@ namespace SpeculatorServices
 
         [OperationContract]
         DataSource[] DataSources();
+
+        [OperationContract]
+        Symbol[] GetSymbols(DataSource selecteDataSource);
     }
 }

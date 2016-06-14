@@ -242,9 +242,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MainData\DataSource.cs" />
-    <Compile Include="Migrations\20160604182215_First.cs" />
-    <Compile Include="Migrations\20160604182215_First.designer.cs">
-      <DependentUpon>20160604182215_First.cs</DependentUpon>
+    <Compile Include="MainData\Symbol.cs" />
+    <Compile Include="Migrations\20160614173138_First.cs" />
+    <Compile Include="Migrations\20160614173138_First.designer.cs">
+      <DependentUpon>20160614173138_First.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\SpeculatorContextModelSnapshot.cs" />
     <Compile Include="Model.cs" />

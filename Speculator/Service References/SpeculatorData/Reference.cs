@@ -26,6 +26,12 @@ namespace Speculator.SpeculatorData {
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ISpeculatorData/DataSources", ReplyAction="http://tempuri.org/ISpeculatorData/DataSourcesResponse")]
         System.Threading.Tasks.Task<SpeculatorModel.MainData.DataSource[]> DataSourcesAsync();
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ISpeculatorData/GetSymbols", ReplyAction="http://tempuri.org/ISpeculatorData/GetSymbolsResponse")]
+        SpeculatorModel.MainData.Symbol[] GetSymbols(SpeculatorModel.MainData.DataSource selecteDataSource);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ISpeculatorData/GetSymbols", ReplyAction="http://tempuri.org/ISpeculatorData/GetSymbolsResponse")]
+        System.Threading.Tasks.Task<SpeculatorModel.MainData.Symbol[]> GetSymbolsAsync(SpeculatorModel.MainData.DataSource selecteDataSource);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -69,6 +75,14 @@ namespace Speculator.SpeculatorData {
         
         public System.Threading.Tasks.Task<SpeculatorModel.MainData.DataSource[]> DataSourcesAsync() {
             return base.Channel.DataSourcesAsync();
+        }
+        
+        public SpeculatorModel.MainData.Symbol[] GetSymbols(SpeculatorModel.MainData.DataSource selecteDataSource) {
+            return base.Channel.GetSymbols(selecteDataSource);
+        }
+        
+        public System.Threading.Tasks.Task<SpeculatorModel.MainData.Symbol[]> GetSymbolsAsync(SpeculatorModel.MainData.DataSource selecteDataSource) {
+            return base.Channel.GetSymbolsAsync(selecteDataSource);
         }
     }
 }

@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using DevExpress.Mvvm;
 using DevExpress.Mvvm.DataAnnotations;
+using DevExpress.Mvvm.POCO;
 using DevExpress.Xpf.Docking;
 using Speculator.SpeculatorData;
 using Speculator.ViewModels.Dialogs;
@@ -24,7 +26,8 @@ namespace Speculator.ViewModels
             DataSources = SpeculatorDataClient.DataSourcesAsync().Result;
         }
 
-        public void AddSymbol(object commandParams){
+        public void AddSymbol(object commandParams)
+        {
             //var docPanel = new DocumentPanel
             //{//    Caption = "document uuuuu",
             //    Content = new SymbolPanelView {DataContext = new SymbolPanelViewModel()}
@@ -40,11 +43,17 @@ namespace Speculator.ViewModels
                 IsDefault = true,
                 IsCancel = false
             };
-            var dialogViewModel = new ChoiceSymbolDialogViewModel();
-            var resultChoice = ChoiceSymbolDialogService.ShowDialog(new List<UICommand>{ selectCommand, cancelCommand}, "Выбор инструмента", dialogViewModel);
+            var dialogViewModel = ViewModelSource.Create(() => new ChoiceSymbolDialogViewModel
+            {
+                DataSources = new ObservableCollection<DataSource>(DataSources),
+                SpeculatorDataClient = SpeculatorDataClient
+            });
+            var resultChoice = ChoiceSymbolDialogService.ShowDialog(new List<UICommand> {selectCommand, cancelCommand},
+                "Выбор инструмента", dialogViewModel);
             if (resultChoice == selectCommand)
             {
                 
             }
-        }}
+        }
+    }
 }

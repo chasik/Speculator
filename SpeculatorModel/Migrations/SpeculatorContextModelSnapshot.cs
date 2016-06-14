@@ -215,6 +215,8 @@ namespace SpeculatorModel.Migrations
 
                     b.Property<int>("LotSize");
 
+                    b.Property<string>("Name");
+
                     b.Property<double?>("Punkt");
 
                     b.Property<string>("SecExchName");
@@ -226,8 +228,6 @@ namespace SpeculatorModel.Migrations
                     b.Property<double?>("Step");
 
                     b.Property<double?>("Strike");
-
-                    b.Property<string>("Symbol");
 
                     b.Property<string>("Type");
 

@@ -27,6 +27,17 @@ namespace SpeculatorServices
                 return dbContext.DataSources.ToArray();
             }
         }
+
+        public Symbol[] GetSymbols(DataSource selecteDataSource)
+        {
+            using (var dbContext = new SpeculatorContext())
+            {
+                if (selecteDataSource.Id == (byte)DataSourceEnum.SmartCom)
+                    return dbContext.SmartComSymbols.ToArray();
+                return null;
+            }
+        }
+
         private static void SeedMethod()
         {
             using (var dbContext = new SpeculatorContext())

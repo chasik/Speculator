@@ -13,4 +13,17 @@
     </xs:sequence>
   </xs:complexType>
   <xs:element name="DataSource" nillable="true" type="tns:DataSource" />
+  <xs:complexType name="ArrayOfSymbol">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="Symbol" nillable="true" type="tns:Symbol" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfSymbol" nillable="true" type="tns:ArrayOfSymbol" />
+  <xs:complexType name="Symbol">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Id" type="xs:int" />
+      <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="Symbol" nillable="true" type="tns:Symbol" />
 </xs:schema>

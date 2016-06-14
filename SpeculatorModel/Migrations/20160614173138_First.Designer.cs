@@ -8,7 +8,7 @@ using SpeculatorModel;
 namespace SpeculatorModel.Migrations
 {
     [DbContext(typeof(SpeculatorContext))]
-    [Migration("20160604182215_First")]
+    [Migration("20160614173138_First")]
     partial class First
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -216,6 +216,8 @@ namespace SpeculatorModel.Migrations
 
                     b.Property<int>("LotSize");
 
+                    b.Property<string>("Name");
+
                     b.Property<double?>("Punkt");
 
                     b.Property<string>("SecExchName");
@@ -227,8 +229,6 @@ namespace SpeculatorModel.Migrations
                     b.Property<double?>("Step");
 
                     b.Property<double?>("Strike");
-
-                    b.Property<string>("Symbol");
 
                     b.Property<string>("Type");
 

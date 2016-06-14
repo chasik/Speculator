@@ -3,8 +3,18 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             mc:Ignorable="d"
-             d:DesignHeight="500" d:DesignWidth="700">
-    <Grid>
-    </Grid>
+             xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
+             mc:Ignorable="d" d:DesignHeight="500" d:DesignWidth="700">
+    
+    <DockPanel LastChildFill="True">
+        <ListBox Width="140" DisplayMemberPath="Name" SelectedValuePath="Id" 
+                 SelectedItem="{Binding SelectedDataSource}" ItemsSource="{Binding DataSources}">
+            <dxmvvm:Interaction.Behaviors>
+                <dxmvvm:EventToCommand EventName="MouseDoubleClick" Command="{Binding DataSourceDblClickCommand}"/>
+            </dxmvvm:Interaction.Behaviors>
+        </ListBox>
+        <Grid>
+            
+        </Grid>
+    </DockPanel>
 </UserControl>

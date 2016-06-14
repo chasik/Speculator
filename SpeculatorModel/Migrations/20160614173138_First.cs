@@ -30,7 +30,8 @@ namespace SpeculatorModel.Migrations
                     Name = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
-                {table.PrimaryKey("PK_MoexClaimActions", x => x.Id);
+                {
+                    table.PrimaryKey("PK_MoexClaimActions", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -95,13 +96,13 @@ namespace SpeculatorModel.Migrations
                     ExpiryDate = table.Column<DateTime>(nullable: false),
                     LongName = table.Column<string>(nullable: true),
                     LotSize = table.Column<int>(nullable: false),
+                    Name = table.Column<string>(nullable: true),
                     Punkt = table.Column<double>(nullable: true),
                     SecExchName = table.Column<string>(nullable: true),
                     SecExtId = table.Column<string>(nullable: true),
                     ShortName = table.Column<string>(nullable: true),
                     Step = table.Column<double>(nullable: true),
                     Strike = table.Column<double>(nullable: true),
-                    Symbol = table.Column<string>(nullable: true),
                     Type = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
