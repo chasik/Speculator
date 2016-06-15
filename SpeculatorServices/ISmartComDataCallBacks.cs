@@ -7,6 +7,9 @@ namespace SpeculatorServices
     public interface IDataCallBacks
     {
         [OperationContract(IsOneWay = true)]
-        void Symbols(Symbol[] symbols);
+        void UpdateAskEvent();
+
+        [OperationContract(IsOneWay = true)]
+        void UpdateBidEvent();
     }
 }

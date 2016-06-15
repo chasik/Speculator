@@ -248,6 +248,7 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DataBase.cs" />
     <Compile Include="IDataBase.cs" />
     <Compile Include="ISmartComDataCallBacks.cs" />
     <Compile Include="ISpeculatorData.cs" />

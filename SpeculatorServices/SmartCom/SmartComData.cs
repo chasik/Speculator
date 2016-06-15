@@ -14,9 +14,9 @@ using SpeculatorServices.Properties;
 namespace SpeculatorServices.SmartCom
 {
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, ConcurrencyMode = ConcurrencyMode.Multiple)]
-    public class SmartComData : IDataBase, ISmartComData
+    public class SmartComData : DataBase, ISmartComData
     {
-        private const string SuffixSymbols = "-6.16_FT";
+        private const string SuffixSymbols = "-9.16_FT";
         private const string SuffixSymbolsForOil = "-7.16_FT";
         private List<string> _symbolsForSaveToDb = new List<string> {"RTS", "Si", "Eu", "ED", "SBRF", "LKOH", "GAZR", "ROSN", "VTBR", "GOLD"};
         private List<SmartComSymbol> _symbolsInJob;

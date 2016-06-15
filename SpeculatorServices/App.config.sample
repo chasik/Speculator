@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <configuration>
   <configSections>
-    <sectionGroup name="applicationSettings" type="System.Configuration.ApplicationSettingsGroup, System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-      <section name="SpeculatorServices.Properties.Settings" type="System.Configuration.ClientSettingsSection, System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" requirePermission="false" />
+    <sectionGroup name="userSettings" type="System.Configuration.UserSettingsGroup, System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" >
+      <section name="SpeculatorServices.Properties.Settings" type="System.Configuration.ClientSettingsSection, System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" allowExeDefinition="MachineToLocalUser" requirePermission="false" />
     </sectionGroup>
   </configSections>
   <appSettings>
@@ -22,26 +22,78 @@
       </providers>
     </roleManager>
   </system.web>
+
+  <!--<system.diagnostics>
+    <sources>
+      <source propagateActivity="true" name="System.ServiceModel" switchValue="Verbose,ActivityTracing">
+        <listeners>
+          <add type="System.Diagnostics.DefaultTraceListener" name="Default">
+            <filter type="" />
+          </add>
+          <add initializeData=".\Traces.svclog" type="System.Diagnostics.XmlWriterTraceListener"
+            name="traceListener">
+            <filter type="" />
+          </add>
+        </listeners>
+      </source>
+    </sources>
+  </system.diagnostics>-->
+
   <!-- When deploying the service library project, the content of the config file must be added to the host's 
   app.config file. System.Configuration does not support config files for libraries. -->
   <system.serviceModel>
     <services>
-      <!--service behaviorConfiguration="SpeculatorServicesBehavior" name="SpeculatorServices.SmartComData">
-        <endpoint address="net.pipe://localhost/Speculator/SmartComData" binding="netNamedPipeBinding" bindingConfiguration="SpeculatorNamePipeBinding" contract="SpeculatorServices.ISmartComData" />
-        <endpoint address="net.pipe://localhost/Speculator/SmartComData/mex" binding="mexNamedPipeBinding" contract="IMetadataExchange" />
-      </service-->
+      <service behaviorConfiguration="SpeculatorServicesBehavior" name="SpeculatorServices.SpeculatorData">
+        <endpoint address="" binding="netTcpBinding" bindingConfiguration="SpeculatorNetTcpBinding" contract="SpeculatorServices.ISpeculatorData" />
+        <endpoint address="mex" binding="mexHttpBinding" contract="IMetadataExchange" />
+        <host>
+          <baseAddresses>
+            <add baseAddress="net.tcp://127.0.0.1/SpeculatorData/" />
+            <add baseAddress="http://127.0.0.1:51001/SpeculatorData/" />
+          </baseAddresses>
+        </host>
+      </service>
+      <service behaviorConfiguration="SpeculatorServicesBehavior" name="SpeculatorServices.SmartCom.SmartComData">
+        <endpoint address="" binding="netNamedPipeBinding" bindingConfiguration="SpeculatorNamePipeBinding" contract="SpeculatorServices.SmartCom.ISmartComData" />
+        <endpoint address="mex" binding="mexHttpBinding" contract="IMetadataExchange" />
+        <host>
+          <baseAddresses>
+            <add baseAddress="net.pipe://127.0.0.1/Speculator/SmartComData/" />
+            <add baseAddress="http://127.0.0.1:51001/Speculator/SmartComData/" />
+          </baseAddresses>
+        </host>
+      </service>
       <service behaviorConfiguration="SpeculatorServicesBehavior" name="SpeculatorServices.Transaq.TransaqData">
-        <endpoint address="net.pipe://localhost/Speculator/TransaqData" binding="netNamedPipeBinding" bindingConfiguration="SpeculatorNamePipeBinding" contract="SpeculatorServices.Transaq.ITransaqData" />
-        <endpoint address="net.pipe://localhost/Speculator/TransaqData/mex" binding="mexNamedPipeBinding" contract="IMetadataExchange" />
+        <endpoint address="" binding="netTcpBinding" bindingConfiguration="SpeculatorNetTcpBinding" contract="SpeculatorServices.Transaq.ITransaqData" />
+        <endpoint address="mex" binding="mexHttpBinding" contract="IMetadataExchange" />
+        <host>
+          <baseAddresses>
+            <add baseAddress="net.tcp://127.0.0.1:51000/Speculator/TransaqData/" />
+            <add baseAddress="http://127.0.0.1:51001/Speculator/TransaqData/" />
+          </baseAddresses>
+        </host>
       </service>
       <service behaviorConfiguration="SpeculatorServicesBehavior" name="SpeculatorServices.Moex.MoexData">
-        <endpoint address="net.pipe://localhost/Speculator/MoexData" binding="netNamedPipeBinding" bindingConfiguration="SpeculatorNamePipeBinding" contract="SpeculatorServices.Moex.IMoexData" />
-        <endpoint address="net.pipe://localhost/Speculator/MoexData/mex" binding="mexNamedPipeBinding" contract="IMetadataExchange" />
+        <endpoint address="" binding="netTcpBinding" bindingConfiguration="SpeculatorNetTcpBinding" contract="SpeculatorServices.Moex.IMoexData" />
+        <endpoint address="mex" binding="mexHttpBinding" contract="IMetadataExchange" />
+        <host>
+          <baseAddresses>
+            <add baseAddress="net.tcp://127.0.0.1:51000/Speculator/MoexData/" />
+            <add baseAddress="http://127.0.0.1:51001/Speculator/MoexData/" />
+          </baseAddresses>
+        </host>
       </service>
     </services>
     <bindings>
+      <netTcpBinding>
+        <binding name="SpeculatorNetTcpBinding" closeTimeout="00:05:00" openTimeout="00:20:00" receiveTimeout="00:20:00" sendTimeout="00:20:00" maxConnections="10" maxBufferPoolSize="50000000" maxBufferSize="2147483647" maxReceivedMessageSize="2147483647">
+          <readerQuotas maxDepth="32" maxStringContentLength="50000000" maxArrayLength="50000000" maxBytesPerRead="50000000" maxNameTableCharCount="50000000" />
+          <security mode="None">
+          </security>
+        </binding>
+      </netTcpBinding>
       <netNamedPipeBinding>
-        <binding name="SpeculatorNamePipeBinding" closeTimeout="00:05:00" openTimeout="00:20:00" receiveTimeout="00:20:00" sendTimeout="00:20:00" maxConnections="10" maxBufferPoolSize="50000000" maxBufferSize="50000000" maxReceivedMessageSize="50000000">
+        <binding name="SpeculatorNamePipeBinding" closeTimeout="00:05:00" openTimeout="00:20:00" receiveTimeout="00:20:00" sendTimeout="00:20:00" maxConnections="10" maxBufferPoolSize="50000000" maxBufferSize="2147483647" maxReceivedMessageSize="2147483647">
           <readerQuotas maxDepth="32" maxStringContentLength="50000000" maxArrayLength="50000000" maxBytesPerRead="50000000" maxNameTableCharCount="50000000" />
           <security mode="None">
           </security>
@@ -52,8 +104,8 @@
     <behaviors>
       <serviceBehaviors>
         <behavior name="SpeculatorServicesBehavior">
-          <serviceMetadata />
-          <serviceDebug includeExceptionDetailInFaults="False" />
+          <serviceMetadata httpGetEnabled="true" />
+          <serviceDebug includeExceptionDetailInFaults="true" />
         </behavior>
       </serviceBehaviors>
     </behaviors>
@@ -61,14 +113,20 @@
   <startup>
     <supportedRuntime version="v4.0" sku=".NETFramework,Version=v4.6.1" />
   </startup>
-  <applicationSettings>
+  <runtime>
+    <assemblyBinding xmlns="urn:schemas-microsoft-com:asm.v1">
+      <dependentAssembly>
+        <assemblyIdentity name="System.Collections.Immutable" publicKeyToken="b03f5f7f11d50a3a" culture="neutral" />
+        <bindingRedirect oldVersion="0.0.0.0-1.2.0.0" newVersion="1.2.0.0" />
+      </dependentAssembly>
+      <dependentAssembly>
+        <assemblyIdentity name="Newtonsoft.Json" publicKeyToken="30ad4fe6b2a6aeed" culture="neutral" />
+        <bindingRedirect oldVersion="0.0.0.0-7.0.0.0" newVersion="7.0.0.0" />
+      </dependentAssembly>
+    </assemblyBinding>
+  </runtime>
+  <userSettings>
     <SpeculatorServices.Properties.Settings>
-      <setting name="SmartComLogin" serializeAs="String">
-        <value>---</value>
-      </setting>
-      <setting name="SmartComPassword" serializeAs="String">
-        <value>---</value>
-      </setting>
       <setting name="SmartComHost" serializeAs="String">
         <value>mxr.ittrade.ru</value>
       </setting>
@@ -87,14 +145,15 @@
       <setting name="TransaqPort" serializeAs="String">
         <value>3939</value>
       </setting>
+      <setting name="LogPathSmartCom" serializeAs="String">
+        <value>.\logSmartCom</value>
+      </setting>
+      <setting name="SmartComLogin" serializeAs="String">
+        <value>---</value>
+      </setting>
+      <setting name="SmartComPassword" serializeAs="String">
+        <value>---</value>
+      </setting>
     </SpeculatorServices.Properties.Settings>
-  </applicationSettings>
-  <runtime>
-    <assemblyBinding xmlns="urn:schemas-microsoft-com:asm.v1">
-      <dependentAssembly>
-        <assemblyIdentity name="System.Collections.Immutable" publicKeyToken="b03f5f7f11d50a3a" culture="neutral" />
-        <bindingRedirect oldVersion="0.0.0.0-1.1.37.0" newVersion="1.1.37.0" />
-      </dependentAssembly>
-    </assemblyBinding>
-  </runtime>
+  </userSettings>
 </configuration>

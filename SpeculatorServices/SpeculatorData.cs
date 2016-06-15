@@ -32,8 +32,12 @@ namespace SpeculatorServices
         {
             using (var dbContext = new SpeculatorContext())
             {
-                if (selecteDataSource.Id == (byte)DataSourceEnum.SmartCom)
-                    return dbContext.SmartComSymbols.ToArray();
+                if (selecteDataSource.Id == (byte) DataSourceEnum.SmartCom)
+                {
+                    return dbContext.SmartComSymbols
+                        .Select(s => new Symbol {Id = s.Id, Name = s.Name})
+                        .ToArray();
+                }
                 return null;
             }
         }
