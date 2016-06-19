@@ -1,0 +1,82 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://schemas.datacontract.org/2004/07/SpeculatorModel.MoexHistory" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/SpeculatorModel.MoexHistory" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import namespace="http://schemas.datacontract.org/2004/07/SpeculatorModel.MainData" />
+  <xs:complexType name="MoexSystem">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Id" type="xs:unsignedByte" />
+      <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="MoexSystem" nillable="true" type="tns:MoexSystem" />
+  <xs:complexType name="MoexSymbol">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q1="http://schemas.datacontract.org/2004/07/SpeculatorModel.MainData" base="q1:Symbol">
+        <xs:sequence />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="MoexSymbol" nillable="true" type="tns:MoexSymbol" />
+  <xs:complexType name="ArrayOfMoexClaim">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="MoexClaim" nillable="true" type="tns:MoexClaim" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfMoexClaim" nillable="true" type="tns:ArrayOfMoexClaim" />
+  <xs:complexType name="MoexClaim">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:BaseInfo">
+        <xs:sequence>
+          <xs:element xmlns:q2="http://schemas.datacontract.org/2004/07/SpeculatorModel.MainData" minOccurs="0" name="ClaimAction" nillable="true" type="q2:ClaimAction" />
+          <xs:element minOccurs="0" name="ClaimActionId" type="xs:unsignedByte" />
+          <xs:element minOccurs="0" name="MoexTrade" nillable="true" type="tns:MoexTrade" />
+          <xs:element minOccurs="0" name="MoexTradeId" nillable="true" type="xs:long" />
+          <xs:element minOccurs="0" name="PriceDeal" nillable="true" type="xs:decimal" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="MoexClaim" nillable="true" type="tns:MoexClaim" />
+  <xs:complexType name="BaseInfo">
+    <xs:sequence>
+      <xs:element xmlns:q3="http://schemas.datacontract.org/2004/07/SpeculatorModel.MainData" minOccurs="0" name="Diraction" nillable="true" type="q3:Diraction" />
+      <xs:element minOccurs="0" name="DiractionId" type="xs:unsignedByte" />
+      <xs:element minOccurs="0" name="Id" type="xs:long" />
+      <xs:element minOccurs="0" name="MoexSymbol" nillable="true" type="tns:MoexSymbol" />
+      <xs:element minOccurs="0" name="MoexSymbolId" type="xs:int" />
+      <xs:element minOccurs="0" name="MoexSystem" nillable="true" type="tns:MoexSystem" />
+      <xs:element minOccurs="0" name="MoexSystemId" type="xs:unsignedByte" />
+      <xs:element minOccurs="0" name="Moment" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="Price" type="xs:decimal" />
+      <xs:element minOccurs="0" name="Volume" type="xs:int" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="BaseInfo" nillable="true" type="tns:BaseInfo" />
+  <xs:complexType name="MoexTrade">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:BaseInfo">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="OpenInterest" type="xs:int" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="MoexTrade" nillable="true" type="tns:MoexTrade" />
+  <xs:complexType name="ArrayOfMoexTrade">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="MoexTrade" nillable="true" type="tns:MoexTrade" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfMoexTrade" nillable="true" type="tns:ArrayOfMoexTrade" />
+  <xs:complexType name="ArrayOfMoexSystem">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="MoexSystem" nillable="true" type="tns:MoexSystem" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfMoexSystem" nillable="true" type="tns:ArrayOfMoexSystem" />
+  <xs:complexType name="ArrayOfMoexSymbol">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="MoexSymbol" nillable="true" type="tns:MoexSymbol" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfMoexSymbol" nillable="true" type="tns:ArrayOfMoexSymbol" />
+</xs:schema>

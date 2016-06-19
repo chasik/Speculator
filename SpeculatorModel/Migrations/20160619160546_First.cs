@@ -10,6 +10,18 @@ namespace SpeculatorModel.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "ClaimActions",
+                columns: table => new
+                {
+                    Id = table.Column<byte>(nullable: false),
+                    Name = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ClaimActions", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "DataSources",
                 columns: table => new
                 {
@@ -22,16 +34,15 @@ namespace SpeculatorModel.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "MoexClaimActions",
+                name: "TradeDiractions",
                 columns: table => new
                 {
-                    Id = table.Column<byte>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Id = table.Column<byte>(nullable: false),
                     Name = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_MoexClaimActions", x => x.Id);
+                    table.PrimaryKey("PK_TradeDiractions", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -53,7 +64,12 @@ namespace SpeculatorModel.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Name = table.Column<string>(nullable: true)
+                    LongName = table.Column<string>(nullable: true),
+                    LotSize = table.Column<int>(nullable: true),
+                    Name = table.Column<string>(nullable: true),
+                    Punkt = table.Column<double>(nullable: true),
+                    ShortName = table.Column<string>(nullable: true),
+                    Step = table.Column<double>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -74,19 +90,6 @@ namespace SpeculatorModel.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "MoexTradeDiractions",
-                columns: table => new
-                {
-                    Id = table.Column<byte>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Name = table.Column<string>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_MoexTradeDiractions", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "SmartComSymbols",
                 columns: table => new
                 {
@@ -95,7 +98,7 @@ namespace SpeculatorModel.Migrations
                     Decimals = table.Column<int>(nullable: false),
                     ExpiryDate = table.Column<DateTime>(nullable: false),
                     LongName = table.Column<string>(nullable: true),
-                    LotSize = table.Column<int>(nullable: false),
+                    LotSize = table.Column<int>(nullable: true),
                     Name = table.Column<string>(nullable: true),
                     Punkt = table.Column<double>(nullable: true),
                     SecExchName = table.Column<string>(nullable: true),
@@ -217,53 +220,33 @@ namespace SpeculatorModel.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "MoexClaims",
-                columns: table => new
-                {
-                    Id = table.Column<long>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    MoexSymbolId = table.Column<byte>(nullable: false),
-                    MoexSymbolId1 = table.Column<int>(nullable: true),
-                    MoexSystemId = table.Column<byte>(nullable: false),
-                    Moment = table.Column<DateTime>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_MoexClaims", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_MoexClaims_MoexSymbols_MoexSymbolId1",
-                        column: x => x.MoexSymbolId1,
-                        principalTable: "MoexSymbols",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_MoexClaims_MoexSystems_MoexSystemId",
-                        column: x => x.MoexSystemId,
-                        principalTable: "MoexSystems",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "MoexTrades",
                 columns: table => new
                 {
-                    Id = table.Column<long>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    MoexSymbolId = table.Column<byte>(nullable: false),
-                    MoexSymbolId1 = table.Column<int>(nullable: true),
+                    Id = table.Column<long>(nullable: false),
+                    DiractionId = table.Column<byte>(nullable: false),
+                    MoexSymbolId = table.Column<int>(nullable: false),
                     MoexSystemId = table.Column<byte>(nullable: false),
-                    Moment = table.Column<DateTime>(nullable: false)
+                    Moment = table.Column<DateTime>(nullable: false),
+                    OpenInterest = table.Column<int>(nullable: false),
+                    Price = table.Column<decimal>(nullable: false),
+                    Volume = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_MoexTrades", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_MoexTrades_MoexSymbols_MoexSymbolId1",
-                        column: x => x.MoexSymbolId1,
+                        name: "FK_MoexTrades_TradeDiractions_DiractionId",
+                        column: x => x.DiractionId,
+                        principalTable: "TradeDiractions",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_MoexTrades_MoexSymbols_MoexSymbolId",
+                        column: x => x.MoexSymbolId,
                         principalTable: "MoexSymbols",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_MoexTrades_MoexSystems_MoexSystemId",
                         column: x => x.MoexSystemId,
@@ -371,6 +354,56 @@ namespace SpeculatorModel.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "MoexClaims",
+                columns: table => new
+                {
+                    Id = table.Column<long>(nullable: false),
+                    ClaimActionId = table.Column<byte>(nullable: false),
+                    DiractionId = table.Column<byte>(nullable: false),
+                    MoexSymbolId = table.Column<int>(nullable: false),
+                    MoexSystemId = table.Column<byte>(nullable: false),
+                    MoexTradeId = table.Column<long>(nullable: true),
+                    Moment = table.Column<DateTime>(nullable: false),
+                    Price = table.Column<decimal>(nullable: false),
+                    PriceDeal = table.Column<decimal>(nullable: true),
+                    Volume = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_MoexClaims", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_MoexClaims_ClaimActions_ClaimActionId",
+                        column: x => x.ClaimActionId,
+                        principalTable: "ClaimActions",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_MoexClaims_TradeDiractions_DiractionId",
+                        column: x => x.DiractionId,
+                        principalTable: "TradeDiractions",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_MoexClaims_MoexSymbols_MoexSymbolId",
+                        column: x => x.MoexSymbolId,
+                        principalTable: "MoexSymbols",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_MoexClaims_MoexSystems_MoexSystemId",
+                        column: x => x.MoexSystemId,
+                        principalTable: "MoexSystems",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_MoexClaims_MoexTrades_MoexTradeId",
+                        column: x => x.MoexTradeId,
+                        principalTable: "MoexTrades",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "TransaqSecurities",
                 columns: table => new
                 {
@@ -403,9 +436,19 @@ namespace SpeculatorModel.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_MoexClaims_MoexSymbolId1",
+                name: "IX_MoexClaims_ClaimActionId",
                 table: "MoexClaims",
-                column: "MoexSymbolId1");
+                column: "ClaimActionId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_MoexClaims_DiractionId",
+                table: "MoexClaims",
+                column: "DiractionId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_MoexClaims_MoexSymbolId",
+                table: "MoexClaims",
+                column: "MoexSymbolId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_MoexClaims_MoexSystemId",
@@ -413,9 +456,19 @@ namespace SpeculatorModel.Migrations
                 column: "MoexSystemId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_MoexTrades_MoexSymbolId1",
+                name: "IX_MoexClaims_MoexTradeId",
+                table: "MoexClaims",
+                column: "MoexTradeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_MoexTrades_DiractionId",
                 table: "MoexTrades",
-                column: "MoexSymbolId1");
+                column: "DiractionId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_MoexTrades_MoexSymbolId",
+                table: "MoexTrades",
+                column: "MoexSymbolId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_MoexTrades_MoexSystemId",
@@ -468,16 +521,7 @@ namespace SpeculatorModel.Migrations
                 name: "MoexClaims");
 
             migrationBuilder.DropTable(
-                name: "MoexClaimActions");
-
-            migrationBuilder.DropTable(
                 name: "MoexClaimTypes");
-
-            migrationBuilder.DropTable(
-                name: "MoexTrades");
-
-            migrationBuilder.DropTable(
-                name: "MoexTradeDiractions");
 
             migrationBuilder.DropTable(
                 name: "SmartComBidAskValues");
@@ -516,16 +560,25 @@ namespace SpeculatorModel.Migrations
                 name: "TransaqTrades");
 
             migrationBuilder.DropTable(
-                name: "MoexSymbols");
+                name: "ClaimActions");
 
             migrationBuilder.DropTable(
-                name: "MoexSystems");
+                name: "MoexTrades");
 
             migrationBuilder.DropTable(
                 name: "SmartComSymbols");
 
             migrationBuilder.DropTable(
                 name: "TransaqBoards");
+
+            migrationBuilder.DropTable(
+                name: "TradeDiractions");
+
+            migrationBuilder.DropTable(
+                name: "MoexSymbols");
+
+            migrationBuilder.DropTable(
+                name: "MoexSystems");
 
             migrationBuilder.DropTable(
                 name: "TransaqMarkets");

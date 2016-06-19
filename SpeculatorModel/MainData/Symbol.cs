@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Runtime.Serialization;
 
 namespace SpeculatorModel.MainData
 {
@@ -17,12 +12,18 @@ namespace SpeculatorModel.MainData
         public string Name { get; set; }
 
         [DataMember]
-        public int LotSize { get; set; }
+        public string ShortName { get; set; }
 
         [DataMember]
-        public double? Punkt { get; set; }
+        public string LongName { get; set; }
 
         [DataMember]
         public double? Step { get; set; }
+
+        [DataMember]
+        public int? LotSize { get; set; }
+
+        [DataMember]
+        public double? Punkt { get; set; }
     }
 }

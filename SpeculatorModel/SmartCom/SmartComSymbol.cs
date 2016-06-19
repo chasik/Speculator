@@ -12,12 +12,6 @@ namespace SpeculatorModel.SmartCom
         //string type, int decimals, int lotSize, double punkt, double step, string secExtId, string secExchName, DateTime expiryDate, double daysBeforeExpiry, double strike
 
         [DataMember]
-        public string ShortName { get; set; }
-
-        [DataMember]
-        public string LongName { get; set; }
-
-        [DataMember]
         public string Type { get; set; }
 
         [DataMember]

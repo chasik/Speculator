@@ -16,6 +16,18 @@ namespace SpeculatorModel.Migrations
                 .HasAnnotation("ProductVersion", "1.0.0-rc2-20896")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+            modelBuilder.Entity("SpeculatorModel.MainData.ClaimAction", b =>
+                {
+                    b.Property<byte>("Id");
+
+                    b.Property<string>("Name")
+                        .HasAnnotation("MaxLength", 20);
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ClaimActions");
+                });
+
             modelBuilder.Entity("SpeculatorModel.MainData.DataSource", b =>
                 {
                     b.Property<byte>("Id");
@@ -28,39 +40,53 @@ namespace SpeculatorModel.Migrations
                     b.ToTable("DataSources");
                 });
 
-            modelBuilder.Entity("SpeculatorModel.MoexHistory.MoexClaim", b =>
+            modelBuilder.Entity("SpeculatorModel.MainData.Diraction", b =>
                 {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<byte>("MoexSymbolId");
-
-                    b.Property<int?>("MoexSymbolId1");
-
-                    b.Property<byte>("MoexSystemId");
-
-                    b.Property<DateTime>("Moment");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("MoexSymbolId1");
-
-                    b.HasIndex("MoexSystemId");
-
-                    b.ToTable("MoexClaims");
-                });
-
-            modelBuilder.Entity("SpeculatorModel.MoexHistory.MoexClaimAction", b =>
-                {
-                    b.Property<byte>("Id")
-                        .ValueGeneratedOnAdd();
+                    b.Property<byte>("Id");
 
                     b.Property<string>("Name")
                         .HasAnnotation("MaxLength", 20);
 
                     b.HasKey("Id");
 
-                    b.ToTable("MoexClaimActions");
+                    b.ToTable("TradeDiractions");
+                });
+
+            modelBuilder.Entity("SpeculatorModel.MoexHistory.MoexClaim", b =>
+                {
+                    b.Property<long>("Id");
+
+                    b.Property<byte>("ClaimActionId");
+
+                    b.Property<byte>("DiractionId");
+
+                    b.Property<int>("MoexSymbolId");
+
+                    b.Property<byte>("MoexSystemId");
+
+                    b.Property<long?>("MoexTradeId");
+
+                    b.Property<DateTime>("Moment");
+
+                    b.Property<decimal>("Price");
+
+                    b.Property<decimal?>("PriceDeal");
+
+                    b.Property<int>("Volume");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ClaimActionId");
+
+                    b.HasIndex("DiractionId");
+
+                    b.HasIndex("MoexSymbolId");
+
+                    b.HasIndex("MoexSystemId");
+
+                    b.HasIndex("MoexTradeId");
+
+                    b.ToTable("MoexClaims");
                 });
 
             modelBuilder.Entity("SpeculatorModel.MoexHistory.MoexClaimType", b =>
@@ -81,8 +107,17 @@ namespace SpeculatorModel.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("Name")
-                        .HasAnnotation("MaxLength", 50);
+                    b.Property<string>("LongName");
+
+                    b.Property<int?>("LotSize");
+
+                    b.Property<string>("Name");
+
+                    b.Property<double?>("Punkt");
+
+                    b.Property<string>("ShortName");
+
+                    b.Property<double?>("Step");
 
                     b.HasKey("Id");
 
@@ -104,37 +139,31 @@ namespace SpeculatorModel.Migrations
 
             modelBuilder.Entity("SpeculatorModel.MoexHistory.MoexTrade", b =>
                 {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd();
+                    b.Property<long>("Id");
 
-                    b.Property<byte>("MoexSymbolId");
+                    b.Property<byte>("DiractionId");
 
-                    b.Property<int?>("MoexSymbolId1");
+                    b.Property<int>("MoexSymbolId");
 
                     b.Property<byte>("MoexSystemId");
 
                     b.Property<DateTime>("Moment");
 
+                    b.Property<int>("OpenInterest");
+
+                    b.Property<decimal>("Price");
+
+                    b.Property<int>("Volume");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("MoexSymbolId1");
+                    b.HasIndex("DiractionId");
+
+                    b.HasIndex("MoexSymbolId");
 
                     b.HasIndex("MoexSystemId");
 
                     b.ToTable("MoexTrades");
-                });
-
-            modelBuilder.Entity("SpeculatorModel.MoexHistory.MoexTradeDiraction", b =>
-                {
-                    b.Property<byte>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("Name")
-                        .HasAnnotation("MaxLength", 20);
-
-                    b.HasKey("Id");
-
-                    b.ToTable("MoexTradeDiractions");
                 });
 
             modelBuilder.Entity("SpeculatorModel.SmartCom.SmartComBidAskValue", b =>
@@ -213,7 +242,7 @@ namespace SpeculatorModel.Migrations
 
                     b.Property<string>("LongName");
 
-                    b.Property<int>("LotSize");
+                    b.Property<int?>("LotSize");
 
                     b.Property<string>("Name");
 
@@ -413,21 +442,42 @@ namespace SpeculatorModel.Migrations
 
             modelBuilder.Entity("SpeculatorModel.MoexHistory.MoexClaim", b =>
                 {
+                    b.HasOne("SpeculatorModel.MainData.ClaimAction")
+                        .WithMany()
+                        .HasForeignKey("ClaimActionId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("SpeculatorModel.MainData.Diraction")
+                        .WithMany()
+                        .HasForeignKey("DiractionId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
                     b.HasOne("SpeculatorModel.MoexHistory.MoexSymbol")
                         .WithMany()
-                        .HasForeignKey("MoexSymbolId1");
+                        .HasForeignKey("MoexSymbolId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("SpeculatorModel.MoexHistory.MoexSystem")
                         .WithMany()
                         .HasForeignKey("MoexSystemId")
                         .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("SpeculatorModel.MoexHistory.MoexTrade")
+                        .WithMany()
+                        .HasForeignKey("MoexTradeId");
                 });
 
             modelBuilder.Entity("SpeculatorModel.MoexHistory.MoexTrade", b =>
                 {
+                    b.HasOne("SpeculatorModel.MainData.Diraction")
+                        .WithMany()
+                        .HasForeignKey("DiractionId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
                     b.HasOne("SpeculatorModel.MoexHistory.MoexSymbol")
                         .WithMany()
-                        .HasForeignKey("MoexSymbolId1");
+                        .HasForeignKey("MoexSymbolId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("SpeculatorModel.MoexHistory.MoexSystem")
                         .WithMany()

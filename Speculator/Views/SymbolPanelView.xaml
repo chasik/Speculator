@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="Speculator.Views.SymbolPanelView" 
+﻿<UserControl x:Class="Speculator.Views.SymbolPanelView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -7,7 +7,12 @@
              xmlns:local="clr-namespace:Speculator.Views" 
              xmlns:ig="http://schemas.infragistics.com/xaml"
              xmlns:viewModels="clr-namespace:Speculator.ViewModels"
-             mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="600">
+             xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm" 
+             mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="600" 
+             DataContext="{dxmvvm:ViewModelSource Type={x:Type viewModels:SymbolPanelViewModel}}">
+    <dxmvvm:Interaction.Behaviors>
+        <dxmvvm:EventToCommand EventName="Loaded" Command="{Binding StartListenDataServiceCommand}"/>
+    </dxmvvm:Interaction.Behaviors>
 
     <dxdo:DockLayoutManager>
         <dxdo:LayoutGroup>
@@ -28,9 +33,6 @@
                             </ig:NumericYAxis.LabelSettings>
                         </ig:NumericYAxis>
                     </ig:XamDataChart.Axes>
-                    <ig:XamDataChart.Series>
-                        <!--TODO: add series  -->
-                    </ig:XamDataChart.Series>
                 </ig:XamDataChart>
             </dxdo:LayoutPanel>
             <dxdo:LayoutPanel Caption="Panel3" ItemWidth="200">

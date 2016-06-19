@@ -1,0 +1,147 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy" xmlns:wsa10="http://www.w3.org/2005/08/addressing" xmlns:tns="http://tempuri.org/" xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="MoexData" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsp:Policy wsu:Id="NetTcpBinding_IMoexData_policy">
+    <wsp:ExactlyOne>
+      <wsp:All>
+        <msb:BinaryEncoding xmlns:msb="http://schemas.microsoft.com/ws/06/2004/mspolicy/netbinary1" />
+        <wsaw:UsingAddressing />
+      </wsp:All>
+    </wsp:ExactlyOne>
+  </wsp:Policy>
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://tempuri.org/Imports">
+      <xsd:import namespace="http://tempuri.org/" />
+      <xsd:import namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+      <xsd:import namespace="http://schemas.datacontract.org/2004/07/SpeculatorModel.MoexHistory" />
+      <xsd:import namespace="http://schemas.datacontract.org/2004/07/SpeculatorModel.MainData" />
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="IMoexData_AddSystem_InputMessage">
+    <wsdl:part name="parameters" element="tns:AddSystem" />
+  </wsdl:message>
+  <wsdl:message name="IMoexData_AddSystem_OutputMessage">
+    <wsdl:part name="parameters" element="tns:AddSystemResponse" />
+  </wsdl:message>
+  <wsdl:message name="IMoexData_AddSymbol_InputMessage">
+    <wsdl:part name="parameters" element="tns:AddSymbol" />
+  </wsdl:message>
+  <wsdl:message name="IMoexData_AddSymbol_OutputMessage">
+    <wsdl:part name="parameters" element="tns:AddSymbolResponse" />
+  </wsdl:message>
+  <wsdl:message name="IMoexData_AddClaims_InputMessage">
+    <wsdl:part name="parameters" element="tns:AddClaims" />
+  </wsdl:message>
+  <wsdl:message name="IMoexData_AddClaims_OutputMessage">
+    <wsdl:part name="parameters" element="tns:AddClaimsResponse" />
+  </wsdl:message>
+  <wsdl:message name="IMoexData_AddTrades_InputMessage">
+    <wsdl:part name="parameters" element="tns:AddTrades" />
+  </wsdl:message>
+  <wsdl:message name="IMoexData_AddTrades_OutputMessage">
+    <wsdl:part name="parameters" element="tns:AddTradesResponse" />
+  </wsdl:message>
+  <wsdl:message name="IMoexData_Systems_InputMessage">
+    <wsdl:part name="parameters" element="tns:Systems" />
+  </wsdl:message>
+  <wsdl:message name="IMoexData_Systems_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SystemsResponse" />
+  </wsdl:message>
+  <wsdl:message name="IMoexData_Symbols_InputMessage">
+    <wsdl:part name="parameters" element="tns:Symbols" />
+  </wsdl:message>
+  <wsdl:message name="IMoexData_Symbols_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SymbolsResponse" />
+  </wsdl:message>
+  <wsdl:portType name="IMoexData">
+    <wsdl:operation name="AddSystem">
+      <wsdl:input wsaw:Action="http://tempuri.org/IMoexData/AddSystem" message="tns:IMoexData_AddSystem_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IMoexData/AddSystemResponse" message="tns:IMoexData_AddSystem_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="AddSymbol">
+      <wsdl:input wsaw:Action="http://tempuri.org/IMoexData/AddSymbol" message="tns:IMoexData_AddSymbol_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IMoexData/AddSymbolResponse" message="tns:IMoexData_AddSymbol_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="AddClaims">
+      <wsdl:input wsaw:Action="http://tempuri.org/IMoexData/AddClaims" message="tns:IMoexData_AddClaims_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IMoexData/AddClaimsResponse" message="tns:IMoexData_AddClaims_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="AddTrades">
+      <wsdl:input wsaw:Action="http://tempuri.org/IMoexData/AddTrades" message="tns:IMoexData_AddTrades_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IMoexData/AddTradesResponse" message="tns:IMoexData_AddTrades_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Systems">
+      <wsdl:input wsaw:Action="http://tempuri.org/IMoexData/Systems" message="tns:IMoexData_Systems_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IMoexData/SystemsResponse" message="tns:IMoexData_Systems_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Symbols">
+      <wsdl:input wsaw:Action="http://tempuri.org/IMoexData/Symbols" message="tns:IMoexData_Symbols_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IMoexData/SymbolsResponse" message="tns:IMoexData_Symbols_OutputMessage" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="NetTcpBinding_IMoexData" type="tns:IMoexData">
+    <wsp:PolicyReference URI="#NetTcpBinding_IMoexData_policy" />
+    <soap12:binding transport="http://schemas.microsoft.com/soap/tcp" />
+    <wsdl:operation name="AddSystem">
+      <soap12:operation soapAction="http://tempuri.org/IMoexData/AddSystem" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="AddSymbol">
+      <soap12:operation soapAction="http://tempuri.org/IMoexData/AddSymbol" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="AddClaims">
+      <soap12:operation soapAction="http://tempuri.org/IMoexData/AddClaims" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="AddTrades">
+      <soap12:operation soapAction="http://tempuri.org/IMoexData/AddTrades" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Systems">
+      <soap12:operation soapAction="http://tempuri.org/IMoexData/Systems" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Symbols">
+      <soap12:operation soapAction="http://tempuri.org/IMoexData/Symbols" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="MoexData">
+    <wsdl:port name="NetTcpBinding_IMoexData" binding="tns:NetTcpBinding_IMoexData">
+      <soap12:address location="net.tcp://127.0.0.1:51000/Speculator/MoexData/" />
+      <wsa10:EndpointReference>
+        <wsa10:Address>net.tcp://127.0.0.1:51000/Speculator/MoexData/</wsa10:Address>
+      </wsa10:EndpointReference>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

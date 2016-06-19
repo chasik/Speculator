@@ -4,17 +4,37 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
-             mc:Ignorable="d" d:DesignHeight="500" d:DesignWidth="700">
-    
+             xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
+             mc:Ignorable="d" d:DesignHeight="500" d:DesignWidth="700" >
+
+    <!--<dxmvvm:Interaction.Behaviors>
+        <dxmvvm:CurrentWindowService x:Name="CurrentDialogService"
+                                     Window="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}}"/>
+    </dxmvvm:Interaction.Behaviors>-->
+
     <DockPanel LastChildFill="True">
         <ListBox Width="140" DisplayMemberPath="Name" SelectedValuePath="Id" 
-                 SelectedItem="{Binding SelectedDataSource}" ItemsSource="{Binding DataSources}">
+			SelectedItem="{Binding SelectedDataSource}" ItemsSource="{Binding DataSources}">
             <dxmvvm:Interaction.Behaviors>
                 <dxmvvm:EventToCommand EventName="MouseDoubleClick" Command="{Binding DataSourceDblClickCommand}"/>
             </dxmvvm:Interaction.Behaviors>
         </ListBox>
         <Grid>
-            
+
+            <dxg:GridControl AutoGenerateColumns="AddNew" EnableSmartColumnsGeneration="True"
+				SelectionMode="Row"
+				SelectedItem="{Binding SelectedSymbol}"
+				ItemsSource="{Binding Symbols}">
+                <dxmvvm:Interaction.Behaviors>
+                    <dxmvvm:EventToCommand EventName="MouseDoubleClick" Command="{Binding SelectedSymbolDblClickCommand}"/>
+                </dxmvvm:Interaction.Behaviors>
+                <dxg:GridControl.View>
+                    <dxg:TableView AllowPerPixelScrolling="True" ShowTotalSummary="True" ShowAutoFilterRow="True"
+						AutoWidth="True" ShowGroupPanel="False" AllowEditing="False" />
+                </dxg:GridControl.View>
+                <dxg:GridColumn FieldName="Id" Width="50" />
+            </dxg:GridControl>
+
         </Grid>
     </DockPanel>
 </UserControl>

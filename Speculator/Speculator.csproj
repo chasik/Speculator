@@ -79,6 +79,16 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Service References\MoexData\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\SmartComData\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
     <Compile Include="Service References\SpeculatorData\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -204,11 +214,36 @@
     <None Include="App.config.sample" />
     <None Include="Properties\DataSources\SpeculatorModel.MainData.DataSource.datasource" />
     <None Include="Properties\DataSources\SpeculatorModel.MainData.Symbol.datasource" />
+    <None Include="Properties\DataSources\SpeculatorModel.MoexHistory.MoexSymbol.datasource" />
+    <None Include="Properties\DataSources\SpeculatorModel.MoexHistory.MoexSystem.datasource" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
+    <None Include="Service References\MoexData\service.wsdl" />
+    <None Include="Service References\MoexData\service.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\MoexData\service1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\MoexData\SpeculatorModel.MainData.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\MoexData\SpeculatorModel.MoexHistory.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\SmartComData\service.wsdl" />
+    <None Include="Service References\SmartComData\service.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\SmartComData\service1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\SmartComData\SpeculatorModel.MainData.xsd">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Service References\SpeculatorData\service.wsdl" />
     <None Include="Service References\SpeculatorData\service.xsd">
       <SubType>Designer</SubType>
@@ -228,8 +263,14 @@
       <Project>{0A069BB9-5383-4760-971B-17765F5F8262}</Project>
       <Name>SpeculatorModel</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SpeculatorServices\SpeculatorServices.csproj">
+      <Project>{835FB2E7-45FC-4EA2-8FDF-8DB93B77D4B1}</Project>
+      <Name>SpeculatorServices</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <WCFMetadataStorage Include="Service References\MoexData\" />
+    <WCFMetadataStorage Include="Service References\SmartComData\" />
     <WCFMetadataStorage Include="Service References\SpeculatorData\" />
   </ItemGroup>
   <ItemGroup>
@@ -240,6 +281,30 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Service References\SpeculatorData\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\SmartComData\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\SmartComData\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\SmartComData\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\MoexData\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\MoexData\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\MoexData\Reference.svcmap">
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>

@@ -243,20 +243,20 @@
   <ItemGroup>
     <Compile Include="MainData\DataSource.cs" />
     <Compile Include="MainData\Symbol.cs" />
-    <Compile Include="Migrations\20160614173138_First.cs" />
-    <Compile Include="Migrations\20160614173138_First.designer.cs">
-      <DependentUpon>20160614173138_First.cs</DependentUpon>
+    <Compile Include="Migrations\20160619160546_First.cs" />
+    <Compile Include="Migrations\20160619160546_First.designer.cs">
+      <DependentUpon>20160619160546_First.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\SpeculatorContextModelSnapshot.cs" />
     <Compile Include="Model.cs" />
     <Compile Include="MoexHistory\BaseInfo.cs" />
-    <Compile Include="MoexHistory\MoexClaimAction.cs" />
+    <Compile Include="MainData\ClaimAction.cs" />
     <Compile Include="MoexHistory\MoexClaimType.cs" />
     <Compile Include="MoexHistory\MoexClaim.cs" />
     <Compile Include="MoexHistory\MoexSymbol.cs" />
     <Compile Include="MoexHistory\MoexTrade.cs" />
     <Compile Include="MoexHistory\MoexSystem.cs" />
-    <Compile Include="MoexHistory\MoexTradeDiraction.cs" />
+    <Compile Include="MainData\Diraction.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SmartCom\SmartComBidAskValue.cs" />
     <Compile Include="SmartCom\SmartComQuote.cs" />

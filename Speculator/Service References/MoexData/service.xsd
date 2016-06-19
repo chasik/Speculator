@@ -1,0 +1,80 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://tempuri.org/" elementFormDefault="qualified" targetNamespace="http://tempuri.org/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import namespace="http://schemas.datacontract.org/2004/07/SpeculatorModel.MoexHistory" />
+  <xs:element name="AddSystem">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q1="http://schemas.datacontract.org/2004/07/SpeculatorModel.MoexHistory" minOccurs="0" name="system" nillable="true" type="q1:MoexSystem" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="AddSystemResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q2="http://schemas.datacontract.org/2004/07/SpeculatorModel.MoexHistory" minOccurs="0" name="AddSystemResult" nillable="true" type="q2:MoexSystem" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="AddSymbol">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q3="http://schemas.datacontract.org/2004/07/SpeculatorModel.MoexHistory" minOccurs="0" name="symbol" nillable="true" type="q3:MoexSymbol" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="AddSymbolResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q4="http://schemas.datacontract.org/2004/07/SpeculatorModel.MoexHistory" minOccurs="0" name="AddSymbolResult" nillable="true" type="q4:MoexSymbol" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="AddClaims">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q5="http://schemas.datacontract.org/2004/07/SpeculatorModel.MoexHistory" minOccurs="0" name="claims" nillable="true" type="q5:ArrayOfMoexClaim" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="AddClaimsResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="AddTrades">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q6="http://schemas.datacontract.org/2004/07/SpeculatorModel.MoexHistory" minOccurs="0" name="trades" nillable="true" type="q6:ArrayOfMoexTrade" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="AddTradesResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Systems">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="SystemsResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q7="http://schemas.datacontract.org/2004/07/SpeculatorModel.MoexHistory" minOccurs="0" name="SystemsResult" nillable="true" type="q7:ArrayOfMoexSystem" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Symbols">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="SymbolsResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q8="http://schemas.datacontract.org/2004/07/SpeculatorModel.MoexHistory" minOccurs="0" name="SymbolsResult" nillable="true" type="q8:ArrayOfMoexSymbol" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

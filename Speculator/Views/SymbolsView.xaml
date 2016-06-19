@@ -26,8 +26,8 @@
             </dx:DialogService.ViewTemplate>
             <dx:DialogService.DialogStyle>
                 <Style TargetType="dx:DXDialogWindow">
-                    <Setter Property="Width" Value="700"/>
-                    <Setter Property="Height" Value="400"/>
+                    <Setter Property="Width" Value="900"/>
+                    <Setter Property="Height" Value="500"/>
                     <Setter Property="ShowIcon" Value="False"/>
                 </Style>
             </dx:DialogService.DialogStyle>
@@ -38,7 +38,7 @@
         <dxdo:DockLayoutManager Margin="12" FloatingMode="Desktop">
             <dxdo:LayoutGroup Orientation="Horizontal">
                 <dxdo:LayoutPanel Caption="Графики" ItemWidth="180" MaxWidth="180">
-                    <Button Content="Добавить" VerticalAlignment="Bottom"
+                    <Button Content="Добавить" VerticalAlignment="Bottom" Height="50"
                             Command="{Binding AddSymbolCommand}">
                         <Button.CommandParameter>
                             <MultiBinding Converter="{StaticResource AddSymbolCommandParamsConverter}">

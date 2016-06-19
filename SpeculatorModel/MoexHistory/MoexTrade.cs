@@ -6,5 +6,7 @@ namespace SpeculatorModel.MoexHistory
     [DataContract, Table("MoexTrades")]
     public class MoexTrade : BaseInfo
     {
+        [DataMember]
+        public int OpenInterest { get; set; }
     }
 }

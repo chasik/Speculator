@@ -28,31 +28,38 @@ namespace Speculator.ViewModels
 
         public void AddSymbol(object commandParams)
         {
-            //var docPanel = new DocumentPanel
-            //{//    Caption = "document uuuuu",
-            //    Content = new SymbolPanelView {DataContext = new SymbolPanelViewModel()}
-            //};
-            //(commandParams as DocumentGroup)?.Items.Add(docPanel);
             var selectCommand = new UICommand
             {
                 Caption = "Выбрать",
                 Command = new DelegateCommand<CancelEventArgs>(x => { }, x => true)
             };
             var cancelCommand = new UICommand
-            {Caption = "Отмена",
+            {
+                Caption = "Отмена",
                 IsDefault = true,
                 IsCancel = false
             };
             var dialogViewModel = ViewModelSource.Create(() => new ChoiceSymbolDialogViewModel
             {
                 DataSources = new ObservableCollection<DataSource>(DataSources),
-                SpeculatorDataClient = SpeculatorDataClient
+                SpeculatorDataClient = SpeculatorDataClient,
+                SelectUiCommand = selectCommand
             });
+
             var resultChoice = ChoiceSymbolDialogService.ShowDialog(new List<UICommand> {selectCommand, cancelCommand},
                 "Выбор инструмента", dialogViewModel);
             if (resultChoice == selectCommand)
             {
-                
+                var content = new SymbolPanelView();
+                (content.DataContext as SymbolPanelViewModel).DataSource = dialogViewModel.UsedDataSource;
+                (content.DataContext as SymbolPanelViewModel).Symbol = dialogViewModel.SelectedSymbol;
+
+                var docPanel = new DocumentPanel
+                {
+                    Caption = dialogViewModel.SelectedSymbol.Name,
+                    Content = content
+                };
+                (commandParams as DocumentGroup)?.Items.Add(docPanel);
             }
         }
     }

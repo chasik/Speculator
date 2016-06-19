@@ -14,7 +14,7 @@ using SpeculatorServices.Properties;
 namespace SpeculatorServices.SmartCom
 {
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, ConcurrencyMode = ConcurrencyMode.Multiple)]
-    public class SmartComData : DataBase, ISmartComData
+    public class SmartComData : DataServiceBase, ISmartComData, IDataBase
     {
         private const string SuffixSymbols = "-9.16_FT";
         private const string SuffixSymbolsForOil = "-7.16_FT";
@@ -70,6 +70,11 @@ namespace SpeculatorServices.SmartCom
             if (!EventLog.SourceExists("SmartComDataServiceHost"))
                 EventLog.CreateEventSource("SmartComDataServiceHost", "Application");
              EventLog.WriteEntry("SmartComDataServiceHost", $"!{Settings.Default.SmartComHost} {Settings.Default.SmartComPort} {Settings.Default.SmartComLogin} {Settings.Default.SmartComPassword}");
+        }
+
+        public void ListenSymbol(Symbol symbol)
+        {
+            throw new NotImplementedException();
         }
 
         private void _smartCom_UpdateBidAsk(string symbol, int row, int nrows, double bid, double bidsize, double ask, double asksize)
@@ -144,7 +149,6 @@ namespace SpeculatorServices.SmartCom
                 dbContext.SaveChanges();
             }
         }
-
         private void _smartCom_UpdateQuote(string symbol, DateTime datetime, double open, double high, double low,
             double close, double last, double volume, double size, double bid, double ask, double bidsize,
             double asksize, double openInt, double goBuy, double goSell, double goBase, double goBaseBacked,

@@ -1,29 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.ServiceModel;
 
 namespace SpeculatorServices
 {
-    public class DataBase : IDataBase
+    public class DataServiceBase 
     {
         protected List<IDataCallBacks> ClientsWithCallBack;
         protected Dictionary<IDataCallBacks, List<string>> ClientsWantGetSymbols;
 
-        public DataBase()
+        public DataServiceBase()
         {
             ClientsWithCallBack = new List<IDataCallBacks>();
         }
 
         protected void RegisterClientWithCallBack(string[] symbols)
         {
-            IDataCallBacks callBack = OperationContext.Current.GetCallbackChannel<IDataCallBacks>();
+            var callBack = OperationContext.Current.GetCallbackChannel<IDataCallBacks>();
             if (!ClientsWithCallBack.Contains(callBack))
             {
                 ClientsWithCallBack.Add(callBack);
                 ClientsWantGetSymbols.Add(callBack, new List<string>(symbols));
             }
-
         }
 
         protected void UpdateBidAskEvent(bool IsAsk = false)

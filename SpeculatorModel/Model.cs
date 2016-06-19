@@ -30,8 +30,8 @@ namespace SpeculatorModel
         public DbSet<MoexSystem> MoexSystems { get; set; }
         public DbSet<MoexSymbol> MoexSymbols { get; set; }
         public DbSet<MoexClaimType> MoexClaimTypes { get; set; }
-        public DbSet<MoexClaimAction> MoexClaimActions { get; set; }
-        public DbSet<MoexTradeDiraction> MoexTradeDiractions { get; set; }
+        public DbSet<ClaimAction> MoexClaimActions { get; set; }
+        public DbSet<Diraction> MoexTradeDiractions { get; set; }
         public DbSet<MoexTrade> MoexTrades { get; set; }
         public DbSet<MoexClaim> MoexClaims { get; set; }
 

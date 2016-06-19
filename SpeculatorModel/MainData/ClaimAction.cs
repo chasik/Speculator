@@ -2,21 +2,23 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Runtime.Serialization;
 
-namespace SpeculatorModel.MoexHistory
+namespace SpeculatorModel.MainData
 {
-    [DataContract, Table("MoexTradeDiractions")]
-    public class MoexTradeDiraction
+    [DataContract, Table("ClaimActions")]
+    public class ClaimAction
     {
-        [DataMember]
+        [DataMember, DatabaseGenerated(DatabaseGeneratedOption.None)]
         public byte Id { get; set; }
-        
+
         [DataMember, MaxLength(20)]
         public string Name { get; set; }
+
     }
 
-    public enum MoexTradeDiractionEnum
+    public enum ClaimActionEnum
     {
-        Buy = 1,
-        Sell = 2
+        Removed = 1,
+        Added = 2,
+        Trade = 3
     }
 }

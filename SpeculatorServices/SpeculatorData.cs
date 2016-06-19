@@ -4,6 +4,7 @@ using System.Linq;
 using System.ServiceModel;
 using SpeculatorModel;
 using SpeculatorModel.MainData;
+using SpeculatorModel.MoexHistory;
 
 namespace SpeculatorServices
 {
@@ -33,9 +34,19 @@ namespace SpeculatorServices
             using (var dbContext = new SpeculatorContext())
             {
                 if (selecteDataSource.Id == (byte) DataSourceEnum.SmartCom)
-                {
-                    return dbContext.SmartComSymbols
-                        .Select(s => new Symbol {Id = s.Id, Name = s.Name})
+                {return dbContext.SmartComSymbols
+                        .Select(
+                            s =>
+                                new Symbol
+                                {
+                                    Id = s.Id,
+                                    Name = s.Name,
+                                    ShortName = s.ShortName,
+                                    LongName = s.LongName,
+                                    Step = s.Step,
+                                    LotSize = s.LotSize,
+                                    Punkt = s.Punkt
+                                })
                         .ToArray();
                 }
                 return null;
@@ -57,6 +68,27 @@ namespace SpeculatorServices
                         new DataSource {Id = (byte) DataSourceEnum.MoexHistory, Name = "MoexHistory"}
                     });
                 }
+
+                if (!dbContext.MoexClaimActions.Any())
+                {
+                    dbContext.MoexClaimActions.AddRange(new List<ClaimAction>
+                    {
+                        new ClaimAction {Id = (byte) ClaimActionEnum.Removed, Name = "Удалена" },
+                        new ClaimAction {Id = (byte) ClaimActionEnum.Added, Name = "Добавлена" },
+                        new ClaimAction {Id = (byte) ClaimActionEnum.Trade, Name = "Исполнена" }
+                    });
+                }
+
+                if (!dbContext.MoexTradeDiractions.Any())
+                {
+                    dbContext.MoexTradeDiractions.AddRange(new List<Diraction>
+                    {
+                        new Diraction {Id = (byte) DiractionEnum.Buy, Name = "Покупка"},
+                        new Diraction {Id = (byte) DiractionEnum.Sell, Name = "Продажа"}
+                    });
+                }
+
+
                 try
                 {
                     dbContext.SaveChanges();
