@@ -6,6 +6,6 @@ namespace SpeculatorServices.SmartCom
     public interface ISmartComData
     {
         [OperationContract]
-        void ConnectToSmartCom();
+        void DefaultOperation();
     }
 }

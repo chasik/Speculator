@@ -7,7 +7,8 @@
              xmlns:local="clr-namespace:Speculator.Views" 
              xmlns:ig="http://schemas.infragistics.com/xaml"
              xmlns:viewModels="clr-namespace:Speculator.ViewModels"
-             xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm" 
+             xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
+             xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
              mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="600" 
              DataContext="{dxmvvm:ViewModelSource Type={x:Type viewModels:SymbolPanelViewModel}}">
     <dxmvvm:Interaction.Behaviors>
@@ -36,10 +37,18 @@
                 </ig:XamDataChart>
             </dxdo:LayoutPanel>
             <dxdo:LayoutPanel Caption="Panel3" ItemWidth="200">
-                <Grid >
-
-                    <local:GlassView/>
-
+                <Grid>
+                    <dxg:GridControl VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="Aqua" 
+                              FontSize="10" AutoGenerateColumns="None"
+                              ItemsSource="{Binding Glass}">
+                        <dxg:GridControl.View>
+                            <dxg:TableView AutoWidth="True"></dxg:TableView>
+                        </dxg:GridControl.View>
+                        <dxg:GridControl.Columns>
+                            <dxg:GridColumn Binding="{Binding Price}"></dxg:GridColumn>
+                            <dxg:GridColumn Binding="{Binding Volume}"></dxg:GridColumn>
+                        </dxg:GridControl.Columns>
+                    </dxg:GridControl>
                 </Grid>
             </dxdo:LayoutPanel>
         </dxdo:LayoutGroup>

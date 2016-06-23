@@ -4,7 +4,7 @@
     <xs:sequence>
       <xs:element minOccurs="0" name="Id" type="xs:int" />
       <xs:element minOccurs="0" name="LongName" nillable="true" type="xs:string" />
-      <xs:element minOccurs="0" name="LotSize" type="xs:int" />
+      <xs:element minOccurs="0" name="LotSize" nillable="true" type="xs:int" />
       <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Punkt" nillable="true" type="xs:double" />
       <xs:element minOccurs="0" name="ShortName" nillable="true" type="xs:string" />
@@ -12,4 +12,21 @@
     </xs:sequence>
   </xs:complexType>
   <xs:element name="Symbol" nillable="true" type="tns:Symbol" />
+  <xs:complexType name="Trade">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Diraction" nillable="true" type="tns:Diraction" />
+      <xs:element minOccurs="0" name="DiractionId" type="xs:unsignedByte" />
+      <xs:element minOccurs="0" name="Price" type="xs:double" />
+      <xs:element minOccurs="0" name="TradeNo" type="xs:long" />
+      <xs:element minOccurs="0" name="Volume" type="xs:int" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="Trade" nillable="true" type="tns:Trade" />
+  <xs:complexType name="Diraction">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Id" type="xs:unsignedByte" />
+      <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="Diraction" nillable="true" type="tns:Diraction" />
 </xs:schema>

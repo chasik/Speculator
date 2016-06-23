@@ -15,11 +15,11 @@ namespace Speculator.SmartComData {
     [System.ServiceModel.ServiceContractAttribute(ConfigurationName="SmartComData.ISmartComData")]
     public interface ISmartComData {
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ISmartComData/ConnectToSmartCom", ReplyAction="http://tempuri.org/ISmartComData/ConnectToSmartComResponse")]
-        void ConnectToSmartCom();
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ISmartComData/DefaultOperation", ReplyAction="http://tempuri.org/ISmartComData/DefaultOperationResponse")]
+        void DefaultOperation();
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ISmartComData/ConnectToSmartCom", ReplyAction="http://tempuri.org/ISmartComData/ConnectToSmartComResponse")]
-        System.Threading.Tasks.Task ConnectToSmartComAsync();
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ISmartComData/DefaultOperation", ReplyAction="http://tempuri.org/ISmartComData/DefaultOperationResponse")]
+        System.Threading.Tasks.Task DefaultOperationAsync();
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -49,20 +49,27 @@ namespace Speculator.SmartComData {
                 base(binding, remoteAddress) {
         }
         
-        public void ConnectToSmartCom() {
-            base.Channel.ConnectToSmartCom();
+        public void DefaultOperation() {
+            base.Channel.DefaultOperation();
         }
         
-        public System.Threading.Tasks.Task ConnectToSmartComAsync() {
-            return base.Channel.ConnectToSmartComAsync();
+        public System.Threading.Tasks.Task DefaultOperationAsync() {
+            return base.Channel.DefaultOperationAsync();
         }
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    [System.ServiceModel.ServiceContractAttribute(ConfigurationName="SmartComData.IDataBase", CallbackContract=typeof(Speculator.SmartComData.IDataBaseCallback))]
+    [System.ServiceModel.ServiceContractAttribute(ConfigurationName="SmartComData.IDataBase", CallbackContract=typeof(Speculator.SmartComData.IDataBaseCallback), SessionMode=System.ServiceModel.SessionMode.Required)]
     public interface IDataBase {
         
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IDataBase/ConnectToDataSource", ReplyAction="http://tempuri.org/IDataBase/ConnectToDataSourceResponse")]
+        void ConnectToDataSource();
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IDataBase/ConnectToDataSource", ReplyAction="http://tempuri.org/IDataBase/ConnectToDataSourceResponse")]
+        System.Threading.Tasks.Task ConnectToDataSourceAsync();
+        
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IDataBase/ListenSymbol", ReplyAction="http://tempuri.org/IDataBase/ListenSymbolResponse")]
+        [System.ServiceModel.ServiceKnownTypeAttribute(typeof(SpeculatorModel.SmartCom.SmartComSymbol))]
         void ListenSymbol(SpeculatorModel.MainData.Symbol symbol);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IDataBase/ListenSymbol", ReplyAction="http://tempuri.org/IDataBase/ListenSymbolResponse")]
@@ -72,11 +79,11 @@ namespace Speculator.SmartComData {
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
     public interface IDataBaseCallback {
         
-        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IDataBase/UpdateAskEvent")]
-        void UpdateAskEvent();
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IDataBase/UpdateBidOrAskEvent")]
+        void UpdateBidOrAskEvent(SpeculatorModel.SmartCom.SmartComSymbol symbol, SpeculatorModel.SmartCom.SmartComBidAskValue value);
         
-        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IDataBase/UpdateBidEvent")]
-        void UpdateBidEvent();
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IDataBase/TradeEvent")]
+        void TradeEvent(SpeculatorModel.SmartCom.SmartComSymbol symbol, SpeculatorModel.SmartCom.SmartComTrade trade);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -105,6 +112,14 @@ namespace Speculator.SmartComData {
         
         public DataBaseClient(System.ServiceModel.InstanceContext callbackInstance, System.ServiceModel.Channels.Binding binding, System.ServiceModel.EndpointAddress remoteAddress) : 
                 base(callbackInstance, binding, remoteAddress) {
+        }
+        
+        public void ConnectToDataSource() {
+            base.Channel.ConnectToDataSource();
+        }
+        
+        public System.Threading.Tasks.Task ConnectToDataSourceAsync() {
+            return base.Channel.ConnectToDataSourceAsync();
         }
         
         public void ListenSymbol(SpeculatorModel.MainData.Symbol symbol) {

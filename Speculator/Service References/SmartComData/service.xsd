@@ -1,12 +1,23 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <xs:schema xmlns:tns="http://tempuri.org/" elementFormDefault="qualified" targetNamespace="http://tempuri.org/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
   <xs:import namespace="http://schemas.datacontract.org/2004/07/SpeculatorModel.MainData" />
-  <xs:element name="ConnectToSmartCom">
+  <xs:import namespace="http://schemas.datacontract.org/2004/07/SpeculatorModel.SmartCom" />
+  <xs:element name="DefaultOperation">
     <xs:complexType>
       <xs:sequence />
     </xs:complexType>
   </xs:element>
-  <xs:element name="ConnectToSmartComResponse">
+  <xs:element name="DefaultOperationResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ConnectToDataSource">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ConnectToDataSourceResponse">
     <xs:complexType>
       <xs:sequence />
     </xs:complexType>
@@ -23,14 +34,20 @@
       <xs:sequence />
     </xs:complexType>
   </xs:element>
-  <xs:element name="UpdateAskEvent">
+  <xs:element name="UpdateBidOrAskEvent">
     <xs:complexType>
-      <xs:sequence />
+      <xs:sequence>
+        <xs:element xmlns:q2="http://schemas.datacontract.org/2004/07/SpeculatorModel.SmartCom" minOccurs="0" name="symbol" nillable="true" type="q2:SmartComSymbol" />
+        <xs:element xmlns:q3="http://schemas.datacontract.org/2004/07/SpeculatorModel.SmartCom" minOccurs="0" name="value" nillable="true" type="q3:SmartComBidAskValue" />
+      </xs:sequence>
     </xs:complexType>
   </xs:element>
-  <xs:element name="UpdateBidEvent">
+  <xs:element name="TradeEvent">
     <xs:complexType>
-      <xs:sequence />
+      <xs:sequence>
+        <xs:element xmlns:q4="http://schemas.datacontract.org/2004/07/SpeculatorModel.SmartCom" minOccurs="0" name="symbol" nillable="true" type="q4:SmartComSymbol" />
+        <xs:element xmlns:q5="http://schemas.datacontract.org/2004/07/SpeculatorModel.SmartCom" minOccurs="0" name="trade" nillable="true" type="q5:SmartComTrade" />
+      </xs:sequence>
     </xs:complexType>
   </xs:element>
 </xs:schema>

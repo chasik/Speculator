@@ -35,8 +35,25 @@ namespace SpeculatorServices.SmartCom
             #endif
         }
 
+        public SmartComData() : base()
+        {
+            
+        }
+
+        public void ConnectToDataSource()
+        {
+            ConnectToSmartCom();
+        }
+
+        public void ListenSymbol(Symbol symbol)
+        {
+            RegisterClientWithCallBack(new[] { symbol.Name });
+        }
+
         public void ConnectToSmartCom()
         {
+            if (_smartCom != null)
+                return;
             _symbolsForSaveToDb = _symbolsForSaveToDb.Select(symb =>
             {
                 symb = symb + SuffixSymbols;
@@ -45,7 +62,6 @@ namespace SpeculatorServices.SmartCom
 
             // фьючерс на нефть
             _symbolsForSaveToDb.Add("BR" + SuffixSymbolsForOil);
-
             _smartCom = new StServerClass();
             _smartCom.Connected += SmartCom_Connected;
             _smartCom.Disconnected += SmartCom_Disconnected;
@@ -70,11 +86,6 @@ namespace SpeculatorServices.SmartCom
             if (!EventLog.SourceExists("SmartComDataServiceHost"))
                 EventLog.CreateEventSource("SmartComDataServiceHost", "Application");
              EventLog.WriteEntry("SmartComDataServiceHost", $"!{Settings.Default.SmartComHost} {Settings.Default.SmartComPort} {Settings.Default.SmartComLogin} {Settings.Default.SmartComPassword}");
-        }
-
-        public void ListenSymbol(Symbol symbol)
-        {
-            throw new NotImplementedException();
         }
 
         private void _smartCom_UpdateBidAsk(string symbol, int row, int nrows, double bid, double bidsize, double ask, double asksize)
@@ -120,9 +131,15 @@ namespace SpeculatorServices.SmartCom
             using (var dbContext = new SpeculatorContext())
             {
                 if (bidChanged)
+                {
+                    UpdateBidAskEvent(currentSymbol, newBid, IsBid: true);
                     dbContext.SmartComBidAskValues.Add(newBid);
+                }
                 if (askChanged)
+                {
+                    UpdateBidAskEvent(currentSymbol, newAsk, IsBid: false);
                     dbContext.SmartComBidAskValues.Add(newAsk);
+                }
                 dbContext.SaveChanges();
             }
         }
@@ -134,21 +151,24 @@ namespace SpeculatorServices.SmartCom
             long tradenoLong;
             long.TryParse(tradeno, out tradenoLong);
 
-            var tick = new SmartComTick
+            var tick = new SmartComTrade
             {
                 SmartComSymbolId = currentSymbol.Id,
                 TradeNo = tradenoLong,
                 Price = price,
                 Volume = (int) volume,
-                OrderAction = (byte) action,
+                DiractionId = (byte) action,
                 TradeDateTime = datetime
             };
+
+            TradeEvent(currentSymbol, tick);
             using (var dbContext = new SpeculatorContext())
             {
                 dbContext.SmartComTicks.Add(tick);
                 dbContext.SaveChanges();
             }
         }
+
         private void _smartCom_UpdateQuote(string symbol, DateTime datetime, double open, double high, double low,
             double close, double last, double volume, double size, double bid, double ask, double bidsize,
             double asksize, double openInt, double goBuy, double goSell, double goBase, double goBaseBacked,
@@ -218,6 +238,11 @@ namespace SpeculatorServices.SmartCom
         private void SmartCom_Connected()
         {
             _smartCom.GetSymbols();
+        }
+
+        public void DefaultOperation()
+        {
+            throw new NotImplementedException();
         }
     }
 

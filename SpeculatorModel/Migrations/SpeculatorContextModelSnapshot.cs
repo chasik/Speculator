@@ -265,11 +265,11 @@ namespace SpeculatorModel.Migrations
                     b.ToTable("SmartComSymbols");
                 });
 
-            modelBuilder.Entity("SpeculatorModel.SmartCom.SmartComTick", b =>
+            modelBuilder.Entity("SpeculatorModel.SmartCom.SmartComTrade", b =>
                 {
                     b.Property<long>("TradeNo");
 
-                    b.Property<byte>("OrderAction");
+                    b.Property<byte>("DiractionId");
 
                     b.Property<double>("Price");
 
@@ -287,9 +287,11 @@ namespace SpeculatorModel.Migrations
 
                     b.HasKey("TradeNo");
 
+                    b.HasIndex("DiractionId");
+
                     b.HasIndex("SmartComSymbolId");
 
-                    b.ToTable("SmartComTicks");
+                    b.ToTable("SmartComTrades");
                 });
 
             modelBuilder.Entity("SpeculatorModel.Transaq.Board", b =>
@@ -430,12 +432,19 @@ namespace SpeculatorModel.Migrations
                     b.ToTable("TransaqTicks");
                 });
 
-            modelBuilder.Entity("SpeculatorModel.Transaq.Trade", b =>
+            modelBuilder.Entity("SpeculatorModel.Transaq.TransaqTrade", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
+                    b.Property<long>("TradeNo");
 
-                    b.HasKey("Id");
+                    b.Property<byte>("DiractionId");
+
+                    b.Property<double>("Price");
+
+                    b.Property<int>("Volume");
+
+                    b.HasKey("TradeNo");
+
+                    b.HasIndex("DiractionId");
 
                     b.ToTable("TransaqTrades");
                 });
@@ -501,8 +510,13 @@ namespace SpeculatorModel.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("SpeculatorModel.SmartCom.SmartComTick", b =>
+            modelBuilder.Entity("SpeculatorModel.SmartCom.SmartComTrade", b =>
                 {
+                    b.HasOne("SpeculatorModel.MainData.Diraction")
+                        .WithMany()
+                        .HasForeignKey("DiractionId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
                     b.HasOne("SpeculatorModel.SmartCom.SmartComSymbol")
                         .WithMany()
                         .HasForeignKey("SmartComSymbolId")
@@ -526,6 +540,14 @@ namespace SpeculatorModel.Migrations
                     b.HasOne("SpeculatorModel.Transaq.Market")
                         .WithMany()
                         .HasForeignKey("MarketId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("SpeculatorModel.Transaq.TransaqTrade", b =>
+                {
+                    b.HasOne("SpeculatorModel.MainData.Diraction")
+                        .WithMany()
+                        .HasForeignKey("DiractionId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
         }

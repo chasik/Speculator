@@ -1,13 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.Runtime.Serialization;
+using SpeculatorModel.MainData;
 
 namespace SpeculatorModel.Transaq
 {
     [DataContract, Table("TransaqTrades")]
-    public class Trade
+    public class TransaqTrade : Trade
     {
-        [DataMember]
-        public int Id { get; set; }
     }
 }
 

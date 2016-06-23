@@ -4,7 +4,6 @@ using System.Linq;
 using System.ServiceModel;
 using SpeculatorModel;
 using SpeculatorModel.MainData;
-using SpeculatorModel.MoexHistory;
 
 namespace SpeculatorServices
 {

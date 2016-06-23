@@ -243,9 +243,10 @@
   <ItemGroup>
     <Compile Include="MainData\DataSource.cs" />
     <Compile Include="MainData\Symbol.cs" />
-    <Compile Include="Migrations\20160619160546_First.cs" />
-    <Compile Include="Migrations\20160619160546_First.designer.cs">
-      <DependentUpon>20160619160546_First.cs</DependentUpon>
+    <Compile Include="MainData\Trade.cs" />
+    <Compile Include="Migrations\20160620201317_First.cs" />
+    <Compile Include="Migrations\20160620201317_First.designer.cs">
+      <DependentUpon>20160620201317_First.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\SpeculatorContextModelSnapshot.cs" />
     <Compile Include="Model.cs" />
@@ -261,7 +262,7 @@
     <Compile Include="SmartCom\SmartComBidAskValue.cs" />
     <Compile Include="SmartCom\SmartComQuote.cs" />
     <Compile Include="SmartCom\SmartComSymbol.cs" />
-    <Compile Include="SmartCom\SmartComTick.cs" />
+    <Compile Include="SmartCom\SmartComTrade.cs" />
     <Compile Include="Transaq\CandleKind.cs" />
     <Compile Include="Transaq\ClientTrade.cs" />
     <Compile Include="Transaq\ClientNegDeal.cs" />
@@ -272,7 +273,7 @@
     <Compile Include="Transaq\Market.cs" />
     <Compile Include="Transaq\ClientStopOrder.cs" />
     <Compile Include="Transaq\Tick.cs" />
-    <Compile Include="Transaq\Trade.cs" />
+    <Compile Include="Transaq\TransaqTrade.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

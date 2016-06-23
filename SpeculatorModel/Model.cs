@@ -12,7 +12,7 @@ namespace SpeculatorModel
 
         public DbSet<SmartComSymbol> SmartComSymbols { get; set; }
         public DbSet<SmartComBidAskValue> SmartComBidAskValues { get; set; }
-        public DbSet<SmartComTick> SmartComTicks { get; set; }
+        public DbSet<SmartComTrade> SmartComTicks { get; set; }
         public DbSet<SmartComQuote> SmartComQuotes { get; set; }
 
         public DbSet<Market> Markets { get; set; }
@@ -23,7 +23,7 @@ namespace SpeculatorModel
         public DbSet<ClientStopOrder> ClientSotpOrders { get; set; }
         public DbSet<ClientNegDeal> ClientNegDeals { get; set; }
         public DbSet<ClientTrade> ClientTrades { get; set; }
-        public DbSet<Trade> Trades { get; set; }
+        public DbSet<TransaqTrade> TransaqTrades { get; set; }
         public DbSet<Tick> Ticks { get; set; }
         public DbSet<Quote> Quotes { get; set; }
 
@@ -42,7 +42,7 @@ namespace SpeculatorModel
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<SmartComTick>()
+            modelBuilder.Entity<SmartComTrade>()
                 .Property(tick => tick.TradeAdded)
                 .HasDefaultValueSql("getdate()");
 

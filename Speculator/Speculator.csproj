@@ -40,7 +40,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="DevExpress.Data.v16.1, Version=16.1.2.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
-    <Reference Include="DevExpress.Mvvm.v16.1, Version=16.1.2.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Mvvm.v16.1, Version=16.1.2.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <Private>True</Private>
+    </Reference>
     <Reference Include="DevExpress.Printing.v16.1.Core, Version=16.1.2.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
     <Reference Include="DevExpress.Xpf.Controls.v16.1, Version=16.1.2.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
     <Reference Include="DevExpress.Xpf.Core.v16.1, Version=16.1.2.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
@@ -94,6 +96,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
+    <Compile Include="Service References\TransaqData\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
     <Compile Include="ViewModels\Converters\AddSymbolCommandParamsConverter.cs" />
     <Compile Include="ViewModels\Data\MoexDataViewModel.cs" />
     <Compile Include="ViewModels\Data\PlazaDataViewModel.cs" />
@@ -101,7 +108,6 @@
     <Compile Include="ViewModels\Data\SmartComDataViewModel.cs" />
     <Compile Include="ViewModels\Data\TransaqDataViewModel.cs" />
     <Compile Include="ViewModels\Dialogs\ChoiceSymbolDialogViewModel.cs" />
-    <Compile Include="ViewModels\GlassViewModel.cs" />
     <Compile Include="ViewModels\SymbolPanelViewModel.cs" />
     <Compile Include="ViewModels\SymbolsViewModel.cs" />
     <Compile Include="Views\Data\MoexDataView.xaml.cs">
@@ -121,9 +127,6 @@
     </Compile>
     <Compile Include="Views\Dialogs\ChoiceSymbolDialogView.xaml.cs">
       <DependentUpon>ChoiceSymbolDialogView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\GlassView.xaml.cs">
-      <DependentUpon>GlassView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\SettingsView.xaml.cs">
       <DependentUpon>SettingsView.xaml</DependentUpon>
@@ -155,10 +158,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Dialogs\ChoiceSymbolDialogView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\GlassView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -244,6 +243,9 @@
     <None Include="Service References\SmartComData\SpeculatorModel.MainData.xsd">
       <SubType>Designer</SubType>
     </None>
+    <None Include="Service References\SmartComData\SpeculatorModel.SmartCom.xsd">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Service References\SpeculatorData\service.wsdl" />
     <None Include="Service References\SpeculatorData\service.xsd">
       <SubType>Designer</SubType>
@@ -252,6 +254,10 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="Service References\SpeculatorData\SpeculatorModel.MainData.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\TransaqData\service.wsdl" />
+    <None Include="Service References\TransaqData\service.xsd">
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>
@@ -269,18 +275,43 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Service References\SpeculatorData\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
     <WCFMetadataStorage Include="Service References\MoexData\" />
     <WCFMetadataStorage Include="Service References\SmartComData\" />
     <WCFMetadataStorage Include="Service References\SpeculatorData\" />
+    <WCFMetadataStorage Include="Service References\TransaqData\" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Service References\SpeculatorData\configuration91.svcinfo" />
+    <None Include="Service References\MoexData\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\MoexData\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\MoexData\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <None Include="Service References\SpeculatorData\configuration.svcinfo" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Service References\SpeculatorData\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\TransaqData\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\TransaqData\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\TransaqData\Reference.svcmap">
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
@@ -293,18 +324,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Service References\SmartComData\Reference.svcmap">
-      <Generator>WCF Proxy Generator</Generator>
-      <LastGenOutput>Reference.cs</LastGenOutput>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Service References\MoexData\configuration91.svcinfo" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Service References\MoexData\configuration.svcinfo" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Service References\MoexData\Reference.svcmap">
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>

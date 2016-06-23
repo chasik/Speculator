@@ -1,12 +1,14 @@
-﻿using System.Security.Cryptography.X509Certificates;
-using System.ServiceModel;
+﻿using System.ServiceModel;
 using SpeculatorModel.MainData;
 
 namespace SpeculatorServices
 {
-    [ServiceContract(CallbackContract = typeof(IDataCallBacks))]
+    [ServiceContract(SessionMode = SessionMode.Required, CallbackContract = typeof(IDataCallBacks))]
     public interface IDataBase
     {
+        [OperationContract]
+        void ConnectToDataSource();
+
         [OperationContract]
         void ListenSymbol(Symbol symbol);
     }

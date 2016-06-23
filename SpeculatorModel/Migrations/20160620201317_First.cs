@@ -211,12 +211,20 @@ namespace SpeculatorModel.Migrations
                 name: "TransaqTrades",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn)
+                    TradeNo = table.Column<long>(nullable: false),
+                    DiractionId = table.Column<byte>(nullable: false),
+                    Price = table.Column<double>(nullable: false),
+                    Volume = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_TransaqTrades", x => x.Id);
+                    table.PrimaryKey("PK_TransaqTrades", x => x.TradeNo);
+                    table.ForeignKey(
+                        name: "FK_TransaqTrades_TradeDiractions_DiractionId",
+                        column: x => x.DiractionId,
+                        principalTable: "TradeDiractions",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -309,11 +317,11 @@ namespace SpeculatorModel.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "SmartComTicks",
+                name: "SmartComTrades",
                 columns: table => new
                 {
                     TradeNo = table.Column<long>(nullable: false),
-                    OrderAction = table.Column<byte>(nullable: false),
+                    DiractionId = table.Column<byte>(nullable: false),
                     Price = table.Column<double>(nullable: false),
                     SmartComSymbolId = table.Column<int>(nullable: false),
                     TradeAdded = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "getdate()"),
@@ -322,9 +330,15 @@ namespace SpeculatorModel.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_SmartComTicks", x => x.TradeNo);
+                    table.PrimaryKey("PK_SmartComTrades", x => x.TradeNo);
                     table.ForeignKey(
-                        name: "FK_SmartComTicks_SmartComSymbols_SmartComSymbolId",
+                        name: "FK_SmartComTrades_TradeDiractions_DiractionId",
+                        column: x => x.DiractionId,
+                        principalTable: "TradeDiractions",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_SmartComTrades_SmartComSymbols_SmartComSymbolId",
                         column: x => x.SmartComSymbolId,
                         principalTable: "SmartComSymbols",
                         principalColumn: "Id",
@@ -486,8 +500,13 @@ namespace SpeculatorModel.Migrations
                 column: "SmartComSymbolId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_SmartComTicks_SmartComSymbolId",
-                table: "SmartComTicks",
+                name: "IX_SmartComTrades_DiractionId",
+                table: "SmartComTrades",
+                column: "DiractionId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SmartComTrades_SmartComSymbolId",
+                table: "SmartComTrades",
                 column: "SmartComSymbolId");
 
             migrationBuilder.CreateIndex(
@@ -510,6 +529,11 @@ namespace SpeculatorModel.Migrations
                 name: "IX_TransaqSecurities_MarketId",
                 table: "TransaqSecurities",
                 column: "MarketId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TransaqTrades_DiractionId",
+                table: "TransaqTrades",
+                column: "DiractionId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -530,7 +554,7 @@ namespace SpeculatorModel.Migrations
                 name: "SmartComQuotes");
 
             migrationBuilder.DropTable(
-                name: "SmartComTicks");
+                name: "SmartComTrades");
 
             migrationBuilder.DropTable(
                 name: "TransaqCandleKinds");

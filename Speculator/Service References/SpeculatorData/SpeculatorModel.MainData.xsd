@@ -23,7 +23,7 @@
     <xs:sequence>
       <xs:element minOccurs="0" name="Id" type="xs:int" />
       <xs:element minOccurs="0" name="LongName" nillable="true" type="xs:string" />
-      <xs:element minOccurs="0" name="LotSize" type="xs:int" />
+      <xs:element minOccurs="0" name="LotSize" nillable="true" type="xs:int" />
       <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Punkt" nillable="true" type="xs:double" />
       <xs:element minOccurs="0" name="ShortName" nillable="true" type="xs:string" />

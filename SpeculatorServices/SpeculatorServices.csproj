@@ -250,7 +250,7 @@
   <ItemGroup>
     <Compile Include="DataServiceBase.cs" />
     <Compile Include="IDataBase.cs" />
-    <Compile Include="ISmartComDataCallBacks.cs" />
+    <Compile Include="IDataCallBacks.cs" />
     <Compile Include="ISpeculatorData.cs" />
     <Compile Include="Moex\IMoexData.cs" />
     <Compile Include="Moex\MoexData.cs" />

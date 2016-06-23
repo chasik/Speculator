@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <wsdl:definitions xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy" xmlns:wsa10="http://www.w3.org/2005/08/addressing" xmlns:tns="http://tempuri.org/" xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="SmartComData" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
-  <wsp:Policy wsu:Id="NetNamedPipeBinding_ISmartComData_policy">
+  <wsp:Policy wsu:Id="NetTcpBinding_ISmartComData_policy">
     <wsp:ExactlyOne>
       <wsp:All>
         <msb:BinaryEncoding xmlns:msb="http://schemas.microsoft.com/ws/06/2004/mspolicy/netbinary1" />
@@ -8,7 +8,7 @@
       </wsp:All>
     </wsp:ExactlyOne>
   </wsp:Policy>
-  <wsp:Policy wsu:Id="NetNamedPipeBinding_IDataBase_policy">
+  <wsp:Policy wsu:Id="NetTcpBinding_IDataBase_policy">
     <wsp:ExactlyOne>
       <wsp:All>
         <msb:BinaryEncoding xmlns:msb="http://schemas.microsoft.com/ws/06/2004/mspolicy/netbinary1" />
@@ -21,13 +21,20 @@
       <xsd:import namespace="http://tempuri.org/" />
       <xsd:import namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
       <xsd:import namespace="http://schemas.datacontract.org/2004/07/SpeculatorModel.MainData" />
+      <xsd:import namespace="http://schemas.datacontract.org/2004/07/SpeculatorModel.SmartCom" />
     </xsd:schema>
   </wsdl:types>
-  <wsdl:message name="ISmartComData_ConnectToSmartCom_InputMessage">
-    <wsdl:part name="parameters" element="tns:ConnectToSmartCom" />
+  <wsdl:message name="ISmartComData_DefaultOperation_InputMessage">
+    <wsdl:part name="parameters" element="tns:DefaultOperation" />
   </wsdl:message>
-  <wsdl:message name="ISmartComData_ConnectToSmartCom_OutputMessage">
-    <wsdl:part name="parameters" element="tns:ConnectToSmartComResponse" />
+  <wsdl:message name="ISmartComData_DefaultOperation_OutputMessage">
+    <wsdl:part name="parameters" element="tns:DefaultOperationResponse" />
+  </wsdl:message>
+  <wsdl:message name="IDataBase_ConnectToDataSource_InputMessage">
+    <wsdl:part name="parameters" element="tns:ConnectToDataSource" />
+  </wsdl:message>
+  <wsdl:message name="IDataBase_ConnectToDataSource_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ConnectToDataSourceResponse" />
   </wsdl:message>
   <wsdl:message name="IDataBase_ListenSymbol_InputMessage">
     <wsdl:part name="parameters" element="tns:ListenSymbol" />
@@ -35,35 +42,39 @@
   <wsdl:message name="IDataBase_ListenSymbol_OutputMessage">
     <wsdl:part name="parameters" element="tns:ListenSymbolResponse" />
   </wsdl:message>
-  <wsdl:message name="IDataBase_UpdateAskEvent_OutputCallbackMessage">
-    <wsdl:part name="parameters" element="tns:UpdateAskEvent" />
+  <wsdl:message name="IDataBase_UpdateBidOrAskEvent_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:UpdateBidOrAskEvent" />
   </wsdl:message>
-  <wsdl:message name="IDataBase_UpdateBidEvent_OutputCallbackMessage">
-    <wsdl:part name="parameters" element="tns:UpdateBidEvent" />
+  <wsdl:message name="IDataBase_TradeEvent_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:TradeEvent" />
   </wsdl:message>
   <wsdl:portType name="ISmartComData">
-    <wsdl:operation name="ConnectToSmartCom">
-      <wsdl:input wsaw:Action="http://tempuri.org/ISmartComData/ConnectToSmartCom" message="tns:ISmartComData_ConnectToSmartCom_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/ISmartComData/ConnectToSmartComResponse" message="tns:ISmartComData_ConnectToSmartCom_OutputMessage" />
+    <wsdl:operation name="DefaultOperation">
+      <wsdl:input wsaw:Action="http://tempuri.org/ISmartComData/DefaultOperation" message="tns:ISmartComData_DefaultOperation_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ISmartComData/DefaultOperationResponse" message="tns:ISmartComData_DefaultOperation_OutputMessage" />
     </wsdl:operation>
   </wsdl:portType>
-  <wsdl:portType name="IDataBase">
-    <wsdl:operation name="ListenSymbol">
+  <wsdl:portType msc:usingSession="true" name="IDataBase">
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="ConnectToDataSource">
+      <wsdl:input wsaw:Action="http://tempuri.org/IDataBase/ConnectToDataSource" message="tns:IDataBase_ConnectToDataSource_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IDataBase/ConnectToDataSourceResponse" message="tns:IDataBase_ConnectToDataSource_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="ListenSymbol">
       <wsdl:input wsaw:Action="http://tempuri.org/IDataBase/ListenSymbol" message="tns:IDataBase_ListenSymbol_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IDataBase/ListenSymbolResponse" message="tns:IDataBase_ListenSymbol_OutputMessage" />
     </wsdl:operation>
-    <wsdl:operation name="UpdateAskEvent">
-      <wsdl:output wsaw:Action="http://tempuri.org/IDataBase/UpdateAskEvent" message="tns:IDataBase_UpdateAskEvent_OutputCallbackMessage" />
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="UpdateBidOrAskEvent">
+      <wsdl:output wsaw:Action="http://tempuri.org/IDataBase/UpdateBidOrAskEvent" message="tns:IDataBase_UpdateBidOrAskEvent_OutputCallbackMessage" />
     </wsdl:operation>
-    <wsdl:operation name="UpdateBidEvent">
-      <wsdl:output wsaw:Action="http://tempuri.org/IDataBase/UpdateBidEvent" message="tns:IDataBase_UpdateBidEvent_OutputCallbackMessage" />
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="TradeEvent">
+      <wsdl:output wsaw:Action="http://tempuri.org/IDataBase/TradeEvent" message="tns:IDataBase_TradeEvent_OutputCallbackMessage" />
     </wsdl:operation>
   </wsdl:portType>
-  <wsdl:binding name="NetNamedPipeBinding_ISmartComData" type="tns:ISmartComData">
-    <wsp:PolicyReference URI="#NetNamedPipeBinding_ISmartComData_policy" />
-    <soap12:binding transport="http://schemas.microsoft.com/soap/named-pipe" />
-    <wsdl:operation name="ConnectToSmartCom">
-      <soap12:operation soapAction="http://tempuri.org/ISmartComData/ConnectToSmartCom" style="document" />
+  <wsdl:binding name="NetTcpBinding_ISmartComData" type="tns:ISmartComData">
+    <wsp:PolicyReference URI="#NetTcpBinding_ISmartComData_policy" />
+    <soap12:binding transport="http://schemas.microsoft.com/soap/tcp" />
+    <wsdl:operation name="DefaultOperation">
+      <soap12:operation soapAction="http://tempuri.org/ISmartComData/DefaultOperation" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -72,9 +83,18 @@
       </wsdl:output>
     </wsdl:operation>
   </wsdl:binding>
-  <wsdl:binding name="NetNamedPipeBinding_IDataBase" type="tns:IDataBase">
-    <wsp:PolicyReference URI="#NetNamedPipeBinding_IDataBase_policy" />
-    <soap12:binding transport="http://schemas.microsoft.com/soap/named-pipe" />
+  <wsdl:binding name="NetTcpBinding_IDataBase" type="tns:IDataBase">
+    <wsp:PolicyReference URI="#NetTcpBinding_IDataBase_policy" />
+    <soap12:binding transport="http://schemas.microsoft.com/soap/tcp" />
+    <wsdl:operation name="ConnectToDataSource">
+      <soap12:operation soapAction="http://tempuri.org/IDataBase/ConnectToDataSource" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
     <wsdl:operation name="ListenSymbol">
       <soap12:operation soapAction="http://tempuri.org/IDataBase/ListenSymbol" style="document" />
       <wsdl:input>
@@ -84,30 +104,30 @@
         <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
-    <wsdl:operation name="UpdateAskEvent">
-      <soap12:operation soapAction="http://tempuri.org/IDataBase/UpdateAskEvent" style="document" />
+    <wsdl:operation name="UpdateBidOrAskEvent">
+      <soap12:operation soapAction="http://tempuri.org/IDataBase/UpdateBidOrAskEvent" style="document" />
       <wsdl:output>
         <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
-    <wsdl:operation name="UpdateBidEvent">
-      <soap12:operation soapAction="http://tempuri.org/IDataBase/UpdateBidEvent" style="document" />
+    <wsdl:operation name="TradeEvent">
+      <soap12:operation soapAction="http://tempuri.org/IDataBase/TradeEvent" style="document" />
       <wsdl:output>
         <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
   </wsdl:binding>
   <wsdl:service name="SmartComData">
-    <wsdl:port name="NetNamedPipeBinding_ISmartComData" binding="tns:NetNamedPipeBinding_ISmartComData">
-      <soap12:address location="net.pipe://127.0.0.1/Speculator/SmartComData/" />
+    <wsdl:port name="NetTcpBinding_ISmartComData" binding="tns:NetTcpBinding_ISmartComData">
+      <soap12:address location="net.tcp://127.0.0.1/Speculator/SmartComData/" />
       <wsa10:EndpointReference>
-        <wsa10:Address>net.pipe://127.0.0.1/Speculator/SmartComData/</wsa10:Address>
+        <wsa10:Address>net.tcp://127.0.0.1/Speculator/SmartComData/</wsa10:Address>
       </wsa10:EndpointReference>
     </wsdl:port>
-    <wsdl:port name="NetNamedPipeBinding_IDataBase" binding="tns:NetNamedPipeBinding_IDataBase">
-      <soap12:address location="net.pipe://127.0.0.1/Speculator/SmartComData/" />
+    <wsdl:port name="NetTcpBinding_IDataBase" binding="tns:NetTcpBinding_IDataBase">
+      <soap12:address location="net.tcp://127.0.0.1/Speculator/SmartComData/" />
       <wsa10:EndpointReference>
-        <wsa10:Address>net.pipe://127.0.0.1/Speculator/SmartComData/</wsa10:Address>
+        <wsa10:Address>net.tcp://127.0.0.1/Speculator/SmartComData/</wsa10:Address>
       </wsa10:EndpointReference>
     </wsdl:port>
   </wsdl:service>
