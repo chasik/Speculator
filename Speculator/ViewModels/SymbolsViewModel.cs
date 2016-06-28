@@ -43,8 +43,7 @@ namespace Speculator.ViewModels
             {
                 DataSources = new ObservableCollection<DataSource>(DataSources),
                 SpeculatorDataClient = SpeculatorDataClient,
-                SelectUiCommand = selectCommand
-            });
+                SelectUiCommand = selectCommand});
 
             var resultChoice = ChoiceSymbolDialogService.ShowDialog(new List<UICommand> {selectCommand, cancelCommand},
                 "Выбор инструмента", dialogViewModel);
@@ -57,8 +56,7 @@ namespace Speculator.ViewModels
                 var docPanel = new DocumentPanel
                 {
                     Caption = dialogViewModel.SelectedSymbol.Name,
-                    Content = content
-                };
+                    Content = content};
                 (commandParams as DocumentGroup)?.Items.Add(docPanel);
             }
         }

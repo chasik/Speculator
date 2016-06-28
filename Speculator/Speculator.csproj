@@ -102,12 +102,14 @@
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
     <Compile Include="ViewModels\Converters\AddSymbolCommandParamsConverter.cs" />
+    <Compile Include="ViewModels\DataTemplateSelectors\GlassTemplateSelector.cs" />
     <Compile Include="ViewModels\Data\MoexDataViewModel.cs" />
     <Compile Include="ViewModels\Data\PlazaDataViewModel.cs" />
     <Compile Include="ViewModels\Data\QuikDataViewModel.cs" />
     <Compile Include="ViewModels\Data\SmartComDataViewModel.cs" />
     <Compile Include="ViewModels\Data\TransaqDataViewModel.cs" />
     <Compile Include="ViewModels\Dialogs\ChoiceSymbolDialogViewModel.cs" />
+    <Compile Include="ViewModels\ExtensionMethods\VisualTreeHelpers.cs" />
     <Compile Include="ViewModels\SymbolPanelViewModel.cs" />
     <Compile Include="ViewModels\SymbolsViewModel.cs" />
     <Compile Include="Views\Data\MoexDataView.xaml.cs">
@@ -175,6 +177,10 @@
       <DependentUpon>MainView.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Views\Resources\GlassTemplates.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\SettingsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -328,6 +334,7 @@
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.

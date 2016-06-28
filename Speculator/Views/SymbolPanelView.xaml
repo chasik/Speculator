@@ -4,54 +4,103 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:dxdo="http://schemas.devexpress.com/winfx/2008/xaml/docking" 
-             xmlns:local="clr-namespace:Speculator.Views" 
              xmlns:ig="http://schemas.infragistics.com/xaml"
              xmlns:viewModels="clr-namespace:Speculator.ViewModels"
              xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
              xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
+             xmlns:dataTemplateSelectors="clr-namespace:Speculator.ViewModels.DataTemplateSelectors"
              mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="600" 
              DataContext="{dxmvvm:ViewModelSource Type={x:Type viewModels:SymbolPanelViewModel}}">
+    
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Resources/GlassTemplates.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    
+    
     <dxmvvm:Interaction.Behaviors>
         <dxmvvm:EventToCommand EventName="Loaded" Command="{Binding StartListenDataServiceCommand}"/>
     </dxmvvm:Interaction.Behaviors>
 
-    <dxdo:DockLayoutManager>
-        <dxdo:LayoutGroup>
-            <dxdo:LayoutPanel Caption="Panel1">
-                <ig:XamDataChart HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                    <ig:XamDataChart.DataContext>
-                        <viewModels:SymbolPanelViewModel/>
-                    </ig:XamDataChart.DataContext>
-                    <ig:XamDataChart.Axes>
-                        <ig:CategoryDateTimeXAxis>
-                            <ig:CategoryDateTimeXAxis.LabelSettings>
-                                <ig:AxisLabelSettings Location="OutsideBottom" Extent="35"/>
-                            </ig:CategoryDateTimeXAxis.LabelSettings>
-                        </ig:CategoryDateTimeXAxis>
-                        <ig:NumericYAxis>
-                            <ig:NumericYAxis.LabelSettings>
-                                <ig:AxisLabelSettings Location="OutsideLeft"/>
-                            </ig:NumericYAxis.LabelSettings>
-                        </ig:NumericYAxis>
-                    </ig:XamDataChart.Axes>
-                </ig:XamDataChart>
-            </dxdo:LayoutPanel>
-            <dxdo:LayoutPanel Caption="Panel3" ItemWidth="200">
-                <Grid>
-                    <dxg:GridControl VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="Aqua" 
-                              FontSize="10" AutoGenerateColumns="None"
-                              ItemsSource="{Binding Glass}">
-                        <dxg:GridControl.View>
-                            <dxg:TableView AutoWidth="True"></dxg:TableView>
-                        </dxg:GridControl.View>
-                        <dxg:GridControl.Columns>
-                            <dxg:GridColumn Binding="{Binding Price}"></dxg:GridColumn>
-                            <dxg:GridColumn Binding="{Binding Volume}"></dxg:GridColumn>
-                        </dxg:GridControl.Columns>
-                    </dxg:GridControl>
-                </Grid>
-            </dxdo:LayoutPanel>
-        </dxdo:LayoutGroup>
-    </dxdo:DockLayoutManager>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="100"/>
+        </Grid.ColumnDefinitions>
+
+        <ig:XamDataChart x:Name="DataChart" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                            Title="{Binding Trades.Count}">
+                      
+            <ig:XamDataChart.Axes>
+
+                <ig:CategoryDateTimeXAxis x:Name="XAxisBuy" DateTimeMemberPath="TradeDateTime"
+                                          ItemsSource="{Binding TradesBuy}">
+                    <ig:CategoryDateTimeXAxis.LabelSettings>
+                        <ig:AxisLabelSettings Location="OutsideBottom" Extent="0"/>
+                    </ig:CategoryDateTimeXAxis.LabelSettings>
+                </ig:CategoryDateTimeXAxis>
+
+                <ig:CategoryDateTimeXAxis x:Name="XAxisSell" DateTimeMemberPath="TradeDateTime"
+                                          ItemsSource="{Binding TradesSell}">
+                    <ig:CategoryDateTimeXAxis.LabelSettings>
+                        <ig:AxisLabelSettings Location="OutsideTop" Extent="0"/>
+                    </ig:CategoryDateTimeXAxis.LabelSettings>
+                </ig:CategoryDateTimeXAxis>
+
+
+                <ig:NumericYAxis x:Name="YAxis" 
+                                 MinimumValue="{Binding MinimumVisiblePriceValue, Mode=TwoWay}"
+                                 MaximumValue="{Binding MaximumVisiblePriceValue, Mode=TwoWay}">
+                    <ig:NumericYAxis.LabelSettings>
+                        <ig:AxisLabelSettings Location="OutsideLeft" Extent="0" />
+                    </ig:NumericYAxis.LabelSettings>
+                </ig:NumericYAxis>
+
+            </ig:XamDataChart.Axes>
+
+            <ig:XamDataChart.Series>
+                <ig:StepLineSeries MarkerType="None" ValueMemberPath="Price" Brush="CornflowerBlue"
+                                    IsHighlightingEnabled="True" IsTransitionInEnabled="True"
+                                    ItemsSource="{Binding TradesBuy}" 
+                                    XAxis="{Binding ElementName=XAxisBuy}"
+                                    YAxis="{Binding ElementName=YAxis}">
+                </ig:StepLineSeries>
+                <ig:StepLineSeries MarkerType="None" ValueMemberPath="Price" Brush="IndianRed"
+                                    IsHighlightingEnabled="True" IsTransitionInEnabled="True"
+                                    ItemsSource="{Binding TradesSell}" 
+                                    XAxis="{Binding ElementName=XAxisSell}"
+                                    YAxis="{Binding ElementName=YAxis}">
+                </ig:StepLineSeries>
+            </ig:XamDataChart.Series>
+                        
+        </ig:XamDataChart>
+                    
+        <dxg:GridControl Grid.Column="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+                         AutoGenerateColumns="None"
+                         ItemsSource="{Binding Glass}">
+            <dxg:GridControl.View>
+                <dxg:TableView AutoWidth="True" ShowColumnHeaders="False" UseLightweightTemplates="All"
+                               AllowPerPixelScrolling="True" ScrollAnimationMode="EaseOut" AllowScrollAnimation="True"
+                               ShowGroupPanel="False" ShowAutoFilterRow="False"
+                               VerticalScrollbarVisibility="Hidden" RowMinHeight="5" ShowIndicator="False"
+                               TopRowIndex="{Binding TopRowIndex, Mode=TwoWay}">
+                    <dxmvvm:Interaction.Behaviors>
+                        <dxmvvm:EventToCommand EventName="Loaded" Command="{Binding TableViewLoadedCommand}" PassEventArgsToCommand="True" />
+                    </dxmvvm:Interaction.Behaviors>
+                    <dxg:TableView.DataRowTemplateSelector>
+                        <dataTemplateSelectors:GlassTemplateSelector 
+                            GlassBigDataTemplate="{StaticResource GlassBigDataTemplate}"
+                            GlassNormalDataTemplate="{StaticResource GlassNormalDataTemplate}"
+                            GlassSmallDataTemplate="{StaticResource GlassSmallDataTemplate}"
+                            GlassMicroDataTemplate="{StaticResource GlassMicroDataTemplate}"/>
+                    </dxg:TableView.DataRowTemplateSelector>
+                </dxg:TableView>
+            </dxg:GridControl.View>
+        </dxg:GridControl>
+    </Grid>
+
 
 </UserControl>

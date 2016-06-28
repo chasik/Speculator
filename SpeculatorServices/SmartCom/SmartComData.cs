@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.ServiceModel;
+using System.Threading;
 using SmartCOM3Lib;
 using SpeculatorModel;
 using SpeculatorModel.MainData;
@@ -13,9 +14,10 @@ using SpeculatorServices.Properties;
 
 namespace SpeculatorServices.SmartCom
 {
-    [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, ConcurrencyMode = ConcurrencyMode.Multiple)]
+    [ServiceBehavior(InstanceContextMode = InstanceContextMode.PerSession, ConcurrencyMode = ConcurrencyMode.Multiple)]
     public class SmartComData : DataServiceBase, ISmartComData, IDataBase
     {
+        public bool OnlyDuplexForClient { get; private set; }
         private const string SuffixSymbols = "-9.16_FT";
         private const string SuffixSymbolsForOil = "-7.16_FT";
         private List<string> _symbolsForSaveToDb = new List<string> {"RTS", "Si", "Eu", "ED", "SBRF", "LKOH", "GAZR", "ROSN", "VTBR", "GOLD"};
@@ -42,26 +44,35 @@ namespace SpeculatorServices.SmartCom
 
         public void ConnectToDataSource()
         {
+            OnlyDuplexForClient = true;
             ConnectToSmartCom();
         }
 
+        public void DefaultOperation()
+        {
+            ConnectToSmartCom();
+        }
         public void ListenSymbol(Symbol symbol)
         {
             RegisterClientWithCallBack(new[] { symbol.Name });
+            RunListenSymbolEvents(new List<SmartComSymbol> {new SmartComSymbol {Name = symbol.Name}});
         }
 
         public void ConnectToSmartCom()
         {
             if (_smartCom != null)
                 return;
+
+            // добавляем для записи в базу инструменты
             _symbolsForSaveToDb = _symbolsForSaveToDb.Select(symb =>
             {
                 symb = symb + SuffixSymbols;
                 return symb;
             }).ToList();
 
-            // фьючерс на нефть
+            // и отдельно добави фьючерс на нефть
             _symbolsForSaveToDb.Add("BR" + SuffixSymbolsForOil);
+
             _smartCom = new StServerClass();
             _smartCom.Connected += SmartCom_Connected;
             _smartCom.Disconnected += SmartCom_Disconnected;
@@ -128,18 +139,21 @@ namespace SpeculatorServices.SmartCom
                 oldAsk.IsBid = false;
                 askChanged = true;
             }
+
+            if (bidChanged)
+                UpdateBidAskEvent(currentSymbol, newBid, isBid: true);
+            if (askChanged)
+                UpdateBidAskEvent(currentSymbol, newAsk, isBid: false);
+
+            if (OnlyDuplexForClient)
+                return;
+
             using (var dbContext = new SpeculatorContext())
             {
                 if (bidChanged)
-                {
-                    UpdateBidAskEvent(currentSymbol, newBid, IsBid: true);
                     dbContext.SmartComBidAskValues.Add(newBid);
-                }
                 if (askChanged)
-                {
-                    UpdateBidAskEvent(currentSymbol, newAsk, IsBid: false);
                     dbContext.SmartComBidAskValues.Add(newAsk);
-                }
                 dbContext.SaveChanges();
             }
         }
@@ -162,6 +176,10 @@ namespace SpeculatorServices.SmartCom
             };
 
             TradeEvent(currentSymbol, tick);
+
+            if (OnlyDuplexForClient)
+                return;
+
             using (var dbContext = new SpeculatorContext())
             {
                 dbContext.SmartComTicks.Add(tick);
@@ -189,6 +207,10 @@ namespace SpeculatorServices.SmartCom
                 OpenInterest = (int) openInt,
                 Volatility = volat
             };
+
+            if (OnlyDuplexForClient)
+                return;
+
             using (var dbContext = new SpeculatorContext())
             {
                 dbContext.SmartComQuotes.Add(quote);
@@ -197,6 +219,10 @@ namespace SpeculatorServices.SmartCom
 
         private async void _smartCom_AddSymbol(int row, int nrows, string symbol, string shortName, string longName, string type, int decimals, int lotSize, double punkt, double step, string secExtId, string secExchName, DateTime expiryDate, double daysBeforeExpiry, double strike)
         {
+            if (OnlyDuplexForClient)
+                return;
+
+            // если это запущена служба для записи данных в базу, то работаем с полученным инструментом
             var currentSymbol = new SmartComSymbol
             {
                 Name = symbol,
@@ -216,18 +242,42 @@ namespace SpeculatorServices.SmartCom
             if (_smartComSymbols.All(s => s.Name != currentSymbol.Name))
                 _dbContext.SmartComSymbols.Add(currentSymbol);
 
-            if (row != nrows - 1) return;
+            if (row != nrows - 1)
+                return;
             await _dbContext.SaveChangesAsync();
             _smartComSymbols = _dbContext.SmartComSymbols.ToList();
             _symbolsInJob = _smartComSymbols.Where(scs => _symbolsForSaveToDb.Contains(scs.Name)).DistinctBy(scs => scs.Name).ToList();
-            _symbolsInJob.ForEach(s =>
-                {
-                    _glasses.GetOrAdd(s.Name, new ConcurrentDictionary<double, SmartComBidAskValue>());
 
-                    _smartCom.ListenTicks(s.Name);
-                    _smartCom.ListenQuotes(s.Name);
-                    _smartCom.ListenBidAsks(s.Name);
-                });
+            RunListenSymbolEvents(_symbolsInJob);
+        }
+
+        private void RunListenSymbolEvents(List<SmartComSymbol> symbols)
+        {
+            if (_symbolsInJob == null)
+                _symbolsInJob = new List<SmartComSymbol>(symbols);
+            else
+                _symbolsInJob.AddRange(symbols);
+
+            symbols.ForEach(s =>
+            {
+                _glasses.GetOrAdd(s.Name, new ConcurrentDictionary<double, SmartComBidAskValue>());
+                var error = false;
+                do
+                {
+                    error = false;
+                    try
+                    {
+                        _smartCom.ListenTicks(s.Name);
+                        _smartCom.ListenQuotes(s.Name);
+                        _smartCom.ListenBidAsks(s.Name);
+                    }
+                    catch (Exception)
+                    {
+                        error = true;
+                        Thread.Sleep(2000);
+                    }
+                } while (error);
+            });
         }
 
         private void SmartCom_Disconnected(string reason)
@@ -238,11 +288,6 @@ namespace SpeculatorServices.SmartCom
         private void SmartCom_Connected()
         {
             _smartCom.GetSymbols();
-        }
-
-        public void DefaultOperation()
-        {
-            throw new NotImplementedException();
         }
     }
 

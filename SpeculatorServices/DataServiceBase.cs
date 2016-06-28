@@ -30,7 +30,7 @@ namespace SpeculatorServices
                 ClientsWantGetSymbols[callBack].AddRange(symbols.Except(ClientsWantGetSymbols[callBack]));}
         }
 
-        protected void UpdateBidAskEvent(SmartComSymbol symbol, SmartComBidAskValue value, bool IsBid = false)
+        protected void UpdateBidAskEvent(SmartComSymbol symbol, SmartComBidAskValue value, bool isBid = false)
         {
             for (var i = 0; i < ClientsWithCallBack.Count; i++)
             {
