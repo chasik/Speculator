@@ -14,7 +14,7 @@ using SpeculatorServices.Properties;
 
 namespace SpeculatorServices.SmartCom
 {
-    [ServiceBehavior(InstanceContextMode = InstanceContextMode.PerSession, ConcurrencyMode = ConcurrencyMode.Multiple)]
+    [ServiceBehavior(InstanceContextMode = InstanceContextMode.PerSession, ConcurrencyMode = ConcurrencyMode.Reentrant)]
     public class SmartComData : DataServiceBase, ISmartComData, IDataBase
     {
         public bool OnlyDuplexForClient { get; private set; }
@@ -55,7 +55,16 @@ namespace SpeculatorServices.SmartCom
         public void ListenSymbol(Symbol symbol)
         {
             RegisterClientWithCallBack(new[] { symbol.Name });
-            RunListenSymbolEvents(new List<SmartComSymbol> {new SmartComSymbol {Name = symbol.Name}});
+            RunListenSymbolEvents(new List<SmartComSymbol>
+            {
+                new SmartComSymbol
+                {
+                    Name = symbol.Name,
+                    Step = symbol.Step,
+                    LotSize = symbol.LotSize,
+                    Punkt = symbol.Punkt
+                }
+            });
         }
 
         public void ConnectToSmartCom()
@@ -104,13 +113,16 @@ namespace SpeculatorServices.SmartCom
             var currentSymbol = _symbolsInJob.Single(s => s.Name == symbol);
             var newBid = new SmartComBidAskValue
             {
+                Added = DateTime.Now,
                 SmartComSymbolId = currentSymbol.Id,
                 IsBid = true,
                 RowId = (byte) row,
-                Price = bid, Volume = (int)bidsize
+                Price = bid,
+                Volume = (int)bidsize
             };
             var newAsk = new SmartComBidAskValue
             {
+                Added = DateTime.Now,
                 SmartComSymbolId = currentSymbol.Id,
                 IsBid = false,
                 RowId = (byte) row,
@@ -172,7 +184,8 @@ namespace SpeculatorServices.SmartCom
                 Price = price,
                 Volume = (int) volume,
                 DiractionId = (byte) action,
-                TradeDateTime = datetime
+                TradeDateTime = datetime,
+                TradeAdded = DateTime.Now
             };
 
             TradeEvent(currentSymbol, tick);

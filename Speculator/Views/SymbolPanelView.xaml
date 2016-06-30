@@ -3,11 +3,11 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:dxdo="http://schemas.devexpress.com/winfx/2008/xaml/docking" 
              xmlns:ig="http://schemas.infragistics.com/xaml"
              xmlns:viewModels="clr-namespace:Speculator.ViewModels"
              xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
              xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
+             xmlns:dxgt="clr-namespace:DevExpress.Xpf.Grid.Themes;assembly=DevExpress.Xpf.Grid.v16.1"
              xmlns:dataTemplateSelectors="clr-namespace:Speculator.ViewModels.DataTemplateSelectors"
              mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="600" 
              DataContext="{dxmvvm:ViewModelSource Type={x:Type viewModels:SymbolPanelViewModel}}">
@@ -16,7 +16,11 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Resources/GlassTemplates.xaml" />
+                <ResourceDictionary Source="../Themes/MetroDark/MetroDark.xamDataChart.xaml" />
             </ResourceDictionary.MergedDictionaries>
+            <ControlTemplate x:Key="{dxgt:GridRowThemeKey ResourceKey=RowTemplate, IsThemeIndependent=True}" TargetType="dxg:RowControl">
+                <Grid x:Name="PART_LayoutPanel" />
+            </ControlTemplate>
         </ResourceDictionary>
     </UserControl.Resources>
     
@@ -28,15 +32,19 @@
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="100"/>
+            <ColumnDefinition Width="80"/>
         </Grid.ColumnDefinitions>
 
         <ig:XamDataChart x:Name="DataChart" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-                            Title="{Binding Trades.Count}">
+                         Padding="0" Margin="0" CrosshairVisibility="Visible"
+                         HorizontalZoomable="True" AnimateSeriesWhenAxisRangeChanges="False"> 
+            <!--HorizontalZoombarVisibility="Visible"-->
                       
             <ig:XamDataChart.Axes>
 
-                <ig:CategoryDateTimeXAxis x:Name="XAxisBuy" DateTimeMemberPath="TradeDateTime"
+                <ig:CategoryDateTimeXAxis x:Name="XAxisBuy" DateTimeMemberPath="TradeDateTime" 
+                                          MinimumValue="{Binding StartDateValue}"
+                                          MaximumValue="{Binding FinishDateValue}"
                                           ItemsSource="{Binding TradesBuy}">
                     <ig:CategoryDateTimeXAxis.LabelSettings>
                         <ig:AxisLabelSettings Location="OutsideBottom" Extent="0"/>
@@ -44,48 +52,95 @@
                 </ig:CategoryDateTimeXAxis>
 
                 <ig:CategoryDateTimeXAxis x:Name="XAxisSell" DateTimeMemberPath="TradeDateTime"
+                                          MinimumValue="{Binding StartDateValue}"
+                                          MaximumValue="{Binding FinishDateValue}"
                                           ItemsSource="{Binding TradesSell}">
                     <ig:CategoryDateTimeXAxis.LabelSettings>
                         <ig:AxisLabelSettings Location="OutsideTop" Extent="0"/>
                     </ig:CategoryDateTimeXAxis.LabelSettings>
                 </ig:CategoryDateTimeXAxis>
 
-
                 <ig:NumericYAxis x:Name="YAxis" 
                                  MinimumValue="{Binding MinimumVisiblePriceValue, Mode=TwoWay}"
                                  MaximumValue="{Binding MaximumVisiblePriceValue, Mode=TwoWay}">
                     <ig:NumericYAxis.LabelSettings>
-                        <ig:AxisLabelSettings Location="OutsideLeft" Extent="0" />
+                        <ig:AxisLabelSettings Location="OutsideLeft" FontSize="9" FontWeight="UltraLight" Foreground="Azure" Angle="-90"/>
                     </ig:NumericYAxis.LabelSettings>
                 </ig:NumericYAxis>
 
             </ig:XamDataChart.Axes>
 
             <ig:XamDataChart.Series>
-                <ig:StepLineSeries MarkerType="None" ValueMemberPath="Price" Brush="CornflowerBlue"
-                                    IsHighlightingEnabled="True" IsTransitionInEnabled="True"
+                <ig:StepLineSeries MarkerType="None" ValueMemberPath="Price" Brush="IndianRed"
                                     ItemsSource="{Binding TradesBuy}" 
                                     XAxis="{Binding ElementName=XAxisBuy}"
                                     YAxis="{Binding ElementName=YAxis}">
                 </ig:StepLineSeries>
-                <ig:StepLineSeries MarkerType="None" ValueMemberPath="Price" Brush="IndianRed"
-                                    IsHighlightingEnabled="True" IsTransitionInEnabled="True"
-                                    ItemsSource="{Binding TradesSell}" 
-                                    XAxis="{Binding ElementName=XAxisSell}"
-                                    YAxis="{Binding ElementName=YAxis}">
+                <ig:StepLineSeries MarkerType="None" ValueMemberPath="Price" Brush="CornflowerBlue"
+                                   ItemsSource="{Binding TradesSell}"
+                                   XAxis="{Binding ElementName=XAxisSell}"
+                                   YAxis="{Binding ElementName=YAxis}">
                 </ig:StepLineSeries>
+
+                <!--ig:ItemToolTipLayer x:Name="ToolTipLayer" Opacity="1" Thickness="1" Canvas.ZIndex="12" UseInterpolation="True" TransitionDuration="0:00:00.2" /-->
+                <!--ig:CrosshairLayer x:Name="CrosshairLayer" Opacity="1" Thickness="1"  Canvas.ZIndex="15" UseInterpolation="True" TransitionDuration="0:00:00.0"/-->
             </ig:XamDataChart.Series>
                         
         </ig:XamDataChart>
-                    
+
+        <ig:XamZoombar Height="100" Grid.Column="0" Background="Transparent"
+                       Range="{Binding ElementName=DataChart, Path=HorizontalZoombar.Range, Mode=TwoWay}"
+                       VerticalAlignment="Bottom">
+            <ig:XamZoombar.HorizontalPreviewContent>
+                <ig:XamDataChart x:Name="DataChartPreview" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                         HorizontalZoomable="True" AnimateSeriesWhenAxisRangeChanges="False">
+                    <ig:XamDataChart.Axes>
+                        <ig:CategoryDateTimeXAxis x:Name="XAxisBuyPreview" DateTimeMemberPath="TradeDateTime"
+                                          MinimumValue="{Binding StartDateValue}"
+                                          MaximumValue="{Binding FinishDateValue}"
+                                          ItemsSource="{Binding TradesBuy}">
+                            <ig:CategoryDateTimeXAxis.LabelSettings>
+                                <ig:AxisLabelSettings Location="OutsideBottom" Visibility="Collapsed"/>
+                            </ig:CategoryDateTimeXAxis.LabelSettings>
+                        </ig:CategoryDateTimeXAxis>
+                        <ig:CategoryDateTimeXAxis x:Name="XAxisSellPreview" DateTimeMemberPath="TradeDateTime"
+                                          MinimumValue="{Binding StartDateValue}"
+                                          MaximumValue="{Binding FinishDateValue}"
+                                          ItemsSource="{Binding TradesSell}">
+                            <ig:CategoryDateTimeXAxis.LabelSettings>
+                                <ig:AxisLabelSettings Location="OutsideTop" Visibility="Collapsed"/>
+                            </ig:CategoryDateTimeXAxis.LabelSettings>
+                        </ig:CategoryDateTimeXAxis>
+                        <ig:NumericYAxis x:Name="YAxisPreview">
+                            <ig:NumericYAxis.LabelSettings>
+                                <ig:AxisLabelSettings Location="OutsideLeft" Visibility="Collapsed"/>
+                            </ig:NumericYAxis.LabelSettings>
+                        </ig:NumericYAxis>
+                    </ig:XamDataChart.Axes>
+                    <ig:XamDataChart.Series>
+                        <ig:StepLineSeries MarkerType="None" ValueMemberPath="Price" Brush="CornflowerBlue"
+                                    ItemsSource="{Binding TradesBuy}" 
+                                    XAxis="{Binding ElementName=XAxisBuyPreview}"
+                                    YAxis="{Binding ElementName=YAxisPreview}">
+                        </ig:StepLineSeries>
+                        <ig:StepLineSeries MarkerType="None" ValueMemberPath="Price" Brush="IndianRed"
+                                    ItemsSource="{Binding TradesSell}" 
+                                    XAxis="{Binding ElementName=XAxisSellPreview}"
+                                    YAxis="{Binding ElementName=YAxisPreview}">
+                        </ig:StepLineSeries>
+                    </ig:XamDataChart.Series>
+                </ig:XamDataChart>
+            </ig:XamZoombar.HorizontalPreviewContent>
+        </ig:XamZoombar>
+
         <dxg:GridControl Grid.Column="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
-                         AutoGenerateColumns="None"
+                         AutoGenerateColumns="None" ShowBorder="False"
                          ItemsSource="{Binding Glass}">
             <dxg:GridControl.View>
+                <!--AllowPerPixelScrolling="True" ScrollAnimationMode="EaseOut" AllowScrollAnimation="True"-->
                 <dxg:TableView AutoWidth="True" ShowColumnHeaders="False" UseLightweightTemplates="All"
-                               AllowPerPixelScrolling="True" ScrollAnimationMode="EaseOut" AllowScrollAnimation="True"
                                ShowGroupPanel="False" ShowAutoFilterRow="False"
-                               VerticalScrollbarVisibility="Hidden" RowMinHeight="5" ShowIndicator="False"
+                               VerticalScrollbarVisibility="Hidden" RowMinHeight="2" ShowIndicator="False"
                                TopRowIndex="{Binding TopRowIndex, Mode=TwoWay}">
                     <dxmvvm:Interaction.Behaviors>
                         <dxmvvm:EventToCommand EventName="Loaded" Command="{Binding TableViewLoadedCommand}" PassEventArgsToCommand="True" />

@@ -1,11 +1,16 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.ServiceModel;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Forms;
+using System.Windows.Input;
 using DevExpress.Mvvm.DataAnnotations;
+using DevExpress.Mvvm.Native;
+using DevExpress.Mvvm.POCO;
 using DevExpress.Xpf.Core.Native;
 using DevExpress.Xpf.Grid;
 using Speculator.SmartComData;
@@ -21,19 +26,24 @@ namespace Speculator.ViewModels
         public IDataBase DataBaseClient { get; set; }
         public DataSource DataSource { get; set; }
         public Symbol Symbol { get; set; }
-        public virtual byte Zoom { get; set; }
+        public virtual short Zoom { get; set; }
         public virtual BindingList<SmartComBidAskValue> Glass { get; set; }
         public virtual ObservableCollection<SmartComTrade> Trades { get; set; }
         public virtual ObservableCollection<SmartComTrade> TradesBuy { get; set; }
         public virtual ObservableCollection<SmartComTrade> TradesSell { get; set; }
 
         public virtual int TopRowIndex { get; set; }
+        public virtual DateTime StartDateValue { get; set; }
+        public virtual DateTime FinishDateValue { get; set; }
+        public virtual double MinimumPrice { get; set; }
+        public virtual double MaximumPrice { get; set; }
         public virtual double MinimumVisiblePriceValue { get; set; }
         public virtual double MaximumVisiblePriceValue { get; set; }
 
         public async void StartListenDataService()
         {
-            Trades = new ObservableCollection<SmartComTrade>();
+            Zoom = 2;
+
             TradesBuy = new ObservableCollection<SmartComTrade>();
             TradesSell = new ObservableCollection<SmartComTrade>();
             Glass = new BindingList<SmartComBidAskValue>();
@@ -45,10 +55,18 @@ namespace Speculator.ViewModels
 
         public void UpdateBidOrAskEvent(SmartComSymbol symbol, SmartComBidAskValue value)
         {
-            var priceValue = Glass.SingleOrDefault(g => g.Price.Equals(value.Price));
+            var priceValue = Glass.SingleOrDefault(g => Math.Abs(g.Price - value.Price) < 0.00001);
             if (priceValue == null)
             {
                 Glass.Add(value);
+                if (Glass.Count == 1)
+                {
+                    for (var i = 1; i < 200; i++)
+                    { 
+                        Glass.Add(new SmartComBidAskValue {Price = value.Price + i * (double)symbol.Step, Volume = 0, IsBid = true});
+                        Glass.Add(new SmartComBidAskValue {Price = value.Price - i * (double)symbol.Step, Volume = 0, IsBid = false});
+                    }
+                }
                 Glass = new BindingList<SmartComBidAskValue>(Glass.OrderByDescending(g => g.Price).ToList());
             }
             else
@@ -59,13 +77,35 @@ namespace Speculator.ViewModels
 
         public void TradeEvent(SmartComSymbol symbol, SmartComTrade trade)
         {
+            if (Trades == null)
+            {
+                Trades = new ObservableCollection<SmartComTrade>();
+                StartDateValue = trade.TradeAdded;
+                MinimumPrice = MaximumPrice = trade.Price;
+            }
+            FinishDateValue = trade.TradeAdded;
             Trades.Add(trade);
             if (trade.DiractionId == (byte)DiractionEnum.Buy)
                 TradesBuy.Add(trade);
             else if (trade.DiractionId == (byte)DiractionEnum.Sell)
                 TradesSell.Add(trade);
+
+            MaximumPrice = Math.Max(MaximumPrice, trade.Price);
+            MinimumPrice = Math.Min(MinimumPrice, trade.Price);
+
+            CalcIndicator(trade, indicatorIndex: 1);
         }
 
+        private void CalcIndicator(SmartComTrade trade, int indicatorIndex)
+        {
+            if (Glass.Count < 20)
+                return;
+
+            var bid = Glass.Where(g => g.IsBid && g.RowId == 0).Min(g => g.Price);
+            var ask = Glass.Where(g => !g.IsBid && g.RowId == 0).Max(g => g.Price);
+
+            //trade.IndicatorsValues = new Dictionary<int, double>(indicatorIndex, );
+        }
         public void TableViewLoaded(RoutedEventArgs eventArgs)
         {
             // подписываемся на прокрутку стакана
@@ -75,18 +115,28 @@ namespace Speculator.ViewModels
                 var glassScrollViewer = visualTreeEnumerator.Current as ScrollViewer;
                 if (glassScrollViewer != null)
                 {
-                    glassScrollViewer.ScrollChanged += GlassScrollViewer_ScrollChanged; ;
+                    glassScrollViewer.ScrollChanged += GlassScrollViewer_ScrollChanged;
                 }
             }
         }
 
         private void GlassScrollViewer_ScrollChanged(object sender, ScrollChangedEventArgs e)
         {
-            var tableView = (e.Source as ScrollViewer).TemplatedParent as TableView;
-            var gridControl = tableView.Parent as GridControl;
+            var tableView = (e.Source as ScrollViewer)?.TemplatedParent as TableView;
+            var gridControl = tableView?.Parent as GridControl;
+
+            if ((Keyboard.GetKeyStates(Key.LeftCtrl) & KeyStates.Down) > 0 ||
+                (Keyboard.GetKeyStates(Key.RightCtrl) & KeyStates.Down) > 0)
+            {
+                Zoom += (short) (Math.Sign(e.VerticalChange) * 1);
+                if (Zoom < 1)
+                    Zoom = 1;
+                else if (Zoom > 4)
+                    Zoom = 4;
+                gridControl?.RefreshData();
+            }
 
             GetVisibleRowsOnScreen(gridControl, tableView, e.ViewportHeight, e.VerticalOffset);
-           
         }
 
 
@@ -95,25 +145,15 @@ namespace Speculator.ViewModels
             var topRowHandle = grid.GetRowHandleByListIndex(view.TopRowIndex);
             var bottomRowHandle = grid.GetRowHandleByVisibleIndex(Convert.ToInt32(viewPortHeight + verticalOffset));
 
-            SmartComBidAskValue oneRow;
             if (grid.IsValidRowHandle(bottomRowHandle))
             {
                 MaximumVisiblePriceValue = (grid.GetRow(topRowHandle) as SmartComBidAskValue).Price;
                 MinimumVisiblePriceValue = (grid.GetRow(bottomRowHandle) as SmartComBidAskValue).Price;
-                //for (var i = topRowHandle; i <= bottomRowHandle; i++)
-                //{
-                //    oneRow = grid.GetRow(i) as SmartComBidAskValue;
-                //}
             }
             else
             {
                 MaximumVisiblePriceValue = (grid.GetRow(topRowHandle) as SmartComBidAskValue).Price;
                 MinimumVisiblePriceValue = (grid.GetRow(grid.VisibleRowCount - 1) as SmartComBidAskValue).Price;
-                //for (var i = topRowHandle; i < grid.VisibleRowCount; i++)
-                //{
-                //    oneRow = grid.GetRow(i) as SmartComBidAskValue;
-                //    MinimumVisiblePriceValue = MaximumVisiblePriceValue = oneRow.Price;
-                //}
             }
         }
     }

@@ -1,24 +1,32 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:converters="clr-namespace:Speculator.ViewModels.Converters">
 
+    <converters:RowColorConverter x:Key="RowColorConverter"/>
+    
+    <Style x:Key="GlassGridStyle" TargetType="Grid">
+        <Setter Property="ShowGridLines" Value="False"/>
+        <Setter Property="Background" Value="{Binding Row, Converter={StaticResource RowColorConverter}}" />
+    </Style>
+    
     <DataTemplate x:Key="GlassBigDataTemplate">
-        <StackPanel Orientation="Horizontal">
-            <TextBlock Text="{Binding Row.Price}" HorizontalAlignment="Center" FontSize="8" FontWeight="Bold"/>
-            <TextBlock Text="{Binding Row.Volume}" HorizontalAlignment="Center" FontSize="8" FontWeight="Bold"/>
-        </StackPanel>
+        <Grid>
+            <Grid.Style>
+                <Style TargetType="Grid" BasedOn="{StaticResource GlassGridStyle}" />
+            </Grid.Style>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" Text="{Binding Row.Price}" HorizontalAlignment="Center" FontSize="9" FontWeight="Bold"/>
+            <TextBlock Grid.Column="1" Text="{Binding Row.Volume}" HorizontalAlignment="Center" FontSize="9" FontWeight="Bold"/>
+        </Grid>
     </DataTemplate>
 
     <DataTemplate x:Key="GlassNormalDataTemplate">
         <Grid>
             <Grid.Style>
-                <Style TargetType="Grid">
-                    <Setter Property="Background" Value="IndianRed" />
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding Row.IsBid}" Value="True">
-                            <Setter Property="Background" Value="CornflowerBlue" />
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
+                <Style TargetType="Grid" BasedOn="{StaticResource GlassGridStyle}" />
             </Grid.Style>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
@@ -30,17 +38,25 @@
     </DataTemplate>
 
     <DataTemplate x:Key="GlassSmallDataTemplate">
-        <StackPanel Orientation="Horizontal">
-            <TextBlock Text="{Binding Row.Price}" HorizontalAlignment="Center" FontSize="8" FontWeight="Bold"/>
-            <TextBlock Text="{Binding Row.Volume}" HorizontalAlignment="Center" FontSize="8" FontWeight="Bold"/>
-        </StackPanel>
+        <Grid>
+            <Grid.Style>
+                <Style TargetType="Grid" BasedOn="{StaticResource GlassGridStyle}" />
+            </Grid.Style>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" Text="{Binding Row.Price}" HorizontalAlignment="Center" FontSize="7" FontWeight="Light"/>
+            <TextBlock Grid.Column="1" Text="{Binding Row.Volume}" HorizontalAlignment="Center" FontSize="7" FontWeight="Light"/>
+        </Grid>
     </DataTemplate>
 
     <DataTemplate x:Key="GlassMicroDataTemplate">
-        <StackPanel Orientation="Horizontal">
-            <TextBlock Text="{Binding Row.Price}" HorizontalAlignment="Center" FontSize="8" FontWeight="Normal"/>
-            <TextBlock Text="{Binding Row.Volume}" HorizontalAlignment="Center" FontSize="8" FontWeight="Normal"/>
-        </StackPanel>
+        <Grid Height="3">
+            <Grid.Style>
+                <Style TargetType="Grid" BasedOn="{StaticResource GlassGridStyle}" />
+            </Grid.Style>
+        </Grid>
     </DataTemplate>
     
 </ResourceDictionary>
