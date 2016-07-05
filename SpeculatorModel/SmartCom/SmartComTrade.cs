@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Runtime.Serialization;
 using SpeculatorModel.MainData;
@@ -21,8 +20,5 @@ namespace SpeculatorModel.SmartCom
 
         [DataMember]
         public virtual SmartComSymbol SmartComSymbol { get; set; }
-
-        [NotMapped]
-        public Dictionary<int, double> IndicatorsValues { get; set; }
     }
 }

@@ -52,11 +52,13 @@ namespace Speculator.ViewModels
                 var content = new SymbolPanelView();
                 (content.DataContext as SymbolPanelViewModel).DataSource = dialogViewModel.UsedDataSource;
                 (content.DataContext as SymbolPanelViewModel).Symbol = dialogViewModel.SelectedSymbol;
+                (content.DataContext as SymbolPanelViewModel).HistoryDate = dialogViewModel.HistoryDate;
 
                 var docPanel = new DocumentPanel
                 {
                     Caption = dialogViewModel.SelectedSymbol.Name,
-                    Content = content};
+                    Content = content
+                };
                 (commandParams as DocumentGroup)?.Items.Add(docPanel);
             }
         }

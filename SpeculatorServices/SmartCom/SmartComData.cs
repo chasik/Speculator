@@ -14,12 +14,12 @@ using SpeculatorServices.Properties;
 
 namespace SpeculatorServices.SmartCom
 {
-    [ServiceBehavior(InstanceContextMode = InstanceContextMode.PerSession, ConcurrencyMode = ConcurrencyMode.Reentrant)]
+    [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, ConcurrencyMode = ConcurrencyMode.Multiple)]
     public class SmartComData : DataServiceBase, ISmartComData, IDataBase
     {
         public bool OnlyDuplexForClient { get; private set; }
         private const string SuffixSymbols = "-9.16_FT";
-        private const string SuffixSymbolsForOil = "-7.16_FT";
+        private const string SuffixSymbolsForOil = "-8.16_FT";
         private List<string> _symbolsForSaveToDb = new List<string> {"RTS", "Si", "Eu", "ED", "SBRF", "LKOH", "GAZR", "ROSN", "VTBR", "GOLD"};
         private List<SmartComSymbol> _symbolsInJob;
 
@@ -33,6 +33,9 @@ namespace SpeculatorServices.SmartCom
         static SmartComData()
         {
             #if !DEBUG
+                if (!EventLog.SourceExists("SmartComDataServiceHost"))
+                    EventLog.CreateEventSource("SmartComDataServiceHost", "Application");
+                EventLog.WriteEntry("SmartComDataServiceHost", $"Run Service Release Mode!{Settings.Default.SmartComHost} {Settings.Default.SmartComPort} {Settings.Default.SmartComLogin} {Settings.Default.SmartComPassword}");
                 new SmartComData().ConnectToSmartCom();
             #endif
         }
@@ -48,10 +51,51 @@ namespace SpeculatorServices.SmartCom
             ConnectToSmartCom();
         }
 
+        public void ConnectToHistoryDataSource(Symbol symbol, DateTime dayDateTime)
+        {
+            using (var dbContext = new SpeculatorContext())
+            {
+                //var allTicks = dbContext.SmartComTicks.Join(dbContext.SmartComBidAskValues, t => t.TradeAdded);
+
+
+                var ticks = dbContext.SmartComTicks
+                    .Where(
+                        t =>
+                            t.SmartComSymbolId == symbol.Id && t.TradeAdded >= dayDateTime &&
+                            t.TradeAdded <= dayDateTime.AddDays(1))
+                    .GroupJoin(
+                        dbContext.SmartComBidAskValues.Where(
+                            ba =>
+                                ba.SmartComSymbolId == symbol.Id && ba.Added >= dayDateTime &&
+                                ba.Added <= dayDateTime.AddDays(1)),
+                        t => t.TradeAdded,
+                        ba => ba.Added,
+                        (t, ba) => new {Tick = t, BidAsk = ba.DefaultIfEmpty()});
+                var bidAsk = dbContext.SmartComBidAskValues
+                    .Where(
+                        ba =>
+                            ba.SmartComSymbolId == symbol.Id && ba.Added >= dayDateTime &&
+                            ba.Added <= dayDateTime.AddDays(1))
+                            .GroupJoin(dbContext.SmartComTicks.Where( t => t.SmartComSymbolId == symbol.Id && t.TradeAdded >= dayDateTime && t.TradeAdded <= dayDateTime.AddDays(1)),
+                            ba => ba.Added, t => t.TradeAdded, (ba, t) => new {Tick = t.DefaultIfEmpty(), BidAsk = ba});
+                var fullOuterJoin = ticks.SelectMany(t => t.BidAsk.Select(ba => new  {Tick = t, BidAsk = ba})).ToList();
+
+
+                //.SelectMany(
+                //    x => x.BidAsks.DefaultIfEmpty(),
+                //    (t, ba) => new {t.Tick, BidAsk = ba}).ToList();
+
+
+                //t.SmartComSymbolId == symbol.Id && t.TradeDateTime >= dayDateTime &&
+                //t.TradeDateTime <= dayDateTime.AddDays(1)).ToList();
+            }
+        }
+
         public void DefaultOperation()
         {
             ConnectToSmartCom();
         }
+
         public void ListenSymbol(Symbol symbol)
         {
             RegisterClientWithCallBack(new[] { symbol.Name });
@@ -156,7 +200,7 @@ namespace SpeculatorServices.SmartCom
                 UpdateBidAskEvent(currentSymbol, newBid, isBid: true);
             if (askChanged)
                 UpdateBidAskEvent(currentSymbol, newAsk, isBid: false);
-
+            //EventLog.WriteEntry("SmartComDataServiceHost", $"SmartCom UpdateBidAsk. Symbol: {currentSymbol.Name}    OnlyDubplexForClient:{OnlyDuplexForClient}");
             if (OnlyDuplexForClient)
                 return;
 
@@ -167,6 +211,7 @@ namespace SpeculatorServices.SmartCom
                 if (askChanged)
                     dbContext.SmartComBidAskValues.Add(newAsk);
                 dbContext.SaveChanges();
+                //EventLog.WriteEntry("SmartComDataServiceHost", $"SmartCom UpdateBidAsk SAVED. Symbol: {currentSymbol.Name}    OnlyDubplexForClient:{OnlyDuplexForClient}");
             }
         }
 
@@ -189,7 +234,7 @@ namespace SpeculatorServices.SmartCom
             };
 
             TradeEvent(currentSymbol, tick);
-
+            //EventLog.WriteEntry("SmartComDataServiceHost", $"SmartCom AddTick. Symbol: {currentSymbol.Name}    OnlyDubplexForClient:{OnlyDuplexForClient}");
             if (OnlyDuplexForClient)
                 return;
 
@@ -197,6 +242,7 @@ namespace SpeculatorServices.SmartCom
             {
                 dbContext.SmartComTicks.Add(tick);
                 dbContext.SaveChanges();
+                //EventLog.WriteEntry("SmartComDataServiceHost", $"SmartCom AddTick SAVED. Symbol: {currentSymbol.Name}    OnlyDubplexForClient:{OnlyDuplexForClient}");
             }
         }
 
@@ -220,7 +266,7 @@ namespace SpeculatorServices.SmartCom
                 OpenInterest = (int) openInt,
                 Volatility = volat
             };
-
+            //EventLog.WriteEntry("SmartComDataServiceHost", $"SmartCom UpdateQuote. Symbol: {currentSymbol.Name}    OnlyDubplexForClient:{OnlyDuplexForClient}");
             if (OnlyDuplexForClient)
                 return;
 
@@ -228,7 +274,9 @@ namespace SpeculatorServices.SmartCom
             {
                 dbContext.SmartComQuotes.Add(quote);
                 dbContext.SaveChanges();
-            }}
+                //EventLog.WriteEntry("SmartComDataServiceHost", $"SmartCom UpdateQuote SAVED. Symbol: {currentSymbol.Name}    OnlyDubplexForClient:{OnlyDuplexForClient}");
+            }
+        }
 
         private async void _smartCom_AddSymbol(int row, int nrows, string symbol, string shortName, string longName, string type, int decimals, int lotSize, double punkt, double step, string secExtId, string secExchName, DateTime expiryDate, double daysBeforeExpiry, double strike)
         {
@@ -266,13 +314,15 @@ namespace SpeculatorServices.SmartCom
 
         private void RunListenSymbolEvents(List<SmartComSymbol> symbols)
         {
+            //EventLog.WriteEntry("SmartComDataServiceHost", $"SmartCom RunListenSymbolEvents. SymbolsCount: {symbols.Count}");
             if (_symbolsInJob == null)
                 _symbolsInJob = new List<SmartComSymbol>(symbols);
-            else
-                _symbolsInJob.AddRange(symbols);
+            else 
+                _symbolsInJob.AddRange(symbols.Where(s => _symbolsInJob.All(sinjob => sinjob.Name != s.Name)));
 
             symbols.ForEach(s =>
             {
+                //EventLog.WriteEntry("SmartComDataServiceHost", $"SmartCom RunListenSymbolEvents in foreach. Symbol: {s.Name + " " + s.ShortName}");
                 _glasses.GetOrAdd(s.Name, new ConcurrentDictionary<double, SmartComBidAskValue>());
                 var error = false;
                 do
@@ -280,12 +330,15 @@ namespace SpeculatorServices.SmartCom
                     error = false;
                     try
                     {
+                        //EventLog.WriteEntry("SmartComDataServiceHost", $"SmartCom RunListenSymbolEvents Listen. Symbol: {s.Name + " " + s.ShortName}");
                         _smartCom.ListenTicks(s.Name);
                         _smartCom.ListenQuotes(s.Name);
                         _smartCom.ListenBidAsks(s.Name);
+                        //EventLog.WriteEntry("SmartComDataServiceHost", $"SmartCom RunListenSymbolEvents Listen-2. Symbol: {s.Name}");
                     }
                     catch (Exception)
                     {
+                        //EventLog.WriteEntry("SmartComDataServiceHost", $"SmartCom RunListenSymbolEvents Listen Error!!!. Symbol: {s.Name + " " + s.ShortName}");
                         error = true;
                         Thread.Sleep(2000);
                     }
@@ -295,11 +348,13 @@ namespace SpeculatorServices.SmartCom
 
         private void SmartCom_Disconnected(string reason)
         {
+            EventLog.WriteEntry("SmartComDataServiceHost", $"SmartCom Discronnected event. Reason: {reason}");
             throw new NotImplementedException();
         }
 
         private void SmartCom_Connected()
         {
+            EventLog.WriteEntry("SmartComDataServiceHost", $"SmartCom Connected event!");
             _smartCom.GetSymbols();
         }
     }

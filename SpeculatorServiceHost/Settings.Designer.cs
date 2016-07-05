@@ -22,5 +22,41 @@ namespace SpeculatorServiceHost {
                 return defaultInstance;
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("mx2.ittrade.ru")]
+        public string SmartComHost {
+            get {
+                return ((string)(this["SmartComHost"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("8443")]
+        public ushort SmartComPort {
+            get {
+                return ((ushort)(this["SmartComPort"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("---")]
+        public string SmartComLogin {
+            get {
+                return ((string)(this["SmartComLogin"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("---")]
+        public string SmartComPassword {
+            get {
+                return ((string)(this["SmartComPassword"]));
+            }
+        }
     }
 }

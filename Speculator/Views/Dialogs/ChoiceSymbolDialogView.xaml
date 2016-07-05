@@ -5,6 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
              xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
+             xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
+             xmlns:dxlc="http://schemas.devexpress.com/winfx/2008/xaml/layoutcontrol"
              mc:Ignorable="d" d:DesignHeight="500" d:DesignWidth="700" >
 
     <!--<dxmvvm:Interaction.Behaviors>
@@ -19,9 +21,12 @@
                 <dxmvvm:EventToCommand EventName="MouseDoubleClick" Command="{Binding DataSourceDblClickCommand}"/>
             </dxmvvm:Interaction.Behaviors>
         </ListBox>
-        <Grid>
-
-            <dxg:GridControl AutoGenerateColumns="AddNew" EnableSmartColumnsGeneration="True"
+        <DockPanel LastChildFill="True">
+            <Grid DockPanel.Dock="Bottom">
+                <dxe:DateEdit EditValue="{Binding HistoryDate}"></dxe:DateEdit>
+            </Grid>
+            
+            <dxg:GridControl AutoGenerateColumns="AddNew" EnableSmartColumnsGeneration="True" DockPanel.Dock="Top"
 				SelectionMode="Row"
 				SelectedItem="{Binding SelectedSymbol}"
 				ItemsSource="{Binding Symbols}">
@@ -34,7 +39,6 @@
                 </dxg:GridControl.View>
                 <dxg:GridColumn FieldName="Id" Width="50" />
             </dxg:GridControl>
-
-        </Grid>
+        </DockPanel>
     </DockPanel>
 </UserControl>

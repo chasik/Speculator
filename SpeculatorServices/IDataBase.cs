@@ -1,4 +1,5 @@
-﻿using System.ServiceModel;
+﻿using System;
+using System.ServiceModel;
 using SpeculatorModel.MainData;
 
 namespace SpeculatorServices
@@ -8,6 +9,9 @@ namespace SpeculatorServices
     {
         [OperationContract]
         void ConnectToDataSource();
+
+        [OperationContract]
+        void ConnectToHistoryDataSource(Symbol symbol, DateTime dayDateTime);
 
         [OperationContract]
         void ListenSymbol(Symbol symbol);

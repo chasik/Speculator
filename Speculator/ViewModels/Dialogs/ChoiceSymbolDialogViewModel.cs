@@ -3,6 +3,7 @@ using DevExpress.Mvvm;
 using DevExpress.Mvvm.DataAnnotations;
 using Speculator.SpeculatorData;
 using SpeculatorModel.MainData;
+using System;
 
 namespace Speculator.ViewModels.Dialogs
 {
@@ -19,6 +20,8 @@ namespace Speculator.ViewModels.Dialogs
         public virtual DataSource UsedDataSource { get; set; }
         public virtual DataSource SelectedDataSource { get; set; }
         public virtual ObservableCollection<DataSource> DataSources { get; set; }
+
+        public virtual DateTime HistoryDate { get; set; }
 
         public void DataSourceDblClick()
         {

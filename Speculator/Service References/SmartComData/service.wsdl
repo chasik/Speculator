@@ -36,6 +36,12 @@
   <wsdl:message name="IDataBase_ConnectToDataSource_OutputMessage">
     <wsdl:part name="parameters" element="tns:ConnectToDataSourceResponse" />
   </wsdl:message>
+  <wsdl:message name="IDataBase_ConnectToHistoryDataSource_InputMessage">
+    <wsdl:part name="parameters" element="tns:ConnectToHistoryDataSource" />
+  </wsdl:message>
+  <wsdl:message name="IDataBase_ConnectToHistoryDataSource_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ConnectToHistoryDataSourceResponse" />
+  </wsdl:message>
   <wsdl:message name="IDataBase_ListenSymbol_InputMessage">
     <wsdl:part name="parameters" element="tns:ListenSymbol" />
   </wsdl:message>
@@ -58,6 +64,10 @@
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="ConnectToDataSource">
       <wsdl:input wsaw:Action="http://tempuri.org/IDataBase/ConnectToDataSource" message="tns:IDataBase_ConnectToDataSource_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IDataBase/ConnectToDataSourceResponse" message="tns:IDataBase_ConnectToDataSource_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="ConnectToHistoryDataSource">
+      <wsdl:input wsaw:Action="http://tempuri.org/IDataBase/ConnectToHistoryDataSource" message="tns:IDataBase_ConnectToHistoryDataSource_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IDataBase/ConnectToHistoryDataSourceResponse" message="tns:IDataBase_ConnectToHistoryDataSource_OutputMessage" />
     </wsdl:operation>
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="ListenSymbol">
       <wsdl:input wsaw:Action="http://tempuri.org/IDataBase/ListenSymbol" message="tns:IDataBase_ListenSymbol_InputMessage" />
@@ -88,6 +98,15 @@
     <soap12:binding transport="http://schemas.microsoft.com/soap/tcp" />
     <wsdl:operation name="ConnectToDataSource">
       <soap12:operation soapAction="http://tempuri.org/IDataBase/ConnectToDataSource" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ConnectToHistoryDataSource">
+      <soap12:operation soapAction="http://tempuri.org/IDataBase/ConnectToHistoryDataSource" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>

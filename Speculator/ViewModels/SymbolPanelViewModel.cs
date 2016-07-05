@@ -6,13 +6,12 @@ using System.Linq;
 using System.ServiceModel;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Forms;
 using System.Windows.Input;
 using DevExpress.Mvvm.DataAnnotations;
-using DevExpress.Mvvm.Native;
 using DevExpress.Mvvm.POCO;
 using DevExpress.Xpf.Core.Native;
 using DevExpress.Xpf.Grid;
+using Speculator.Indicators;
 using Speculator.SmartComData;
 using SpeculatorModel.MainData;
 using SpeculatorModel.SmartCom;
@@ -32,6 +31,8 @@ namespace Speculator.ViewModels
         public virtual ObservableCollection<SmartComTrade> TradesBuy { get; set; }
         public virtual ObservableCollection<SmartComTrade> TradesSell { get; set; }
 
+        public IchIndicator Indicator { get; set; }
+
         public virtual int TopRowIndex { get; set; }
         public virtual DateTime StartDateValue { get; set; }
         public virtual DateTime FinishDateValue { get; set; }
@@ -40,17 +41,32 @@ namespace Speculator.ViewModels
         public virtual double MinimumVisiblePriceValue { get; set; }
         public virtual double MaximumVisiblePriceValue { get; set; }
 
+        public virtual double StartHeightGlassValueParam { get; set; }
+        public virtual double FinishHeightGlassValueParam { get; set; }
+        public virtual DateTime HistoryDate { get; set; }
+
         public async void StartListenDataService()
         {
             Zoom = 2;
+            StartHeightGlassValueParam = 0;
+            FinishHeightGlassValueParam = 30;
+            Indicator = new IchIndicator
+            {
+                Parameters = new List<double> {StartHeightGlassValueParam, FinishHeightGlassValueParam}
+            };
 
             TradesBuy = new ObservableCollection<SmartComTrade>();
             TradesSell = new ObservableCollection<SmartComTrade>();
             Glass = new BindingList<SmartComBidAskValue>();
             DataBaseClient = new DataBaseClient(new InstanceContext(this));
 
-            await DataBaseClient.ConnectToDataSourceAsync();
-            DataBaseClient.ListenSymbol(Symbol);
+            if (HistoryDate == DateTime.MinValue)
+            {
+                await DataBaseClient.ConnectToDataSourceAsync();
+                DataBaseClient.ListenSymbol(Symbol);
+            }
+            else
+                await DataBaseClient.ConnectToHistoryDataSourceAsync(Symbol, HistoryDate);
         }
 
         public void UpdateBidOrAskEvent(SmartComSymbol symbol, SmartComBidAskValue value)
@@ -93,19 +109,12 @@ namespace Speculator.ViewModels
             MaximumPrice = Math.Max(MaximumPrice, trade.Price);
             MinimumPrice = Math.Min(MinimumPrice, trade.Price);
 
-            CalcIndicator(trade, indicatorIndex: 1);
+            Indicator.AddGlassShear(Glass, symbol);
+            Indicator.CalcLastValue();
+            Indicator.Values.Add(Indicator.LastAddedGlassShear);
+            this.RaisePropertyChanged(vm => vm.Indicator);
         }
 
-        private void CalcIndicator(SmartComTrade trade, int indicatorIndex)
-        {
-            if (Glass.Count < 20)
-                return;
-
-            var bid = Glass.Where(g => g.IsBid && g.RowId == 0).Min(g => g.Price);
-            var ask = Glass.Where(g => !g.IsBid && g.RowId == 0).Max(g => g.Price);
-
-            //trade.IndicatorsValues = new Dictionary<int, double>(indicatorIndex, );
-        }
         public void TableViewLoaded(RoutedEventArgs eventArgs)
         {
             // подписываемся на прокрутку стакана
@@ -152,8 +161,13 @@ namespace Speculator.ViewModels
             }
             else
             {
-                MaximumVisiblePriceValue = (grid.GetRow(topRowHandle) as SmartComBidAskValue).Price;
-                MinimumVisiblePriceValue = (grid.GetRow(grid.VisibleRowCount - 1) as SmartComBidAskValue).Price;
+                var topVisible = grid.GetRow(topRowHandle) as SmartComBidAskValue;
+                if (topVisible != null)
+                    MaximumVisiblePriceValue = topVisible.Price;
+
+                var bottomVisible = grid.GetRow(grid.VisibleRowCount - 1) as SmartComBidAskValue;
+                if (bottomVisible != null)
+                    MinimumVisiblePriceValue = bottomVisible.Price;
             }
         }
     }

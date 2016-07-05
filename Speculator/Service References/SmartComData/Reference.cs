@@ -68,6 +68,13 @@ namespace Speculator.SmartComData {
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IDataBase/ConnectToDataSource", ReplyAction="http://tempuri.org/IDataBase/ConnectToDataSourceResponse")]
         System.Threading.Tasks.Task ConnectToDataSourceAsync();
         
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IDataBase/ConnectToHistoryDataSource", ReplyAction="http://tempuri.org/IDataBase/ConnectToHistoryDataSourceResponse")]
+        [System.ServiceModel.ServiceKnownTypeAttribute(typeof(SpeculatorModel.SmartCom.SmartComSymbol))]
+        void ConnectToHistoryDataSource(SpeculatorModel.MainData.Symbol symbol, System.DateTime dayDateTime);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IDataBase/ConnectToHistoryDataSource", ReplyAction="http://tempuri.org/IDataBase/ConnectToHistoryDataSourceResponse")]
+        System.Threading.Tasks.Task ConnectToHistoryDataSourceAsync(SpeculatorModel.MainData.Symbol symbol, System.DateTime dayDateTime);
+        
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IDataBase/ListenSymbol", ReplyAction="http://tempuri.org/IDataBase/ListenSymbolResponse")]
         [System.ServiceModel.ServiceKnownTypeAttribute(typeof(SpeculatorModel.SmartCom.SmartComSymbol))]
         void ListenSymbol(SpeculatorModel.MainData.Symbol symbol);
@@ -120,6 +127,14 @@ namespace Speculator.SmartComData {
         
         public System.Threading.Tasks.Task ConnectToDataSourceAsync() {
             return base.Channel.ConnectToDataSourceAsync();
+        }
+        
+        public void ConnectToHistoryDataSource(SpeculatorModel.MainData.Symbol symbol, System.DateTime dayDateTime) {
+            base.Channel.ConnectToHistoryDataSource(symbol, dayDateTime);
+        }
+        
+        public System.Threading.Tasks.Task ConnectToHistoryDataSourceAsync(SpeculatorModel.MainData.Symbol symbol, System.DateTime dayDateTime) {
+            return base.Channel.ConnectToHistoryDataSourceAsync(symbol, dayDateTime);
         }
         
         public void ListenSymbol(SpeculatorModel.MainData.Symbol symbol) {
