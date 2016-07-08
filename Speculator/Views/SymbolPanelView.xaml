@@ -11,7 +11,9 @@
              xmlns:dataTemplateSelectors="clr-namespace:Speculator.ViewModels.DataTemplateSelectors"
              xmlns:dxb="http://schemas.devexpress.com/winfx/2008/xaml/bars"
              xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
-             mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="600" 
+             xmlns:dxc="http://schemas.devexpress.com/winfx/2008/xaml/charts"
+
+             mc:Ignorable="d" d:DesignHeight="500" d:DesignWidth="700" 
              DataContext="{dxmvvm:ViewModelSource Type={x:Type viewModels:SymbolPanelViewModel}}">
     
     <UserControl.Resources>
@@ -20,9 +22,9 @@
                 <ResourceDictionary Source="Resources/GlassTemplates.xaml" />
                 <ResourceDictionary Source="../Themes/MetroDark/MetroDark.xamDataChart.xaml" />
             </ResourceDictionary.MergedDictionaries>
-            <ControlTemplate x:Key="{dxgt:GridRowThemeKey ResourceKey=RowTemplate, IsThemeIndependent=True}" TargetType="dxg:RowControl">
+            <!--<ControlTemplate x:Key="{dxgt:GridRowThemeKey ResourceKey=RowTemplate, IsThemeIndependent=True}" TargetType="dxg:RowControl">
                 <Grid x:Name="PART_LayoutPanel" />
-            </ControlTemplate>
+            </ControlTemplate>-->
         </ResourceDictionary>
     </UserControl.Resources>
     
@@ -63,39 +65,135 @@
             <dxb:BarButtonItem Content="Paste"/>
         </dxb:ToolBarControl>
 
+        <!--<dxc:ChartControl Name="DataChart" Grid.Row="1" Grid.Column="0" Padding="0" Margin="0">
+            <dxmvvm:Interaction.Behaviors>
+                <dxmvvm:EventToCommand EventName="Loaded" Command="{Binding ChartControlLoadedCommand}"
+                                       CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type dxc:ChartControl}}}" />
+            </dxmvvm:Interaction.Behaviors>
+            <dxc:XYDiagram2D>
+                
+                <dxc:XYDiagram2D.AxisY>
+                    <dxc:AxisY2D x:Name="AxisY">
+                        <dxc:AxisY2D.WholeRange>
+                            <dxc:Range/>
+                        </dxc:AxisY2D.WholeRange>
+                        <dxc:AxisY2D.VisualRange>
+                            <dxc:Range MinValue="{Binding MinimumVisiblePriceValue}" MaxValue="{Binding MaximumVisiblePriceValue}" />
+                        </dxc:AxisY2D.VisualRange>
+                        <dxc:AxisY2D.Label>
+                            <dxc:AxisLabel Angle="-90" Padding="0" Visible="False"/>
+                        </dxc:AxisY2D.Label>
+                    </dxc:AxisY2D>
+                </dxc:XYDiagram2D.AxisY>
+              
+                <dxc:XYDiagram2D.AxisX>
+                    <dxc:AxisX2D x:Name="AxisX" Visibility="Hidden">
+                        <dxc:AxisX2D.WholeRange>
+                            <dxc:Range MinValue="{Binding StartDateValue}" MaxValue="{Binding FinishDateValue}"/>
+                        </dxc:AxisX2D.WholeRange>
+
+                        <dxc:AxisX2D.DateTimeScaleOptions>
+                            <dxc:ManualDateTimeScaleOptions AggregateFunction="None" AutoGrid="True"
+                                                            GridAlignment="Minute" MeasureUnit="Second" 
+                                                            GridSpacing="3" GridOffset="1"/>
+                        </dxc:AxisX2D.DateTimeScaleOptions>
+                        <dxc:AxisX2D.Label>
+                            <dxc:AxisLabel Angle="-90" Padding="0" Visible="False"/>
+                        </dxc:AxisX2D.Label>
+                    </dxc:AxisX2D>
+                </dxc:XYDiagram2D.AxisX>
+
+                <dxc:XYDiagram2D.Series>
+                    <dxc:LineStepSeries2D DataSource="{Binding TradesBuy}" ArgumentDataMember="TradeDateTime"
+                                          ValueDataMember="Price" ArgumentScaleType="DateTime"
+                                          ValueScaleType="Numerical">
+                        <dxc:LineSeries2D.LineStyle>
+                            <dxc:LineStyle Thickness="2" />
+                        </dxc:LineSeries2D.LineStyle>
+                    </dxc:LineStepSeries2D>
+                    <dxc:LineStepSeries2D DataSource="{Binding TradesSell}" ArgumentDataMember="TradeDateTime"
+                                          ValueDataMember="Price" ArgumentScaleType="DateTime"
+                                          ValueScaleType="Numerical">
+                        <dxc:LineSeries2D.LineStyle>
+                            <dxc:LineStyle Thickness="2" />
+                        </dxc:LineSeries2D.LineStyle>
+                    </dxc:LineStepSeries2D>
+                    --><!--<dxc:LineStepSeries2D DataSource="{Binding Indicator.Values}" ArgumentDataMember="Time"
+                                          ValueDataMember="Value2" ArgumentScaleType="DateTime"
+                                          ValueScaleType="Numerical"
+                                          dxc:XYDiagram2D.SeriesAxisY="{Binding ElementName=AxisYIndicator}">
+                        <dxc:LineSeries2D.LineStyle>
+                            <dxc:LineStyle Thickness="1" />
+                        </dxc:LineSeries2D.LineStyle>
+                    </dxc:LineStepSeries2D>--><!--
+                </dxc:XYDiagram2D.Series>
+
+                <dxc:XYDiagram2D.SecondaryAxesY>
+                    <dxc:SecondaryAxisY2D x:Name="AxisYIndicator">
+                        <dxc:SecondaryAxisY2D.WholeRange>
+                            <dxc:Range MinValue="-2000" MaxValue="2000" />
+                        </dxc:SecondaryAxisY2D.WholeRange>
+                        <dxc:SecondaryAxisY2D.VisualRange>
+                            <dxc:Range MinValue="-2000" MaxValue="2000" />
+                        </dxc:SecondaryAxisY2D.VisualRange>
+                        <dxc:AxisY2D.Label>
+                            <dxc:AxisLabel Visible="False"/>
+                        </dxc:AxisY2D.Label>
+                    </dxc:SecondaryAxisY2D>
+                </dxc:XYDiagram2D.SecondaryAxesY>
+
+            </dxc:XYDiagram2D>
+          
+        </dxc:ChartControl>-->
+
         <ig:XamDataChart x:Name="DataChart" Grid.Column="0" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
                          Padding="0" Margin="0" CrosshairVisibility="Visible"
                          HorizontalZoomable="True" AnimateSeriesWhenAxisRangeChanges="False"> 
-            <!--HorizontalZoombarVisibility="Visible"-->
-                      
+ 
             <ig:XamDataChart.Axes>
 
                 <ig:CategoryDateTimeXAxis x:Name="XAxisBuy" DateTimeMemberPath="TradeDateTime" 
-                                          MinimumValue="{Binding StartDateValue}"
-                                          MaximumValue="{Binding FinishDateValue}"
+                                          Label="{}{Date:HH:mm:ss}"
+                                          MinimumValue="{Binding StartDateValue}" MaximumValue="{Binding FinishDateValue}"
                                           ItemsSource="{Binding TradesBuy}">
                     <ig:CategoryDateTimeXAxis.LabelSettings>
-                        <ig:AxisLabelSettings Location="OutsideBottom" Extent="0"/>
+                        <ig:AxisLabelSettings Location="InsideTop" Extent="0" FontSize="9" FontWeight="UltraLight" Foreground="Azure"/>
                     </ig:CategoryDateTimeXAxis.LabelSettings>
                 </ig:CategoryDateTimeXAxis>
 
                 <ig:CategoryDateTimeXAxis x:Name="XAxisSell" DateTimeMemberPath="TradeDateTime"
                                           MinorStrokeThickness="0" MajorStrokeThickness="0"
-                                          MinimumValue="{Binding StartDateValue}"
-                                          MaximumValue="{Binding FinishDateValue}"
+                                          MinimumValue="{Binding StartDateValue}" MaximumValue="{Binding FinishDateValue}"
                                           ItemsSource="{Binding TradesSell}">
                     <ig:CategoryDateTimeXAxis.LabelSettings>
-                        <ig:AxisLabelSettings Location="OutsideTop" Extent="0"/>
+                        <ig:AxisLabelSettings Location="OutsideTop" Extent="0" Visibility="Hidden"/>
                     </ig:CategoryDateTimeXAxis.LabelSettings>
                 </ig:CategoryDateTimeXAxis>
 
                 <ig:CategoryDateTimeXAxis x:Name="XAxisIndicator" DateTimeMemberPath="Time"
                                           MinorStrokeThickness="0" MajorStrokeThickness="0"
-                                          MinimumValue="{Binding StartDateValue}"
-                                          MaximumValue="{Binding FinishDateValue}"
+                                          MinimumValue="{Binding StartDateValue}" MaximumValue="{Binding FinishDateValue}"
                                           ItemsSource="{Binding Indicator.Values}">
                     <ig:CategoryDateTimeXAxis.LabelSettings>
-                        <ig:AxisLabelSettings Location="OutsideTop" Extent="0"/>
+                        <ig:AxisLabelSettings Location="OutsideTop" Extent="0" Visibility="Hidden"/>
+                    </ig:CategoryDateTimeXAxis.LabelSettings>
+                </ig:CategoryDateTimeXAxis>
+
+                <ig:CategoryDateTimeXAxis x:Name="XAxisIndicator2" DateTimeMemberPath="Time"
+                                          MinorStrokeThickness="0" MajorStrokeThickness="0"
+                                          MinimumValue="{Binding StartDateValue}" MaximumValue="{Binding FinishDateValue}"
+                                          ItemsSource="{Binding Indicator2.Values}">
+                    <ig:CategoryDateTimeXAxis.LabelSettings>
+                        <ig:AxisLabelSettings Location="OutsideTop" Extent="0" Visibility="Hidden"/>
+                    </ig:CategoryDateTimeXAxis.LabelSettings>
+                </ig:CategoryDateTimeXAxis>
+
+                <ig:CategoryDateTimeXAxis x:Name="XAxisIndicator3" DateTimeMemberPath="Time"
+                                          MinorStrokeThickness="0" MajorStrokeThickness="0"
+                                          MinimumValue="{Binding StartDateValue}" MaximumValue="{Binding FinishDateValue}"
+                                          ItemsSource="{Binding Indicator3.Values}">
+                    <ig:CategoryDateTimeXAxis.LabelSettings>
+                        <ig:AxisLabelSettings Location="OutsideTop" Extent="0" Visibility="Hidden"/>
                     </ig:CategoryDateTimeXAxis.LabelSettings>
                 </ig:CategoryDateTimeXAxis>
 
@@ -107,42 +205,45 @@
                     </ig:NumericYAxis.LabelSettings>
                 </ig:NumericYAxis>
 
-                <ig:NumericYAxis x:Name="YAxisIndicator" MinorStrokeThickness="0" MajorStrokeThickness="0"
-                                 MinimumValue="-2000" MaximumValue="2000">
+                <ig:NumericYAxis x:Name="YAxisIndicator" MajorStrokeThickness="1" MinorStrokeThickness="0"
+                                 MajorStroke="OrangeRed" MajorStrokeDashArray="1 5">
                     <ig:NumericYAxis.LabelSettings>
-                        <ig:AxisLabelSettings Location="InsideLeft" FontSize="9" FontWeight="Light" Foreground="OrangeRed"/>
+                        <ig:AxisLabelSettings Location="InsideRight" FontSize="11" FontWeight="Bold" Foreground="OrangeRed"/>
                     </ig:NumericYAxis.LabelSettings>
                 </ig:NumericYAxis>
 
             </ig:XamDataChart.Axes>
 
             <ig:XamDataChart.Series>
-                <ig:StepLineSeries MarkerType="None" ValueMemberPath="Price" Brush="IndianRed"
+                <ig:StepLineSeries MarkerType="None" ValueMemberPath="Price" Brush="IndianRed" Canvas.ZIndex="14"
                                     ItemsSource="{Binding TradesBuy}" 
                                     XAxis="{Binding ElementName=XAxisBuy}"
                                     YAxis="{Binding ElementName=YAxis}">
                 </ig:StepLineSeries>
-                <ig:StepLineSeries MarkerType="None" ValueMemberPath="Price" Brush="CornflowerBlue"
+                <ig:StepLineSeries MarkerType="None" ValueMemberPath="Price" Brush="CornflowerBlue" Canvas.ZIndex="15"
                                    ItemsSource="{Binding TradesSell}"
                                    XAxis="{Binding ElementName=XAxisSell}"
                                    YAxis="{Binding ElementName=YAxis}">
                 </ig:StepLineSeries>
 
-                <ig:StepLineSeries MarkerType="None" ValueMemberPath="Value" Brush="OrangeRed" Canvas.ZIndex="11"
+                <ig:StepAreaSeries MarkerType="None" ValueMemberPath="Value2" Brush="Plum" Canvas.ZIndex="10" Opacity="0.3"
+                                   ItemsSource="{Binding Indicator3.Values}"
+                                   XAxis="{Binding ElementName=XAxisIndicator3}"
+                                   YAxis="{Binding ElementName=YAxisIndicator}">
+                </ig:StepAreaSeries>
+
+                <ig:StepAreaSeries MarkerType="None" ValueMemberPath="Value2" Brush="ForestGreen" Canvas.ZIndex="11" Opacity="0.75"
+                                   ItemsSource="{Binding Indicator2.Values}"
+                                   XAxis="{Binding ElementName=XAxisIndicator2}"
+                                   YAxis="{Binding ElementName=YAxisIndicator}">
+                </ig:StepAreaSeries>
+
+                <ig:StepAreaSeries MarkerType="None" ValueMemberPath="Value2" Brush="LawnGreen" Canvas.ZIndex="12" Opacity="0.9"
                                    ItemsSource="{Binding Indicator.Values}"
                                    XAxis="{Binding ElementName=XAxisIndicator}"
                                    YAxis="{Binding ElementName=YAxisIndicator}">
-                </ig:StepLineSeries>
+                </ig:StepAreaSeries>
 
-                <ig:StepLineSeries MarkerType="None" ValueMemberPath="Value2" Brush="Green" Canvas.ZIndex="10" 
-                                   ItemsSource="{Binding Indicator.Values}"
-                                   XAxis="{Binding ElementName=XAxisIndicator}"
-                                   YAxis="{Binding ElementName=YAxisIndicator}">
-                </ig:StepLineSeries>
-
-
-                <!--ig:ItemToolTipLayer x:Name="ToolTipLayer" Opacity="1" Thickness="1" Canvas.ZIndex="12" UseInterpolation="True" TransitionDuration="0:00:00.2" /-->
-                <!--ig:CrosshairLayer x:Name="CrosshairLayer" Opacity="1" Thickness="1"  Canvas.ZIndex="15" UseInterpolation="True" TransitionDuration="0:00:00.0"/-->
             </ig:XamDataChart.Series>
                         
         </ig:XamDataChart>
@@ -155,39 +256,25 @@
                                  VerticalAlignment="Stretch"
                                  HorizontalZoomable="True" AnimateSeriesWhenAxisRangeChanges="False">
                     <ig:XamDataChart.Axes>
-                        <ig:CategoryDateTimeXAxis x:Name="XAxisBuyPreview" DateTimeMemberPath="TradeDateTime"
-                                                  Interval="5"
+                        <ig:CategoryDateTimeXAxis x:Name="XAxisPreview" DateTimeMemberPath="TradeDateTime"
+                                                  MinorStrokeThickness="0" MajorStrokeThickness="0"
                                                   MinimumValue="{Binding StartDateValue}"
                                                   MaximumValue="{Binding FinishDateValue}"
-                                                  ItemsSource="{Binding TradesBuy}">
+                                                  ItemsSource="{Binding Trades}">
                             <ig:CategoryDateTimeXAxis.LabelSettings>
-                                <ig:AxisLabelSettings Location="OutsideBottom" Visibility="Collapsed" />
+                                <ig:AxisLabelSettings Location="OutsideTop" Visibility="Hidden" />
                             </ig:CategoryDateTimeXAxis.LabelSettings>
                         </ig:CategoryDateTimeXAxis>
-                        <ig:CategoryDateTimeXAxis x:Name="XAxisSellPreview" DateTimeMemberPath="TradeDateTime"
-                                                  Interval="5"
-                                                  MinimumValue="{Binding StartDateValue}"
-                                                  MaximumValue="{Binding FinishDateValue}"
-                                                  ItemsSource="{Binding TradesSell}">
-                            <ig:CategoryDateTimeXAxis.LabelSettings>
-                                <ig:AxisLabelSettings Location="OutsideTop" Visibility="Collapsed" />
-                            </ig:CategoryDateTimeXAxis.LabelSettings>
-                        </ig:CategoryDateTimeXAxis>
-                        <ig:NumericYAxis x:Name="YAxisPreview">
+                        <ig:NumericYAxis x:Name="YAxisPreview" MinorStrokeThickness="0" MajorStrokeThickness="0">
                             <ig:NumericYAxis.LabelSettings>
-                                <ig:AxisLabelSettings Location="OutsideLeft" Visibility="Collapsed" />
+                                <ig:AxisLabelSettings Location="OutsideLeft" Visibility="Hidden" />
                             </ig:NumericYAxis.LabelSettings>
                         </ig:NumericYAxis>
                     </ig:XamDataChart.Axes>
                     <ig:XamDataChart.Series>
-                        <ig:StepLineSeries MarkerType="None" ValueMemberPath="Price" Brush="CornflowerBlue"
-                                           ItemsSource="{Binding TradesBuy}"
-                                           XAxis="{Binding ElementName=XAxisBuyPreview}"
-                                           YAxis="{Binding ElementName=YAxisPreview}">
-                        </ig:StepLineSeries>
-                        <ig:StepLineSeries MarkerType="None" ValueMemberPath="Price" Brush="IndianRed"
-                                           ItemsSource="{Binding TradesSell}"
-                                           XAxis="{Binding ElementName=XAxisSellPreview}"
+                        <ig:StepLineSeries MarkerType="None" ValueMemberPath="Price" Brush="BlueViolet"
+                                           ItemsSource="{Binding Trades}"
+                                           XAxis="{Binding ElementName=XAxisPreview}"
                                            YAxis="{Binding ElementName=YAxisPreview}">
                         </ig:StepLineSeries>
                     </ig:XamDataChart.Series>
@@ -201,7 +288,7 @@
             <dxg:GridControl.View>
                 <!--AllowPerPixelScrolling="True" ScrollAnimationMode="EaseOut" AllowScrollAnimation="True"-->
                 <dxg:TableView AutoWidth="True" ShowColumnHeaders="False" UseLightweightTemplates="All"
-                               ShowGroupPanel="False" ShowAutoFilterRow="False"
+                               ShowGroupPanel="False" ShowAutoFilterRow="False" AllowEditing="False" NavigationStyle="Row"
                                VerticalScrollbarVisibility="Hidden" RowMinHeight="2" ShowIndicator="False"
                                TopRowIndex="{Binding TopRowIndex, Mode=TwoWay}">
                     <dxmvvm:Interaction.Behaviors>

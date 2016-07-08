@@ -30,11 +30,6 @@
       </xs:sequence>
     </xs:complexType>
   </xs:element>
-  <xs:element name="ConnectToHistoryDataSourceResponse">
-    <xs:complexType>
-      <xs:sequence />
-    </xs:complexType>
-  </xs:element>
   <xs:element name="ListenSymbol">
     <xs:complexType>
       <xs:sequence>

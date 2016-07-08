@@ -4,11 +4,16 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.ServiceModel;
+using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Threading;
 using DevExpress.Mvvm.DataAnnotations;
+using DevExpress.Mvvm.Native;
 using DevExpress.Mvvm.POCO;
+using DevExpress.Xpf.Charts;
+using DevExpress.Xpf.CodeView;
 using DevExpress.Xpf.Core.Native;
 using DevExpress.Xpf.Grid;
 using Speculator.Indicators;
@@ -22,16 +27,27 @@ namespace Speculator.ViewModels
     [POCOViewModel]
     public class SymbolPanelViewModel : IDataBaseCallback
     {
+        private Timer _mainTimer;
         public IDataBase DataBaseClient { get; set; }
         public DataSource DataSource { get; set; }
         public Symbol Symbol { get; set; }
         public virtual short Zoom { get; set; }
         public virtual BindingList<SmartComBidAskValue> Glass { get; set; }
+        private List<SmartComBidAskValue> _glass { get; set; }
+
         public virtual ObservableCollection<SmartComTrade> Trades { get; set; }
         public virtual ObservableCollection<SmartComTrade> TradesBuy { get; set; }
         public virtual ObservableCollection<SmartComTrade> TradesSell { get; set; }
 
+        private List<SmartComTrade> _tradesBuffer;
+        private List<SmartComTrade> _tradesBuyBuffer;
+        private List<SmartComTrade> _tradesSellBuffer;
+        private GridControl _glassGridControl;
+        private ChartControl _chart;
+
         public IchIndicator Indicator { get; set; }
+        public IchIndicator Indicator2 { get; set; }
+        public IchIndicator Indicator3 { get; set; }
 
         public virtual int TopRowIndex { get; set; }
         public virtual DateTime StartDateValue { get; set; }
@@ -44,20 +60,75 @@ namespace Speculator.ViewModels
         public virtual double StartHeightGlassValueParam { get; set; }
         public virtual double FinishHeightGlassValueParam { get; set; }
         public virtual DateTime HistoryDate { get; set; }
-
+        
         public async void StartListenDataService()
         {
-            Zoom = 2;
-            StartHeightGlassValueParam = 0;
-            FinishHeightGlassValueParam = 30;
+            var dispatcher = Dispatcher.CurrentDispatcher;
+            _mainTimer = new Timer(HistoryDate == DateTime.MinValue ? 100 : 500);
+            _mainTimer.Elapsed += (sender, args) =>
+            {
+                if (_tradesBuffer == null || _tradesBuffer.Count == 0)
+                    return;
+                DateTime maxDate;
+
+                dispatcher.Invoke(() =>
+                {
+                    //_chart.Diagram.Series.ForEach(s => s.Points.BeginInit());
+
+                    try
+                    {
+                        maxDate = _tradesBuffer.Max(t => t.TradeAdded);
+                        FinishDateValue = maxDate;
+
+                        Trades.AddRange(_tradesBuffer);
+                        _tradesBuffer.Clear();
+                        TradesBuy.AddRange(_tradesBuyBuffer);
+                        _tradesBuyBuffer.Clear();
+                        TradesSell.AddRange(_tradesSellBuffer);
+                        _tradesSellBuffer.Clear();
+                        this.RaisePropertyChanged(vm => vm.Indicator);
+
+                        this.RaisePropertyChanged(vm => vm.Indicator2);
+                        this.RaisePropertyChanged(vm => vm.Indicator3);
+
+                        Glass = new BindingList<SmartComBidAskValue>(_glass);
+                    }
+                    catch (Exception)
+                    {
+                        //ignore
+                    }
+
+                    //_chart.Diagram.Series.ForEach(s => s.Points.EndInit());
+                });
+            };
+
+            _mainTimer.Start();
+
+            Zoom = 1;
+            StartHeightGlassValueParam = 2;
+            FinishHeightGlassValueParam = 15;
             Indicator = new IchIndicator
             {
                 Parameters = new List<double> {StartHeightGlassValueParam, FinishHeightGlassValueParam}
             };
+            Indicator2 = new IchIndicator
+            {
+                Parameters = new List<double> { 2, 30 }
+            };
+            Indicator3 = new IchIndicator
+            {
+                Parameters = new List<double> { 2, 50 }
+            };
 
             TradesBuy = new ObservableCollection<SmartComTrade>();
             TradesSell = new ObservableCollection<SmartComTrade>();
+
+            _tradesBuyBuffer = new List<SmartComTrade>();
+            _tradesSellBuffer = new List<SmartComTrade>();
+
             Glass = new BindingList<SmartComBidAskValue>();
+            _glass = new List<SmartComBidAskValue>();
+
             DataBaseClient = new DataBaseClient(new InstanceContext(this));
 
             if (HistoryDate == DateTime.MinValue)
@@ -71,23 +142,34 @@ namespace Speculator.ViewModels
 
         public void UpdateBidOrAskEvent(SmartComSymbol symbol, SmartComBidAskValue value)
         {
-            var priceValue = Glass.SingleOrDefault(g => Math.Abs(g.Price - value.Price) < 0.00001);
+            var priceValue = _glass.SingleOrDefault(g => Math.Abs(g.Price - value.Price) < 0.00001);
             if (priceValue == null)
             {
-                Glass.Add(value);
-                if (Glass.Count == 1)
+                _glass.Add(value);
+                if (_glass.Count == 1)
                 {
                     for (var i = 1; i < 200; i++)
-                    { 
-                        Glass.Add(new SmartComBidAskValue {Price = value.Price + i * (double)symbol.Step, Volume = 0, IsBid = true});
-                        Glass.Add(new SmartComBidAskValue {Price = value.Price - i * (double)symbol.Step, Volume = 0, IsBid = false});
+                    {
+                        _glass.Add(new SmartComBidAskValue {Price = value.Price + i * (double)symbol.Step, Volume = 0, IsBid = true});
+                        _glass.Add(new SmartComBidAskValue {Price = value.Price - i * (double)symbol.Step, Volume = 0, IsBid = false});
                     }
                 }
-                Glass = new BindingList<SmartComBidAskValue>(Glass.OrderByDescending(g => g.Price).ToList());
+                _glass = new List<SmartComBidAskValue>(_glass.OrderByDescending(g => g.Price).ToList());
             }
             else
             {
-                Glass[Glass.IndexOf(priceValue)] = value;
+                _glass[_glass.IndexOf(priceValue)] = value;
+                if (value.RowId == 0)
+                {
+                    if (value.IsBid) // все что ниже бида с нулевым idRow - биды
+                        _glass.Where(v => v.Price < value.Price && !value.IsBid).ForEach(v => v.IsBid = true);
+                    else if (!value.IsBid) // а все что выше - аски
+                        _glass.Where(v => v.Price > value.Price && value.IsBid).ForEach(v => v.IsBid = false);
+                }
+                else if (value.RowId == 50)
+                {
+                    
+                }
             }
         }
 
@@ -96,27 +178,46 @@ namespace Speculator.ViewModels
             if (Trades == null)
             {
                 Trades = new ObservableCollection<SmartComTrade>();
+                _tradesBuffer = new List<SmartComTrade>();
+
                 StartDateValue = trade.TradeAdded;
                 MinimumPrice = MaximumPrice = trade.Price;
             }
-            FinishDateValue = trade.TradeAdded;
-            Trades.Add(trade);
+
+            _tradesBuffer.Add(trade);
             if (trade.DiractionId == (byte)DiractionEnum.Buy)
-                TradesBuy.Add(trade);
+                _tradesBuyBuffer.Add(trade);
             else if (trade.DiractionId == (byte)DiractionEnum.Sell)
-                TradesSell.Add(trade);
+                _tradesSellBuffer.Add(trade);
 
             MaximumPrice = Math.Max(MaximumPrice, trade.Price);
             MinimumPrice = Math.Min(MinimumPrice, trade.Price);
 
-            Indicator.AddGlassShear(Glass, symbol);
+            Indicator.AddGlassShear(_glass, symbol, trade.TradeAdded);
             Indicator.CalcLastValue();
-            Indicator.Values.Add(Indicator.LastAddedGlassShear);
-            this.RaisePropertyChanged(vm => vm.Indicator);
+            if (Math.Abs(Indicator.LastAddedGlassShear.Value2) > 0.00001)
+                Indicator.Values.Add(Indicator.LastAddedGlassShear);
+
+
+            Indicator2.AddGlassShear(Glass, symbol, trade.TradeAdded);
+            Indicator2.CalcLastValue();
+            if (Math.Abs(Indicator2.LastAddedGlassShear.Value2) > 0.00001)
+                Indicator2.Values.Add(Indicator2.LastAddedGlassShear);
+
+            Indicator3.AddGlassShear(Glass, symbol, trade.TradeAdded);
+            Indicator3.CalcLastValue();
+            if (Math.Abs(Indicator3.LastAddedGlassShear.Value2) > 0.00001)
+                Indicator3.Values.Add(Indicator3.LastAddedGlassShear);
+        }
+
+        public void ChartControlLoaded(ChartControl chart)
+        {
+            _chart = chart;
         }
 
         public void TableViewLoaded(RoutedEventArgs eventArgs)
         {
+            _glassGridControl = (eventArgs.Source as TableView).Parent as GridControl;
             // подписываемся на прокрутку стакана
             var visualTreeEnumerator = new VisualTreeEnumerator(eventArgs.Source as TableView);
             while (visualTreeEnumerator.MoveNext())

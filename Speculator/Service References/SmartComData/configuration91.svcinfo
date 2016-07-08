@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<SavedWcfConfigurationInformation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Version="9.1" CheckSum="5XgpGZX7QiE5/2/Gexc8wiwl7Wg=">
+<SavedWcfConfigurationInformation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Version="9.1" CheckSum="mGTADAeBdM40ya3nnJB+Lecl/c4=">
   <bindingConfigurations>
     <bindingConfiguration bindingType="netTcpBinding" name="NetTcpBinding_ISmartComData">
       <properties>
@@ -239,10 +239,10 @@
     </bindingConfiguration>
   </bindingConfigurations>
   <endpoints>
-    <endpoint name="NetTcpBinding_ISmartComData" contract="SmartComData.ISmartComData" bindingType="netTcpBinding" address="net.tcp://127.0.0.1/Speculator/SmartComData/" bindingConfiguration="NetTcpBinding_ISmartComData">
+    <endpoint name="NetTcpBinding_ISmartComData" contract="SmartComData.ISmartComData" bindingType="netTcpBinding" address="net.tcp://127.0.0.1:51000/Speculator/SmartComData/" bindingConfiguration="NetTcpBinding_ISmartComData">
       <properties>
         <property path="/address" isComplexType="false" isExplicitlyDefined="true" clrType="System.Uri, System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-          <serializedValue>net.tcp://127.0.0.1/Speculator/SmartComData/</serializedValue>
+          <serializedValue>net.tcp://127.0.0.1:51000/Speculator/SmartComData/</serializedValue>
         </property>
         <property path="/behaviorConfiguration" isComplexType="false" isExplicitlyDefined="false" clrType="System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
           <serializedValue />
@@ -324,10 +324,10 @@
         </property>
       </properties>
     </endpoint>
-    <endpoint name="NetTcpBinding_IDataBase" contract="SmartComData.IDataBase" bindingType="netTcpBinding" address="net.tcp://127.0.0.1/Speculator/SmartComData/" bindingConfiguration="NetTcpBinding_IDataBase">
+    <endpoint name="NetTcpBinding_IDataBase" contract="SmartComData.IDataBase" bindingType="netTcpBinding" address="net.tcp://127.0.0.1:51000/Speculator/SmartComData/" bindingConfiguration="NetTcpBinding_IDataBase">
       <properties>
         <property path="/address" isComplexType="false" isExplicitlyDefined="true" clrType="System.Uri, System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-          <serializedValue>net.tcp://127.0.0.1/Speculator/SmartComData/</serializedValue>
+          <serializedValue>net.tcp://127.0.0.1:51000/Speculator/SmartComData/</serializedValue>
         </property>
         <property path="/behaviorConfiguration" isComplexType="false" isExplicitlyDefined="false" clrType="System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
           <serializedValue />

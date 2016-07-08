@@ -39,9 +39,6 @@
   <wsdl:message name="IDataBase_ConnectToHistoryDataSource_InputMessage">
     <wsdl:part name="parameters" element="tns:ConnectToHistoryDataSource" />
   </wsdl:message>
-  <wsdl:message name="IDataBase_ConnectToHistoryDataSource_OutputMessage">
-    <wsdl:part name="parameters" element="tns:ConnectToHistoryDataSourceResponse" />
-  </wsdl:message>
   <wsdl:message name="IDataBase_ListenSymbol_InputMessage">
     <wsdl:part name="parameters" element="tns:ListenSymbol" />
   </wsdl:message>
@@ -67,7 +64,6 @@
     </wsdl:operation>
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="ConnectToHistoryDataSource">
       <wsdl:input wsaw:Action="http://tempuri.org/IDataBase/ConnectToHistoryDataSource" message="tns:IDataBase_ConnectToHistoryDataSource_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/IDataBase/ConnectToHistoryDataSourceResponse" message="tns:IDataBase_ConnectToHistoryDataSource_OutputMessage" />
     </wsdl:operation>
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="ListenSymbol">
       <wsdl:input wsaw:Action="http://tempuri.org/IDataBase/ListenSymbol" message="tns:IDataBase_ListenSymbol_InputMessage" />
@@ -110,9 +106,6 @@
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
-      <wsdl:output>
-        <soap12:body use="literal" />
-      </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="ListenSymbol">
       <soap12:operation soapAction="http://tempuri.org/IDataBase/ListenSymbol" style="document" />
@@ -138,15 +131,15 @@
   </wsdl:binding>
   <wsdl:service name="SmartComData">
     <wsdl:port name="NetTcpBinding_ISmartComData" binding="tns:NetTcpBinding_ISmartComData">
-      <soap12:address location="net.tcp://127.0.0.1/Speculator/SmartComData/" />
+      <soap12:address location="net.tcp://127.0.0.1:51000/Speculator/SmartComData/" />
       <wsa10:EndpointReference>
-        <wsa10:Address>net.tcp://127.0.0.1/Speculator/SmartComData/</wsa10:Address>
+        <wsa10:Address>net.tcp://127.0.0.1:51000/Speculator/SmartComData/</wsa10:Address>
       </wsa10:EndpointReference>
     </wsdl:port>
     <wsdl:port name="NetTcpBinding_IDataBase" binding="tns:NetTcpBinding_IDataBase">
-      <soap12:address location="net.tcp://127.0.0.1/Speculator/SmartComData/" />
+      <soap12:address location="net.tcp://127.0.0.1:51000/Speculator/SmartComData/" />
       <wsa10:EndpointReference>
-        <wsa10:Address>net.tcp://127.0.0.1/Speculator/SmartComData/</wsa10:Address>
+        <wsa10:Address>net.tcp://127.0.0.1:51000/Speculator/SmartComData/</wsa10:Address>
       </wsa10:EndpointReference>
     </wsdl:port>
   </wsdl:service>

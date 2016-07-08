@@ -10,7 +10,7 @@ namespace SpeculatorServices
         [OperationContract]
         void ConnectToDataSource();
 
-        [OperationContract]
+        [OperationContract(IsOneWay = true)]
         void ConnectToHistoryDataSource(Symbol symbol, DateTime dayDateTime);
 
         [OperationContract]

@@ -18,9 +18,9 @@
                 <ColumnDefinition />
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
-            <TextBlock Grid.Column="0" Text="{Binding Row.Volume}" HorizontalAlignment="Center" FontSize="8" FontWeight="Bold" Canvas.ZIndex="3"/>
-            <TextBlock Grid.Column="1" Text="{Binding Row.Price}" HorizontalAlignment="Center" FontSize="8" FontWeight="Bold" Canvas.ZIndex="3"/>
-            <Grid Grid.Column="0" Grid.ColumnSpan="2" Width="{DXBinding 'Row.Volume/5'}" Background="DarkOrange" HorizontalAlignment="Left" Canvas.ZIndex="1"/>
+            <TextBlock Grid.Column="0" Text="{Binding Row.Volume}" HorizontalAlignment="Left" FontSize="8" FontWeight="Bold" Canvas.ZIndex="3"/>
+            <TextBlock Grid.Column="1" Text="{Binding Row.Price}" HorizontalAlignment="Right" FontSize="8" FontWeight="Bold" Canvas.ZIndex="3"/>
+            <StackPanel Grid.Column="0" Grid.ColumnSpan="2" Width="{DXBinding 'Row.Volume/5'}" Background="DarkOrange" HorizontalAlignment="Left" Canvas.ZIndex="1"/>
         </Grid>
     </DataTemplate>
 
@@ -33,9 +33,9 @@
                 <ColumnDefinition />
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
-            <TextBlock Grid.Column="0" Text="{Binding Row.Volume}" HorizontalAlignment="Center" FontSize="8" FontWeight="Normal" Canvas.ZIndex="3"/>
-            <TextBlock Grid.Column="1" Text="{Binding Row.Price}" HorizontalAlignment="Center" FontSize="8" FontWeight="Normal" Canvas.ZIndex="3"/>
-            <Grid Grid.Column="0" Grid.ColumnSpan="2" Width="{DXBinding 'Row.Volume/5'}" Background="DarkOrange" HorizontalAlignment="Left" Canvas.ZIndex="1"/>
+            <TextBlock Grid.Column="0" Text="{Binding Row.Volume}" HorizontalAlignment="Left" FontSize="8" FontWeight="Normal" Canvas.ZIndex="3"/>
+            <TextBlock Grid.Column="1" Text="{Binding Row.Price}" HorizontalAlignment="Right" FontSize="8" FontWeight="Normal" Canvas.ZIndex="3"/>
+            <StackPanel Grid.Column="0" Grid.ColumnSpan="2" Width="{DXBinding 'Row.Volume/5'}" Background="DarkOrange" HorizontalAlignment="Left" Canvas.ZIndex="1"/>
         </Grid>
     </DataTemplate>
 
@@ -48,9 +48,9 @@
                 <ColumnDefinition />
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
-            <TextBlock Grid.Column="0" Text="{Binding Row.Volume}" HorizontalAlignment="Center" FontSize="7" FontWeight="Light" Canvas.ZIndex="3"/>
-            <TextBlock Grid.Column="1" Text="{Binding Row.Price}" HorizontalAlignment="Center" FontSize="7" FontWeight="Light" Canvas.ZIndex="3"/>
-            <Grid Grid.Column="0" Grid.ColumnSpan="2" Width="{DXBinding 'Row.Volume/5'}" Background="DarkOrange" HorizontalAlignment="Left" Canvas.ZIndex="1"/>
+            <TextBlock Grid.Column="0" Text="{Binding Row.Volume}" HorizontalAlignment="Left" FontSize="7" FontWeight="Light" Canvas.ZIndex="3"/>
+            <TextBlock Grid.Column="1" Text="{Binding Row.Price}" HorizontalAlignment="Right" FontSize="7" FontWeight="Light" Canvas.ZIndex="3"/>
+            <StackPanel Grid.Column="0" Grid.ColumnSpan="2" Width="{DXBinding 'Row.Volume/5'}" Background="DarkOrange" HorizontalAlignment="Left" Canvas.ZIndex="1"/>
         </Grid>
     </DataTemplate>
 
@@ -59,7 +59,7 @@
             <Grid.Style>
                 <Style TargetType="Grid" BasedOn="{StaticResource GlassGridStyle}" />
             </Grid.Style>
-            <Grid Grid.Column="0" Width="{DXBinding 'Row.Volume/5'}" Background="DarkOrange" HorizontalAlignment="Left" Canvas.ZIndex="1"/>
+            <StackPanel Grid.Column="0" Width="{DXBinding 'Row.Volume/5'}" Background="DarkOrange" HorizontalAlignment="Left" Canvas.ZIndex="1"/>
         </Grid>
     </DataTemplate>
     

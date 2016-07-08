@@ -138,9 +138,9 @@
   </wsdl:binding>
   <wsdl:service name="MoexData">
     <wsdl:port name="NetTcpBinding_IMoexData" binding="tns:NetTcpBinding_IMoexData">
-      <soap12:address location="net.tcp://127.0.0.1/Speculator/MoexData/" />
+      <soap12:address location="net.tcp://127.0.0.1:51000/Speculator/MoexData/" />
       <wsa10:EndpointReference>
-        <wsa10:Address>net.tcp://127.0.0.1/Speculator/MoexData/</wsa10:Address>
+        <wsa10:Address>net.tcp://127.0.0.1:51000/Speculator/MoexData/</wsa10:Address>
       </wsa10:EndpointReference>
     </wsdl:port>
   </wsdl:service>

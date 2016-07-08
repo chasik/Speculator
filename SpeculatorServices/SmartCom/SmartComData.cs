@@ -53,41 +53,59 @@ namespace SpeculatorServices.SmartCom
 
         public void ConnectToHistoryDataSource(Symbol symbol, DateTime dayDateTime)
         {
+            var smartComSymbol = new SmartComSymbol
+            {
+                Id = symbol.Id,
+                Name = symbol.Name,
+                Step = symbol.Step,
+                Punkt = symbol.Punkt,
+                LongName = symbol.LongName,
+                LotSize = symbol.LotSize,
+                ShortName = symbol.ShortName
+            };
+            RegisterClientWithCallBack(new[] { symbol.Name });
+            List<SmartComTrade> allTicks;
+            List<SmartComBidAskValue> allBidAsk;
             using (var dbContext = new SpeculatorContext())
             {
-                //var allTicks = dbContext.SmartComTicks.Join(dbContext.SmartComBidAskValues, t => t.TradeAdded);
+                allTicks = dbContext.SmartComTicks.Where(t =>
+                    t.SmartComSymbolId == symbol.Id && t.TradeAdded >= dayDateTime &&
+                    t.TradeAdded <= dayDateTime.AddDays(1)).OrderBy(t => t.TradeAdded).ToList();
+                allBidAsk = dbContext.SmartComBidAskValues.Where(ba =>
+                    ba.SmartComSymbolId == symbol.Id && ba.Added >= dayDateTime &&
+                    ba.Added <= dayDateTime.AddDays(1)).OrderBy(ba => ba.Added).ToList();
 
 
-                var ticks = dbContext.SmartComTicks
-                    .Where(
-                        t =>
-                            t.SmartComSymbolId == symbol.Id && t.TradeAdded >= dayDateTime &&
-                            t.TradeAdded <= dayDateTime.AddDays(1))
-                    .GroupJoin(
-                        dbContext.SmartComBidAskValues.Where(
-                            ba =>
-                                ba.SmartComSymbolId == symbol.Id && ba.Added >= dayDateTime &&
-                                ba.Added <= dayDateTime.AddDays(1)),
-                        t => t.TradeAdded,
-                        ba => ba.Added,
-                        (t, ba) => new {Tick = t, BidAsk = ba.DefaultIfEmpty()});
-                var bidAsk = dbContext.SmartComBidAskValues
-                    .Where(
-                        ba =>
-                            ba.SmartComSymbolId == symbol.Id && ba.Added >= dayDateTime &&
-                            ba.Added <= dayDateTime.AddDays(1))
-                            .GroupJoin(dbContext.SmartComTicks.Where( t => t.SmartComSymbolId == symbol.Id && t.TradeAdded >= dayDateTime && t.TradeAdded <= dayDateTime.AddDays(1)),
-                            ba => ba.Added, t => t.TradeAdded, (ba, t) => new {Tick = t.DefaultIfEmpty(), BidAsk = ba});
-                var fullOuterJoin = ticks.SelectMany(t => t.BidAsk.Select(ba => new  {Tick = t, BidAsk = ba})).ToList();
+                var leftOuterJoin =
+                    from tick in allTicks
+                    join bidask in allBidAsk on tick.TradeAdded equals bidask.Added into temp
+                    from bidask in temp.DefaultIfEmpty()
+                    select new {EventDateTime = tick.TradeAdded, Tick = tick, BidAsk = bidask ?? new SmartComBidAskValue()};
+
+                var rightOuterJoin =
+                    from bidask in allBidAsk
+                    join tick in allTicks on bidask.Added equals tick.TradeAdded into temp
+                    from tick in temp.DefaultIfEmpty()
+                    select new {EventDateTime = bidask.Added, Tick = tick ?? new SmartComTrade(), BidAsk = bidask};
+
+                var fullOuterJoin = leftOuterJoin.Union(rightOuterJoin).OrderBy(x => x.EventDateTime);
+
+                var fullResultEvents = fullOuterJoin.ToList();
 
 
-                //.SelectMany(
-                //    x => x.BidAsks.DefaultIfEmpty(),
-                //    (t, ba) => new {t.Tick, BidAsk = ba}).ToList();
 
 
-                //t.SmartComSymbolId == symbol.Id && t.TradeDateTime >= dayDateTime &&
-                //t.TradeDateTime <= dayDateTime.AddDays(1)).ToList();
+                var minDateTime = new DateTime(Math.Min(allTicks.Min(t => t.TradeAdded).Ticks, allBidAsk.Min(ba => ba.Added).Ticks));
+                var maxDateTime = new DateTime(Math.Max(allTicks.Max(t => t.TradeAdded).Ticks, allBidAsk.Max(ba => ba.Added).Ticks));
+
+                fullResultEvents.ForEach(smartComEvent =>
+                {
+                    if (smartComEvent.Tick.TradeNo != 0)
+                        TradeEvent(smartComSymbol, smartComEvent.Tick);
+                    if (smartComEvent.BidAsk.Id != 0)
+                        UpdateBidAskEvent(smartComSymbol, smartComEvent.BidAsk, smartComEvent.BidAsk.IsBid);
+                });
+
             }
         }
 
@@ -177,19 +195,16 @@ namespace SpeculatorServices.SmartCom
             var bidChanged = false;
             var askChanged = false;
 
-            _glasses[currentSymbol.Name].GetOrAdd(bid, new SmartComBidAskValue());
-            _glasses[currentSymbol.Name].GetOrAdd(ask, new SmartComBidAskValue());
+            var oldBid = _glasses[currentSymbol.Name].GetOrAdd(bid, new SmartComBidAskValue());
+            var oldAsk = _glasses[currentSymbol.Name].GetOrAdd(ask, new SmartComBidAskValue());
 
-            var oldBid = _glasses[currentSymbol.Name][bid];
-            var oldAsk = _glasses[currentSymbol.Name][ask];
-
-            if ((oldBid?.Volume != bidsize || !oldBid.IsBid) && oldBid != null)
+            if (oldBid != null && (Math.Abs(oldBid.Volume - bidsize) > 0.00001 || !oldBid.IsBid))
             {
                 oldBid.Volume = (int)bidsize;
                 oldBid.IsBid = true;
                 bidChanged = true;
             }
-            if ((oldAsk?.Volume != asksize || oldAsk.IsBid) && oldAsk != null)
+            if (oldAsk != null && (Math.Abs(oldAsk.Volume - asksize) > 0.00001 || oldAsk.IsBid))
             {
                 oldAsk.Volume = (int)asksize;
                 oldAsk.IsBid = false;

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using DevExpress.Mvvm.Native;
 using SpeculatorModel.MainData;
 using SpeculatorModel.SmartCom;
 
@@ -20,25 +21,30 @@ namespace Speculator.Indicators
             Values = new ObservableCollection<GlassShear>();
         }
 
-        public void AddGlassShear(ICollection<SmartComBidAskValue> glass, Symbol symbol)
+        public void AddGlassShear(ICollection<SmartComBidAskValue> glass, Symbol symbol, DateTime time)
         {
-            LastAddedGlassShear = new GlassShear(glass, symbol);
+            LastAddedGlassShear = new GlassShear(glass, symbol, time);
         }
     }
 
 
     public class GlassShear
     {
-        public GlassShear(ICollection<SmartComBidAskValue> glass, Symbol symbol)
+        public GlassShear(ICollection<SmartComBidAskValue> glass, Symbol symbol, DateTime time)
         {
             if (glass.Count < 20)
                 return;
 
-            Time = DateTime.Now;
+            Time = time;
+            var allAsk = glass.Where(g => !g.IsBid && g.RowId == 0 && g.Volume > 0);
+            var allBid = glass.Where(g => g.IsBid && g.RowId == 0 && g.Volume > 0);
 
-            var ask = glass.Where(g => !g.IsBid && g.RowId == 0).Max(g => g.Price);
-            var bid = glass.Where(g => g.IsBid && g.RowId == 0).Min(g => g.Price);
-            if (Math.Abs(ask - bid) > 200)
+            if (!allAsk.Any() || !allBid.Any())
+                return;
+
+            var ask = allAsk.Max(g => g.Price);
+            var bid = allBid.Min(g => g.Price);
+            if (Math.Abs(ask - bid) > 20 * symbol.Step)
             {
                 ask = glass.Where(g => !g.IsBid && g.RowId == 0).Min(g => g.Price);
                 bid = glass.Where(g => g.IsBid && g.RowId == 0).Max(g => g.Price);
@@ -95,8 +101,8 @@ namespace Speculator.Indicators
                 var ask = AskValues.Skip(i).FirstOrDefault().Value;
                 var bid = BidValues.Skip(i).FirstOrDefault().Value;
 
-                averageSummAsk += ask < AverageFull * 5 ? ask : AverageFull * 5;
-                averageSummBid += bid < AverageFull * 5 ? bid : AverageFull * 5;
+                averageSummAsk += ask;// < AverageFull*3 ? ask : AverageFull * 3;
+                averageSummBid += bid;// < AverageFull*3 ? bid : AverageFull * 3;
 
                 var summ = averageSummAsk + averageSummBid;
                 if (summ == 0)

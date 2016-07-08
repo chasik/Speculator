@@ -23,8 +23,10 @@ namespace Speculator.Indicators
                 return;
 
 
-            LastAddedGlassShear.Value = Math.Max(sumPositive, Math.Abs(sumNegative)) * 100
-                / (sumPositive + Math.Abs(sumNegative)) * (sumPositive > Math.Abs(sumNegative) ? 1 : -1);
+            //LastAddedGlassShear.Value = Math.Max(sumPositive, Math.Abs(sumNegative)) * 100
+            //    / (sumPositive + Math.Abs(sumNegative)) * (sumPositive > Math.Abs(sumNegative) ? 1 : -1);
+
+            LastAddedGlassShear.Value = 0;
 
             LastAddedGlassShear.Value2 = sumPositive + sumNegative;
 

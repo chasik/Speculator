@@ -80,9 +80,9 @@
   </wsdl:binding>
   <wsdl:service name="SpeculatorData">
     <wsdl:port name="NetTcpBinding_ISpeculatorData" binding="tns:NetTcpBinding_ISpeculatorData">
-      <soap12:address location="net.tcp://127.0.0.1/SpeculatorData/" />
+      <soap12:address location="net.tcp://127.0.0.1:51000/SpeculatorData/" />
       <wsa10:EndpointReference>
-        <wsa10:Address>net.tcp://127.0.0.1/SpeculatorData/</wsa10:Address>
+        <wsa10:Address>net.tcp://127.0.0.1:51000/SpeculatorData/</wsa10:Address>
       </wsa10:EndpointReference>
     </wsdl:port>
   </wsdl:service>

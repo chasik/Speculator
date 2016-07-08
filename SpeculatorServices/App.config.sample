@@ -43,23 +43,36 @@
   app.config file. System.Configuration does not support config files for libraries. -->
   <system.serviceModel>
     <services>
+      <service behaviorConfiguration="SpeculatorServicesBehavior" name="SpeculatorServices.Moex.MoexData">
+        <endpoint address="" binding="netTcpBinding" bindingConfiguration="SpeculatorNetTcpBinding" contract="SpeculatorServices.Moex.IMoexData" />
+        <endpoint address="mex" binding="mexHttpBinding" contract="IMetadataExchange" />
+        <host>
+          <baseAddresses>
+            <add baseAddress="net.tcp://127.0.0.1:51000/Speculator/MoexData/" />
+            <add baseAddress="http://127.0.0.1:51001/Speculator/MoexData/" />
+          </baseAddresses>
+        </host>
+      </service>
+      
+      <service behaviorConfiguration="SpeculatorServicesBehavior" name="SpeculatorServices.SmartCom.SmartComData">
+        <endpoint address="" binding="netTcpBinding" bindingConfiguration="SpeculatorNetTcpBinding" contract="SpeculatorServices.SmartCom.ISmartComData" />
+        <endpoint address="" binding="netTcpBinding" bindingConfiguration="SpeculatorNetTcpBinding" contract="SpeculatorServices.IDataBase" />
+        <endpoint address="mex" binding="mexHttpBinding" contract="IMetadataExchange" />
+        <host>
+          <baseAddresses>
+            <add baseAddress="net.tcp://127.0.0.1:51000/Speculator/SmartComData/" />
+            <add baseAddress="http://127.0.0.1:51001/Speculator/SmartComData/" />
+          </baseAddresses>
+        </host>
+      </service>
+      
       <service behaviorConfiguration="SpeculatorServicesBehavior" name="SpeculatorServices.SpeculatorData">
         <endpoint address="" binding="netTcpBinding" bindingConfiguration="SpeculatorNetTcpBinding" contract="SpeculatorServices.ISpeculatorData" />
         <endpoint address="mex" binding="mexHttpBinding" contract="IMetadataExchange" />
         <host>
           <baseAddresses>
-            <add baseAddress="net.tcp://127.0.0.1/SpeculatorData/" />
+            <add baseAddress="net.tcp://127.0.0.1:51000/SpeculatorData/" />
             <add baseAddress="http://127.0.0.1:51001/SpeculatorData/" />
-          </baseAddresses>
-        </host>
-      </service>
-      <service behaviorConfiguration="SpeculatorServicesBehavior" name="SpeculatorServices.SmartCom.SmartComData">
-        <endpoint address="" binding="netNamedPipeBinding" bindingConfiguration="SpeculatorNamePipeBinding" contract="SpeculatorServices.SmartCom.ISmartComData" />
-        <endpoint address="mex" binding="mexHttpBinding" contract="IMetadataExchange" />
-        <host>
-          <baseAddresses>
-            <add baseAddress="net.pipe://127.0.0.1/Speculator/SmartComData/" />
-            <add baseAddress="http://127.0.0.1:51001/Speculator/SmartComData/" />
           </baseAddresses>
         </host>
       </service>
@@ -70,16 +83,6 @@
           <baseAddresses>
             <add baseAddress="net.tcp://127.0.0.1:51000/Speculator/TransaqData/" />
             <add baseAddress="http://127.0.0.1:51001/Speculator/TransaqData/" />
-          </baseAddresses>
-        </host>
-      </service>
-      <service behaviorConfiguration="SpeculatorServicesBehavior" name="SpeculatorServices.Moex.MoexData">
-        <endpoint address="" binding="netTcpBinding" bindingConfiguration="SpeculatorNetTcpBinding" contract="SpeculatorServices.Moex.IMoexData" />
-        <endpoint address="mex" binding="mexHttpBinding" contract="IMetadataExchange" />
-        <host>
-          <baseAddresses>
-            <add baseAddress="net.tcp://127.0.0.1:51000/Speculator/MoexData/" />
-            <add baseAddress="http://127.0.0.1:51001/Speculator/MoexData/" />
           </baseAddresses>
         </host>
       </service>
@@ -100,7 +103,7 @@
         </binding>
       </netNamedPipeBinding>
     </bindings>
-    <!--For debugging purposes set the includeExceptionDetailInFaults attribute to true-->
+
     <behaviors>
       <serviceBehaviors>
         <behavior name="SpeculatorServicesBehavior">
@@ -128,7 +131,7 @@
   <userSettings>
     <SpeculatorServices.Properties.Settings>
       <setting name="SmartComHost" serializeAs="String">
-        <value>mxr.ittrade.ru</value>
+        <value>mx2.ittrade.ru</value>
       </setting>
       <setting name="SmartComPort" serializeAs="String">
         <value>8443</value>

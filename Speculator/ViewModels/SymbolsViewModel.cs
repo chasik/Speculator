@@ -47,7 +47,7 @@ namespace Speculator.ViewModels
 
             var resultChoice = ChoiceSymbolDialogService.ShowDialog(new List<UICommand> {selectCommand, cancelCommand},
                 "Выбор инструмента", dialogViewModel);
-            if (resultChoice == selectCommand)
+            if (resultChoice == selectCommand && dialogViewModel.SelectedSymbol != null)
             {
                 var content = new SymbolPanelView();
                 (content.DataContext as SymbolPanelViewModel).DataSource = dialogViewModel.UsedDataSource;
