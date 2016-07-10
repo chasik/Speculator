@@ -101,8 +101,8 @@ namespace Speculator.Indicators
                 var ask = AskValues.Skip(i).FirstOrDefault().Value;
                 var bid = BidValues.Skip(i).FirstOrDefault().Value;
 
-                averageSummAsk += ask;// < AverageFull*3 ? ask : AverageFull * 3;
-                averageSummBid += bid;// < AverageFull*3 ? bid : AverageFull * 3;
+                averageSummAsk += ask;// < AverageFull*5 ? ask : AverageFull * 5;
+                averageSummBid += bid;// < AverageFull*5 ? bid : AverageFull * 5;
 
                 var summ = averageSummAsk + averageSummBid;
                 if (summ == 0)

@@ -53,6 +53,7 @@ namespace SpeculatorServices.SmartCom
 
         public void ConnectToHistoryDataSource(Symbol symbol, DateTime dayDateTime)
         {
+            dayDateTime += new TimeSpan(12, 20, 0);
             var smartComSymbol = new SmartComSymbol
             {
                 Id = symbol.Id,
@@ -66,44 +67,74 @@ namespace SpeculatorServices.SmartCom
             RegisterClientWithCallBack(new[] { symbol.Name });
             List<SmartComTrade> allTicks;
             List<SmartComBidAskValue> allBidAsk;
+            List<SmartComQuote> allQuotes;
             using (var dbContext = new SpeculatorContext())
             {
                 allTicks = dbContext.SmartComTicks.Where(t =>
                     t.SmartComSymbolId == symbol.Id && t.TradeAdded >= dayDateTime &&
-                    t.TradeAdded <= dayDateTime.AddDays(1)).OrderBy(t => t.TradeAdded).ToList();
+                    t.TradeAdded < dayDateTime.AddDays(1)).OrderBy(t => t.TradeAdded).ToList();
                 allBidAsk = dbContext.SmartComBidAskValues.Where(ba =>
                     ba.SmartComSymbolId == symbol.Id && ba.Added >= dayDateTime &&
-                    ba.Added <= dayDateTime.AddDays(1)).OrderBy(ba => ba.Added).ToList();
+                    ba.Added < dayDateTime.AddDays(1)).OrderBy(ba => ba.Added).ToList();
+                allQuotes = dbContext.SmartComQuotes.Where(q =>
+                    q.SmartComSymbolId == symbol.Id && q.QuoteAdded >= dayDateTime &&
+                    q.QuoteAdded < dayDateTime.AddDays(1)).OrderBy(q => q.QuoteAdded).ToList();
 
-
-                var leftOuterJoin =
+                var allLoadedBidAsk =
                     from tick in allTicks
                     join bidask in allBidAsk on tick.TradeAdded equals bidask.Added into temp
+                    join quote in allQuotes on tick.TradeAdded equals quote.QuoteAdded into tempQuote
                     from bidask in temp.DefaultIfEmpty()
-                    select new {EventDateTime = tick.TradeAdded, Tick = tick, BidAsk = bidask ?? new SmartComBidAskValue()};
+                    from quote in tempQuote.DefaultIfEmpty()
+                    select new {EventDateTime = tick.TradeAdded, Tick = tick, BidAsk = bidask ?? new SmartComBidAskValue(), Quote = quote ?? new SmartComQuote()};
 
-                var rightOuterJoin =
+                var allLoadedTrade =
                     from bidask in allBidAsk
                     join tick in allTicks on bidask.Added equals tick.TradeAdded into temp
+                    join quote in allQuotes on bidask.Added equals quote.QuoteAdded into tempQuote
                     from tick in temp.DefaultIfEmpty()
-                    select new {EventDateTime = bidask.Added, Tick = tick ?? new SmartComTrade(), BidAsk = bidask};
+                    from quote in tempQuote.DefaultIfEmpty()
+                    select new {EventDateTime = bidask.Added, Tick = tick ?? new SmartComTrade(), BidAsk = bidask, Quote = quote ?? new SmartComQuote()};
 
-                var fullOuterJoin = leftOuterJoin.Union(rightOuterJoin).OrderBy(x => x.EventDateTime);
+                var allLoadedQuote =
+                    from quote in allQuotes
+                    join tick in allTicks on quote.QuoteAdded equals tick.TradeAdded into temp
+                    join bidask in allBidAsk on quote.QuoteAdded equals bidask.Added into tempBidAsk
+                    from tick in temp.DefaultIfEmpty()
+                    from bidask in tempBidAsk.DefaultIfEmpty()
+                    select new {EventDateTime = quote.QuoteAdded, Tick = tick ?? new SmartComTrade(), BidAsk = bidask ?? new SmartComBidAskValue(), Quote = quote};
 
-                var fullResultEvents = fullOuterJoin.ToList();
 
-
-
+                var fullResultEvents = allLoadedBidAsk.Union(allLoadedTrade).Union(allLoadedQuote).OrderBy(x => x.EventDateTime).ToList();
 
                 var minDateTime = new DateTime(Math.Min(allTicks.Min(t => t.TradeAdded).Ticks, allBidAsk.Min(ba => ba.Added).Ticks));
                 var maxDateTime = new DateTime(Math.Max(allTicks.Max(t => t.TradeAdded).Ticks, allBidAsk.Max(ba => ba.Added).Ticks));
 
+                //var tempDictionary = new Dictionary<double, SmartComBidAskValue>();
                 fullResultEvents.ForEach(smartComEvent =>
                 {
-                    if (smartComEvent.Tick.TradeNo != 0)
-                        TradeEvent(smartComSymbol, smartComEvent.Tick);
                     if (smartComEvent.BidAsk.Id != 0)
+                    {
                         UpdateBidAskEvent(smartComSymbol, smartComEvent.BidAsk, smartComEvent.BidAsk.IsBid);
+                        //if (tempDictionary.ContainsKey(smartComEvent.BidAsk.Price))
+                        //    tempDictionary[smartComEvent.BidAsk.Price] = smartComEvent.BidAsk;
+                        //else 
+                        //    tempDictionary.Add(smartComEvent.BidAsk.Price, smartComEvent.BidAsk);
+                    }
+
+                    if (smartComEvent.Tick.TradeNo != 0)
+                    {
+                        //foreach (var bidAskValue in tempDictionary.Values)
+                        //{
+                        //    UpdateBidAskEvent(smartComSymbol, bidAskValue, bidAskValue.IsBid);
+                        //}
+                        TradeEvent(smartComSymbol, smartComEvent.Tick);
+                        //tempDictionary.Clear();
+                    }
+                    if (smartComEvent.Quote.Id != 0)
+                    {
+                        QuoteEvent(smartComSymbol, smartComEvent.Quote);
+                    }
                 });
 
             }
@@ -282,6 +313,7 @@ namespace SpeculatorServices.SmartCom
                 Volatility = volat
             };
             //EventLog.WriteEntry("SmartComDataServiceHost", $"SmartCom UpdateQuote. Symbol: {currentSymbol.Name}    OnlyDubplexForClient:{OnlyDuplexForClient}");
+            QuoteEvent(currentSymbol, quote);
             if (OnlyDuplexForClient)
                 return;
 

@@ -152,8 +152,7 @@
  
             <ig:XamDataChart.Axes>
 
-                <ig:CategoryDateTimeXAxis x:Name="XAxisBuy" DateTimeMemberPath="TradeDateTime" 
-                                          Label="{}{Date:HH:mm:ss}"
+                <ig:CategoryDateTimeXAxis x:Name="XAxisBuy" DateTimeMemberPath="TradeDateTime" Label="{}{Date:HH:mm:ss}"
                                           MinimumValue="{Binding StartDateValue}" MaximumValue="{Binding FinishDateValue}"
                                           ItemsSource="{Binding TradesBuy}">
                     <ig:CategoryDateTimeXAxis.LabelSettings>
@@ -197,6 +196,17 @@
                     </ig:CategoryDateTimeXAxis.LabelSettings>
                 </ig:CategoryDateTimeXAxis>
 
+                <ig:CategoryDateTimeXAxis x:Name="XAxisOpenInterest" DateTimeMemberPath="Time"
+                                          MinorStrokeThickness="0" MajorStrokeThickness="0"
+                                          MinimumValue="{Binding StartDateValue}" MaximumValue="{Binding FinishDateValue}"
+                                          ItemsSource="{Binding OpenInterest}">
+                    <ig:CategoryDateTimeXAxis.LabelSettings>
+                        <ig:AxisLabelSettings Visibility="Hidden"/>
+                    </ig:CategoryDateTimeXAxis.LabelSettings>
+                </ig:CategoryDateTimeXAxis>
+                
+                
+
                 <ig:NumericYAxis x:Name="YAxis" 
                                  MinimumValue="{Binding MinimumVisiblePriceValue, Mode=TwoWay}"
                                  MaximumValue="{Binding MaximumVisiblePriceValue, Mode=TwoWay}">
@@ -206,43 +216,57 @@
                 </ig:NumericYAxis>
 
                 <ig:NumericYAxis x:Name="YAxisIndicator" MajorStrokeThickness="1" MinorStrokeThickness="0"
-                                 MajorStroke="OrangeRed" MajorStrokeDashArray="1 5">
+                                 MajorStroke="OrangeRed" MajorStrokeDashArray="2 20">
                     <ig:NumericYAxis.LabelSettings>
                         <ig:AxisLabelSettings Location="InsideRight" FontSize="11" FontWeight="Bold" Foreground="OrangeRed"/>
+                    </ig:NumericYAxis.LabelSettings>
+                </ig:NumericYAxis>
+
+                <ig:NumericYAxis x:Name="YAxisOpenInterest" MajorStrokeThickness="0" MinorStrokeThickness="0">
+                    <ig:NumericYAxis.LabelSettings>
+                        <ig:AxisLabelSettings Location="InsideLeft" FontSize="11" FontWeight="Bold" Foreground="OrangeRed"/>
                     </ig:NumericYAxis.LabelSettings>
                 </ig:NumericYAxis>
 
             </ig:XamDataChart.Axes>
 
             <ig:XamDataChart.Series>
-                <ig:StepLineSeries MarkerType="None" ValueMemberPath="Price" Brush="IndianRed" Canvas.ZIndex="14"
+                <ig:StepLineSeries MarkerType="None" ValueMemberPath="Price" Brush="Red" Canvas.ZIndex="15"
                                     ItemsSource="{Binding TradesBuy}" 
                                     XAxis="{Binding ElementName=XAxisBuy}"
                                     YAxis="{Binding ElementName=YAxis}">
                 </ig:StepLineSeries>
-                <ig:StepLineSeries MarkerType="None" ValueMemberPath="Price" Brush="CornflowerBlue" Canvas.ZIndex="15"
+                <ig:StepLineSeries MarkerType="None" ValueMemberPath="Price" Brush="Blue" Canvas.ZIndex="14"
                                    ItemsSource="{Binding TradesSell}"
                                    XAxis="{Binding ElementName=XAxisSell}"
                                    YAxis="{Binding ElementName=YAxis}">
                 </ig:StepLineSeries>
 
-                <ig:StepAreaSeries MarkerType="None" ValueMemberPath="Value2" Brush="Plum" Canvas.ZIndex="10" Opacity="0.3"
+                <ig:StepAreaSeries MarkerType="None" ValueMemberPath="Value2" Brush="Plum" Canvas.ZIndex="10" Opacity="0.4"
                                    ItemsSource="{Binding Indicator3.Values}"
                                    XAxis="{Binding ElementName=XAxisIndicator3}"
                                    YAxis="{Binding ElementName=YAxisIndicator}">
                 </ig:StepAreaSeries>
 
-                <ig:StepAreaSeries MarkerType="None" ValueMemberPath="Value2" Brush="ForestGreen" Canvas.ZIndex="11" Opacity="0.75"
+                <ig:StepAreaSeries MarkerType="None" ValueMemberPath="Value2" Brush="ForestGreen" Canvas.ZIndex="11" Opacity="0.5"
                                    ItemsSource="{Binding Indicator2.Values}"
                                    XAxis="{Binding ElementName=XAxisIndicator2}"
                                    YAxis="{Binding ElementName=YAxisIndicator}">
                 </ig:StepAreaSeries>
 
-                <ig:StepAreaSeries MarkerType="None" ValueMemberPath="Value2" Brush="LawnGreen" Canvas.ZIndex="12" Opacity="0.9"
+                <ig:StepAreaSeries MarkerType="None" ValueMemberPath="Value2" Brush="LawnGreen" Canvas.ZIndex="12" Opacity="0.6"
                                    ItemsSource="{Binding Indicator.Values}"
                                    XAxis="{Binding ElementName=XAxisIndicator}"
                                    YAxis="{Binding ElementName=YAxisIndicator}">
                 </ig:StepAreaSeries>
+
+                <!--OpenInterest-->
+                <ig:StepLineSeries MarkerType="None" ValueMemberPath="Volume" Brush="SaddleBrown" Canvas.ZIndex="15" Opacity="1"
+                                   ItemsSource="{Binding OpenInterest}" IsHighlightingEnabled="True" Thickness="0"
+                                   TrendLinePeriod="500" TrendLineBrush="OrangeRed" TrendLineType="WeightedAverage"
+                                   XAxis="{Binding ElementName=XAxisOpenInterest}"
+                                   YAxis="{Binding ElementName=YAxisOpenInterest}">
+                </ig:StepLineSeries>
 
             </ig:XamDataChart.Series>
                         

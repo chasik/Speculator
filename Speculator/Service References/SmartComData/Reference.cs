@@ -91,6 +91,9 @@ namespace Speculator.SmartComData {
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IDataBase/TradeEvent")]
         void TradeEvent(SpeculatorModel.SmartCom.SmartComSymbol symbol, SpeculatorModel.SmartCom.SmartComTrade trade);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IDataBase/QuoteEvent")]
+        void QuoteEvent(SpeculatorModel.SmartCom.SmartComSymbol symbol, SpeculatorModel.SmartCom.SmartComQuote quote);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]

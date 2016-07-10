@@ -67,5 +67,24 @@ namespace SpeculatorServices
                 }
             }
         }
+
+        protected void QuoteEvent(SmartComSymbol symbol, SmartComQuote quote)
+        {
+            for (var i = 0; i < ClientsWithCallBack.Count; i++)
+            {
+                var communicationObject = ClientsWithCallBack[i] as ICommunicationObject;
+                if (communicationObject == null || communicationObject.State != CommunicationState.Opened ||
+                    !ClientsWantGetSymbols[ClientsWithCallBack[i]].Contains(symbol.Name))
+                    continue;
+                try
+                {
+                    ClientsWithCallBack[i].QuoteEvent(symbol, quote);
+                }
+                catch (Exception)
+                {
+                    ClientsWithCallBack.RemoveAt(i--);
+                }
+            }
+        }
     }
 }

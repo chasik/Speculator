@@ -32,12 +32,18 @@ namespace Speculator.ViewModels
         public DataSource DataSource { get; set; }
         public Symbol Symbol { get; set; }
         public virtual short Zoom { get; set; }
+
         public virtual BindingList<SmartComBidAskValue> Glass { get; set; }
         private List<SmartComBidAskValue> _glass { get; set; }
 
+        private SmartComTrade _lastTrade { get; set; }
         public virtual ObservableCollection<SmartComTrade> Trades { get; set; }
         public virtual ObservableCollection<SmartComTrade> TradesBuy { get; set; }
         public virtual ObservableCollection<SmartComTrade> TradesSell { get; set; }
+
+        private OpenInterest _lastOpenInterest;
+        public virtual ObservableCollection<OpenInterest> OpenInterest { get; set; }
+
 
         private List<SmartComTrade> _tradesBuffer;
         private List<SmartComTrade> _tradesBuyBuffer;
@@ -64,12 +70,11 @@ namespace Speculator.ViewModels
         public async void StartListenDataService()
         {
             var dispatcher = Dispatcher.CurrentDispatcher;
-            _mainTimer = new Timer(HistoryDate == DateTime.MinValue ? 100 : 500);
+            _mainTimer = new Timer(HistoryDate == DateTime.MinValue ? 200 : 500);
             _mainTimer.Elapsed += (sender, args) =>
             {
                 if (_tradesBuffer == null || _tradesBuffer.Count == 0)
                     return;
-                DateTime maxDate;
 
                 dispatcher.Invoke(() =>
                 {
@@ -77,8 +82,10 @@ namespace Speculator.ViewModels
 
                     try
                     {
-                        maxDate = _tradesBuffer.Max(t => t.TradeAdded);
-                        FinishDateValue = maxDate;
+
+                        FinishDateValue = _tradesBuffer.Max(t => t.TradeAdded);
+                        MaximumPrice = Math.Max(MaximumPrice, _tradesBuffer.Max(t => t.Price));
+                        MinimumPrice = Math.Min(MinimumPrice, _tradesBuffer.Min(t => t.Price));
 
                         Trades.AddRange(_tradesBuffer);
                         _tradesBuffer.Clear();
@@ -99,26 +106,28 @@ namespace Speculator.ViewModels
                     }
 
                     //_chart.Diagram.Series.ForEach(s => s.Points.EndInit());
-                });
+                }, DispatcherPriority.Render);
             };
 
             _mainTimer.Start();
 
             Zoom = 1;
-            StartHeightGlassValueParam = 2;
-            FinishHeightGlassValueParam = 15;
+            StartHeightGlassValueParam = 1;
+            FinishHeightGlassValueParam = 16;
             Indicator = new IchIndicator
             {
                 Parameters = new List<double> {StartHeightGlassValueParam, FinishHeightGlassValueParam}
             };
             Indicator2 = new IchIndicator
             {
-                Parameters = new List<double> { 2, 30 }
+                Parameters = new List<double> { StartHeightGlassValueParam, 28 }
             };
             Indicator3 = new IchIndicator
             {
-                Parameters = new List<double> { 2, 50 }
+                Parameters = new List<double> { StartHeightGlassValueParam, 49 }
             };
+
+            OpenInterest = new ObservableCollection<OpenInterest>();
 
             TradesBuy = new ObservableCollection<SmartComTrade>();
             TradesSell = new ObservableCollection<SmartComTrade>();
@@ -148,7 +157,7 @@ namespace Speculator.ViewModels
                 _glass.Add(value);
                 if (_glass.Count == 1)
                 {
-                    for (var i = 1; i < 200; i++)
+                    for (var i = 1; i < 250; i++)
                     {
                         _glass.Add(new SmartComBidAskValue {Price = value.Price + i * (double)symbol.Step, Volume = 0, IsBid = true});
                         _glass.Add(new SmartComBidAskValue {Price = value.Price - i * (double)symbol.Step, Volume = 0, IsBid = false});
@@ -159,17 +168,6 @@ namespace Speculator.ViewModels
             else
             {
                 _glass[_glass.IndexOf(priceValue)] = value;
-                if (value.RowId == 0)
-                {
-                    if (value.IsBid) // все что ниже бида с нулевым idRow - биды
-                        _glass.Where(v => v.Price < value.Price && !value.IsBid).ForEach(v => v.IsBid = true);
-                    else if (!value.IsBid) // а все что выше - аски
-                        _glass.Where(v => v.Price > value.Price && value.IsBid).ForEach(v => v.IsBid = false);
-                }
-                else if (value.RowId == 50)
-                {
-                    
-                }
             }
         }
 
@@ -179,19 +177,25 @@ namespace Speculator.ViewModels
             {
                 Trades = new ObservableCollection<SmartComTrade>();
                 _tradesBuffer = new List<SmartComTrade>();
+                _lastTrade = new SmartComTrade();
 
                 StartDateValue = trade.TradeAdded;
                 MinimumPrice = MaximumPrice = trade.Price;
             }
 
             _tradesBuffer.Add(trade);
+            if (_lastTrade.DiractionId == trade.DiractionId && Math.Abs(_lastTrade.Price - trade.Price) < 0.0001)
+            {
+                _lastTrade = trade;
+                return;
+            }
+
             if (trade.DiractionId == (byte)DiractionEnum.Buy)
                 _tradesBuyBuffer.Add(trade);
             else if (trade.DiractionId == (byte)DiractionEnum.Sell)
                 _tradesSellBuffer.Add(trade);
 
-            MaximumPrice = Math.Max(MaximumPrice, trade.Price);
-            MinimumPrice = Math.Min(MinimumPrice, trade.Price);
+
 
             Indicator.AddGlassShear(_glass, symbol, trade.TradeAdded);
             Indicator.CalcLastValue();
@@ -208,6 +212,21 @@ namespace Speculator.ViewModels
             Indicator3.CalcLastValue();
             if (Math.Abs(Indicator3.LastAddedGlassShear.Value2) > 0.00001)
                 Indicator3.Values.Add(Indicator3.LastAddedGlassShear);
+        }
+
+        public void QuoteEvent(SmartComSymbol symbol, SmartComQuote quote)
+        {
+            _glass.Where(v => v.Price < quote.Bid && !v.IsBid).ForEach(v => v.IsBid = true);
+            //_glass.Where(v => v.Price < quote.Bid - 50*symbol.Step).ForEach(v => v.RowId = null);
+
+            _glass.Where(v => v.Price > quote.Ask && v.IsBid).ForEach(v => v.IsBid = false);
+            //_glass.Where(v => v.Price > quote.Ask + 50*symbol.Step).ForEach(v => v.RowId = null);
+
+            if (_lastOpenInterest.Volume != quote.OpenInterest)
+            {
+                _lastOpenInterest = new OpenInterest {Time = quote.QuoteAdded, Volume = quote.OpenInterest};
+                OpenInterest.Add(_lastOpenInterest);
+            }
         }
 
         public void ChartControlLoaded(ChartControl chart)
@@ -271,5 +290,11 @@ namespace Speculator.ViewModels
                     MinimumVisiblePriceValue = bottomVisible.Price;
             }
         }
+    }
+
+    public struct OpenInterest
+    {
+        public DateTime Time { get; set; }
+        public int Volume { get; set; }
     }
 }

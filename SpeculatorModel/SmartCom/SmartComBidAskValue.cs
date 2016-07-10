@@ -13,7 +13,7 @@ namespace SpeculatorModel.SmartCom
         [DataMember]
         public int SmartComSymbolId { get; set; }
         [DataMember]
-        public byte RowId { get; set; }
+        public byte? RowId { get; set; }
         [DataMember]
         public bool IsBid { get; set; }
         [DataMember]

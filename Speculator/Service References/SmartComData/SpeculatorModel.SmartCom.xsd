@@ -22,7 +22,7 @@
       <xs:element minOccurs="0" name="Id" type="xs:int" />
       <xs:element minOccurs="0" name="IsBid" type="xs:boolean" />
       <xs:element minOccurs="0" name="Price" type="xs:double" />
-      <xs:element minOccurs="0" name="RowId" type="xs:unsignedByte" />
+      <xs:element minOccurs="0" name="RowId" nillable="true" type="xs:unsignedByte" />
       <xs:element minOccurs="0" name="SmartComSymbolId" type="xs:int" />
       <xs:element minOccurs="0" name="Volume" type="xs:int" />
     </xs:sequence>
@@ -41,4 +41,22 @@
     </xs:complexContent>
   </xs:complexType>
   <xs:element name="SmartComTrade" nillable="true" type="tns:SmartComTrade" />
+  <xs:complexType name="SmartComQuote">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Ask" type="xs:double" />
+      <xs:element minOccurs="0" name="AskSize" type="xs:int" />
+      <xs:element minOccurs="0" name="Bid" type="xs:double" />
+      <xs:element minOccurs="0" name="BidSize" type="xs:int" />
+      <xs:element minOccurs="0" name="Id" type="xs:int" />
+      <xs:element minOccurs="0" name="LastTradeDateTime" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="LastTradePrice" type="xs:double" />
+      <xs:element minOccurs="0" name="LastTradeVolume" type="xs:int" />
+      <xs:element minOccurs="0" name="OpenInterest" type="xs:int" />
+      <xs:element minOccurs="0" name="QuoteAdded" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="SmartComSymbol" nillable="true" type="tns:SmartComSymbol" />
+      <xs:element minOccurs="0" name="SmartComSymbolId" type="xs:int" />
+      <xs:element minOccurs="0" name="Volatility" type="xs:double" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="SmartComQuote" nillable="true" type="tns:SmartComQuote" />
 </xs:schema>

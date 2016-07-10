@@ -258,6 +258,7 @@
     <Compile Include="MoexHistory\MoexTrade.cs" />
     <Compile Include="MoexHistory\MoexSystem.cs" />
     <Compile Include="MainData\Diraction.cs" />
+    <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SmartCom\SmartComBidAskValue.cs" />
     <Compile Include="SmartCom\SmartComQuote.cs" />

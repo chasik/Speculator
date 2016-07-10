@@ -11,5 +11,8 @@ namespace SpeculatorServices
 
         [OperationContract(IsOneWay = true)]
         void TradeEvent(SmartComSymbol symbol, SmartComTrade trade);
+
+        [OperationContract(IsOneWay = true)]
+        void QuoteEvent(SmartComSymbol symbol, SmartComQuote quote);
     }
 }

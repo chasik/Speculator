@@ -58,4 +58,12 @@
       </xs:sequence>
     </xs:complexType>
   </xs:element>
+  <xs:element name="QuoteEvent">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q7="http://schemas.datacontract.org/2004/07/SpeculatorModel.SmartCom" minOccurs="0" name="symbol" nillable="true" type="q7:SmartComSymbol" />
+        <xs:element xmlns:q8="http://schemas.datacontract.org/2004/07/SpeculatorModel.SmartCom" minOccurs="0" name="quote" nillable="true" type="q8:SmartComQuote" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
 </xs:schema>
