@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="64c10bdd-0147-4485-8e94-94ecb950fffb" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="d76de5a6-a74f-450d-a1de-622113fccbd0" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
   <ClientOptions>
     <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
     <GenerateTaskBasedAsynchronousMethod>true</GenerateTaskBasedAsynchronousMethod>
@@ -22,8 +22,8 @@
     <MetadataSource Address="http://127.0.0.1:51001/Speculator/TransaqData/mex" Protocol="mex" SourceId="1" />
   </MetadataSources>
   <Metadata>
-    <MetadataFile FileName="service.wsdl" MetadataType="Wsdl" ID="0e050712-08b7-495d-a243-0193d9f759f6" SourceId="1" SourceUrl="http://127.0.0.1:51001/Speculator/TransaqData/mex" />
-    <MetadataFile FileName="service.xsd" MetadataType="Schema" ID="1d18170a-36d7-4a3e-b919-9b9ca2bbd31c" SourceId="1" SourceUrl="http://127.0.0.1:51001/Speculator/TransaqData/mex" />
+    <MetadataFile FileName="service.wsdl" MetadataType="Wsdl" ID="236cd297-112b-4b27-b58e-2e42ab0f3138" SourceId="1" SourceUrl="http://127.0.0.1:51001/Speculator/TransaqData/mex" />
+    <MetadataFile FileName="service.xsd" MetadataType="Schema" ID="f38570b0-6bd0-41e7-be3c-8f71cb591606" SourceId="1" SourceUrl="http://127.0.0.1:51001/Speculator/TransaqData/mex" />
   </Metadata>
   <Extensions>
     <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />

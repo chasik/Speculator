@@ -81,6 +81,12 @@ namespace Speculator.SmartComData {
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IDataBase/ListenSymbol", ReplyAction="http://tempuri.org/IDataBase/ListenSymbolResponse")]
         System.Threading.Tasks.Task ListenSymbolAsync(SpeculatorModel.MainData.Symbol symbol);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IDataBase/PlaceOrder")]
+        void PlaceOrder(SpeculatorServices.Trading.TradingOrder order);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IDataBase/PlaceOrder")]
+        System.Threading.Tasks.Task PlaceOrderAsync(SpeculatorServices.Trading.TradingOrder order);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -94,6 +100,33 @@ namespace Speculator.SmartComData {
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IDataBase/QuoteEvent")]
         void QuoteEvent(SpeculatorModel.SmartCom.SmartComSymbol symbol, SpeculatorModel.SmartCom.SmartComQuote quote);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IDataBase/OrderSucceeded")]
+        void OrderSucceeded(int cookie, string orderid);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IDataBase/OrderFailed")]
+        void OrderFailed(int cookie, string orderid, string reason);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IDataBase/OrderMoveSucceeded")]
+        void OrderMoveSucceeded(string orderid);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IDataBase/OrderMoveFailed")]
+        void OrderMoveFailed(string orderid);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IDataBase/OrderCancelSucceeded")]
+        void OrderCancelSucceeded(string orderid);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IDataBase/OrderCancelFailed")]
+        void OrderCancelFailed(string orderid);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IDataBase/UpdatePosition")]
+        void UpdatePosition(string portfolio, string symbol, double avprice, double amount, double planned);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IDataBase/UpdateOrder")]
+        void UpdateOrder(string portfolio, SpeculatorServices.Trading.TradingOrder order, double filled, System.DateTime datetime, string orderid, string orderno, int status_mask);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IDataBase/AddTrade")]
+        void AddTrade(string portfolio, string symbol, string orderid, double price, double amount, System.DateTime datetime, string tradeno);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -146,6 +179,14 @@ namespace Speculator.SmartComData {
         
         public System.Threading.Tasks.Task ListenSymbolAsync(SpeculatorModel.MainData.Symbol symbol) {
             return base.Channel.ListenSymbolAsync(symbol);
+        }
+        
+        public void PlaceOrder(SpeculatorServices.Trading.TradingOrder order) {
+            base.Channel.PlaceOrder(order);
+        }
+        
+        public System.Threading.Tasks.Task PlaceOrderAsync(SpeculatorServices.Trading.TradingOrder order) {
+            return base.Channel.PlaceOrderAsync(order);
         }
     }
 }

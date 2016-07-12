@@ -21,6 +21,8 @@
       <xsd:import namespace="http://tempuri.org/" />
       <xsd:import namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
       <xsd:import namespace="http://schemas.datacontract.org/2004/07/SpeculatorModel.MainData" />
+      <xsd:import namespace="http://schemas.datacontract.org/2004/07/SpeculatorServices.Trading" />
+      <xsd:import namespace="http://schemas.datacontract.org/2004/07/SmartCOM3Lib" />
       <xsd:import namespace="http://schemas.datacontract.org/2004/07/SpeculatorModel.SmartCom" />
     </xsd:schema>
   </wsdl:types>
@@ -45,6 +47,9 @@
   <wsdl:message name="IDataBase_ListenSymbol_OutputMessage">
     <wsdl:part name="parameters" element="tns:ListenSymbolResponse" />
   </wsdl:message>
+  <wsdl:message name="IDataBase_PlaceOrder_InputMessage">
+    <wsdl:part name="parameters" element="tns:PlaceOrder" />
+  </wsdl:message>
   <wsdl:message name="IDataBase_UpdateBidOrAskEvent_OutputCallbackMessage">
     <wsdl:part name="parameters" element="tns:UpdateBidOrAskEvent" />
   </wsdl:message>
@@ -53,6 +58,33 @@
   </wsdl:message>
   <wsdl:message name="IDataBase_QuoteEvent_OutputCallbackMessage">
     <wsdl:part name="parameters" element="tns:QuoteEvent" />
+  </wsdl:message>
+  <wsdl:message name="IDataBase_OrderSucceeded_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:OrderSucceeded" />
+  </wsdl:message>
+  <wsdl:message name="IDataBase_OrderFailed_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:OrderFailed" />
+  </wsdl:message>
+  <wsdl:message name="IDataBase_OrderMoveSucceeded_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:OrderMoveSucceeded" />
+  </wsdl:message>
+  <wsdl:message name="IDataBase_OrderMoveFailed_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:OrderMoveFailed" />
+  </wsdl:message>
+  <wsdl:message name="IDataBase_OrderCancelSucceeded_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:OrderCancelSucceeded" />
+  </wsdl:message>
+  <wsdl:message name="IDataBase_OrderCancelFailed_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:OrderCancelFailed" />
+  </wsdl:message>
+  <wsdl:message name="IDataBase_UpdatePosition_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:UpdatePosition" />
+  </wsdl:message>
+  <wsdl:message name="IDataBase_UpdateOrder_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:UpdateOrder" />
+  </wsdl:message>
+  <wsdl:message name="IDataBase_AddTrade_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:AddTrade" />
   </wsdl:message>
   <wsdl:portType name="ISmartComData">
     <wsdl:operation name="DefaultOperation">
@@ -72,6 +104,9 @@
       <wsdl:input wsaw:Action="http://tempuri.org/IDataBase/ListenSymbol" message="tns:IDataBase_ListenSymbol_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IDataBase/ListenSymbolResponse" message="tns:IDataBase_ListenSymbol_OutputMessage" />
     </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="PlaceOrder">
+      <wsdl:input wsaw:Action="http://tempuri.org/IDataBase/PlaceOrder" message="tns:IDataBase_PlaceOrder_InputMessage" />
+    </wsdl:operation>
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="UpdateBidOrAskEvent">
       <wsdl:output wsaw:Action="http://tempuri.org/IDataBase/UpdateBidOrAskEvent" message="tns:IDataBase_UpdateBidOrAskEvent_OutputCallbackMessage" />
     </wsdl:operation>
@@ -80,6 +115,33 @@
     </wsdl:operation>
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="QuoteEvent">
       <wsdl:output wsaw:Action="http://tempuri.org/IDataBase/QuoteEvent" message="tns:IDataBase_QuoteEvent_OutputCallbackMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="OrderSucceeded">
+      <wsdl:output wsaw:Action="http://tempuri.org/IDataBase/OrderSucceeded" message="tns:IDataBase_OrderSucceeded_OutputCallbackMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="OrderFailed">
+      <wsdl:output wsaw:Action="http://tempuri.org/IDataBase/OrderFailed" message="tns:IDataBase_OrderFailed_OutputCallbackMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="OrderMoveSucceeded">
+      <wsdl:output wsaw:Action="http://tempuri.org/IDataBase/OrderMoveSucceeded" message="tns:IDataBase_OrderMoveSucceeded_OutputCallbackMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="OrderMoveFailed">
+      <wsdl:output wsaw:Action="http://tempuri.org/IDataBase/OrderMoveFailed" message="tns:IDataBase_OrderMoveFailed_OutputCallbackMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="OrderCancelSucceeded">
+      <wsdl:output wsaw:Action="http://tempuri.org/IDataBase/OrderCancelSucceeded" message="tns:IDataBase_OrderCancelSucceeded_OutputCallbackMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="OrderCancelFailed">
+      <wsdl:output wsaw:Action="http://tempuri.org/IDataBase/OrderCancelFailed" message="tns:IDataBase_OrderCancelFailed_OutputCallbackMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="UpdatePosition">
+      <wsdl:output wsaw:Action="http://tempuri.org/IDataBase/UpdatePosition" message="tns:IDataBase_UpdatePosition_OutputCallbackMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="UpdateOrder">
+      <wsdl:output wsaw:Action="http://tempuri.org/IDataBase/UpdateOrder" message="tns:IDataBase_UpdateOrder_OutputCallbackMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="AddTrade">
+      <wsdl:output wsaw:Action="http://tempuri.org/IDataBase/AddTrade" message="tns:IDataBase_AddTrade_OutputCallbackMessage" />
     </wsdl:operation>
   </wsdl:portType>
   <wsdl:binding name="NetTcpBinding_ISmartComData" type="tns:ISmartComData">
@@ -122,6 +184,12 @@
         <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
+    <wsdl:operation name="PlaceOrder">
+      <soap12:operation soapAction="http://tempuri.org/IDataBase/PlaceOrder" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+    </wsdl:operation>
     <wsdl:operation name="UpdateBidOrAskEvent">
       <soap12:operation soapAction="http://tempuri.org/IDataBase/UpdateBidOrAskEvent" style="document" />
       <wsdl:output>
@@ -136,6 +204,60 @@
     </wsdl:operation>
     <wsdl:operation name="QuoteEvent">
       <soap12:operation soapAction="http://tempuri.org/IDataBase/QuoteEvent" style="document" />
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="OrderSucceeded">
+      <soap12:operation soapAction="http://tempuri.org/IDataBase/OrderSucceeded" style="document" />
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="OrderFailed">
+      <soap12:operation soapAction="http://tempuri.org/IDataBase/OrderFailed" style="document" />
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="OrderMoveSucceeded">
+      <soap12:operation soapAction="http://tempuri.org/IDataBase/OrderMoveSucceeded" style="document" />
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="OrderMoveFailed">
+      <soap12:operation soapAction="http://tempuri.org/IDataBase/OrderMoveFailed" style="document" />
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="OrderCancelSucceeded">
+      <soap12:operation soapAction="http://tempuri.org/IDataBase/OrderCancelSucceeded" style="document" />
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="OrderCancelFailed">
+      <soap12:operation soapAction="http://tempuri.org/IDataBase/OrderCancelFailed" style="document" />
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UpdatePosition">
+      <soap12:operation soapAction="http://tempuri.org/IDataBase/UpdatePosition" style="document" />
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UpdateOrder">
+      <soap12:operation soapAction="http://tempuri.org/IDataBase/UpdateOrder" style="document" />
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="AddTrade">
+      <soap12:operation soapAction="http://tempuri.org/IDataBase/AddTrade" style="document" />
       <wsdl:output>
         <soap12:body use="literal" />
       </wsdl:output>

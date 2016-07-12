@@ -73,7 +73,7 @@ namespace SpeculatorModel.Migrations
 
                     b.Property<decimal?>("PriceDeal");
 
-                    b.Property<int>("Volume");
+                    b.Property<int>("Amount");
 
                     b.HasKey("Id");
 
@@ -154,7 +154,7 @@ namespace SpeculatorModel.Migrations
 
                     b.Property<decimal>("Price");
 
-                    b.Property<int>("Volume");
+                    b.Property<int>("Amount");
 
                     b.HasKey("Id");
 
@@ -185,7 +185,7 @@ namespace SpeculatorModel.Migrations
 
                     b.Property<int>("SmartComSymbolId");
 
-                    b.Property<int>("Volume");
+                    b.Property<int>("Amount");
 
                     b.HasKey("Id");
 
@@ -284,7 +284,7 @@ namespace SpeculatorModel.Migrations
                     b.Property<DateTime>("TradeDateTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("Volume");
+                    b.Property<int>("Amount");
 
                     b.HasKey("TradeNo");
 
@@ -441,7 +441,7 @@ namespace SpeculatorModel.Migrations
 
                     b.Property<double>("Price");
 
-                    b.Property<int>("Volume");
+                    b.Property<int>("Amount");
 
                     b.HasKey("TradeNo");
 

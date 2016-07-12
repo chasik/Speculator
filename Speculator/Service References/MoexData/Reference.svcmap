@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="2eefbca9-cde1-4eae-af94-535f696d69f6" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="0b8b158d-1d8e-46aa-b9ef-deffb7e24953" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
   <ClientOptions>
     <GenerateAsynchronousMethods>true</GenerateAsynchronousMethods>
     <EnableDataBinding>true</EnableDataBinding>
@@ -21,11 +21,11 @@
     <MetadataSource Address="http://127.0.0.1:51001/Speculator/MoexData/mex" Protocol="mex" SourceId="1" />
   </MetadataSources>
   <Metadata>
-    <MetadataFile FileName="service.wsdl" MetadataType="Wsdl" ID="55e68b7c-56bf-4311-8b67-b19ab60f173d" SourceId="1" SourceUrl="http://127.0.0.1:51001/Speculator/MoexData/mex" />
-    <MetadataFile FileName="service.xsd" MetadataType="Schema" ID="e73be60b-5c7f-48c3-87b5-8f2be8099ea6" SourceId="1" SourceUrl="http://127.0.0.1:51001/Speculator/MoexData/mex" />
-    <MetadataFile FileName="service1.xsd" MetadataType="Schema" ID="ef30ec0a-d896-403c-85e1-3adab293a373" SourceId="1" SourceUrl="http://127.0.0.1:51001/Speculator/MoexData/mex" />
-    <MetadataFile FileName="SpeculatorModel.MoexHistory.xsd" MetadataType="Schema" ID="7447d289-b65f-409b-aaef-19a43c2a583f" SourceId="1" SourceUrl="http://127.0.0.1:51001/Speculator/MoexData/mex" />
-    <MetadataFile FileName="SpeculatorModel.MainData.xsd" MetadataType="Schema" ID="a4a307e6-59cf-4825-b8a7-e151af12b611" SourceId="1" SourceUrl="http://127.0.0.1:51001/Speculator/MoexData/mex" />
+    <MetadataFile FileName="service.wsdl" MetadataType="Wsdl" ID="c9821303-d658-4ebd-8766-9ea3848c5d42" SourceId="1" SourceUrl="http://127.0.0.1:51001/Speculator/MoexData/mex" />
+    <MetadataFile FileName="service.xsd" MetadataType="Schema" ID="c1f69a95-06c2-44f9-b285-cef860bec800" SourceId="1" SourceUrl="http://127.0.0.1:51001/Speculator/MoexData/mex" />
+    <MetadataFile FileName="service1.xsd" MetadataType="Schema" ID="ad2087b2-d6f3-4b73-8a02-e09e0e4dc27d" SourceId="1" SourceUrl="http://127.0.0.1:51001/Speculator/MoexData/mex" />
+    <MetadataFile FileName="SpeculatorModel.MoexHistory.xsd" MetadataType="Schema" ID="6b258d97-5ac1-40e8-8239-0425372bc172" SourceId="1" SourceUrl="http://127.0.0.1:51001/Speculator/MoexData/mex" />
+    <MetadataFile FileName="SpeculatorModel.MainData.xsd" MetadataType="Schema" ID="f3677153-65a4-447e-bc84-c359a1681ae8" SourceId="1" SourceUrl="http://127.0.0.1:51001/Speculator/MoexData/mex" />
   </Metadata>
   <Extensions>
     <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />

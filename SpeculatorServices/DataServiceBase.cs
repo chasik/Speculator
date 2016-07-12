@@ -6,13 +6,15 @@ using SpeculatorModel.SmartCom;
 
 namespace SpeculatorServices
 {
-    public class DataServiceBase 
+    public class DataServiceBase
     {
+        protected List<IDataCallBacks> CommunicationObjectsForDelete;
         protected List<IDataCallBacks> ClientsWithCallBack;
         protected Dictionary<IDataCallBacks, List<string>> ClientsWantGetSymbols;
 
         public DataServiceBase()
         {
+            CommunicationObjectsForDelete = new List<IDataCallBacks>();
             ClientsWithCallBack = new List<IDataCallBacks>();
             ClientsWantGetSymbols = new Dictionary<IDataCallBacks, List<string>>();
         }
@@ -85,6 +87,20 @@ namespace SpeculatorServices
                     ClientsWithCallBack.RemoveAt(i--);
                 }
             }
+        }
+
+        protected List<IDataCallBacks> GetCommunicationObjects()
+        {
+            return (from t in ClientsWithCallBack
+                let communicationObject = t as ICommunicationObject
+                where communicationObject != null && communicationObject.State == CommunicationState.Opened
+                select t).ToList();
+        }
+
+        protected void RemoveFailedCommunicationcObjects()
+        {
+            CommunicationObjectsForDelete.ForEach(o => ClientsWithCallBack.Remove(o));
+            CommunicationObjectsForDelete.Clear();
         }
     }
 }

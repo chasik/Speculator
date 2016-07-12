@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ServiceModel;
 using SpeculatorModel.MainData;
+using SpeculatorServices.Trading;
 
 namespace SpeculatorServices
 {
@@ -15,5 +16,8 @@ namespace SpeculatorServices
 
         [OperationContract]
         void ListenSymbol(Symbol symbol);
+
+        [OperationContract(IsOneWay = true)]
+        void PlaceOrder(TradingOrder order);
     }
 }

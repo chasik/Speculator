@@ -17,7 +17,7 @@
     <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <PlatformTarget>x64</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -59,6 +59,10 @@
     <Reference Include="InfragisticsWPF4.DataVisualization.v15.2, Version=15.2.20152.2100, Culture=neutral, PublicKeyToken=7dd5c3163f2cd0cb, processorArchitecture=MSIL" />
     <Reference Include="InfragisticsWPF4.Themes.MetroDark.v15.2, Version=15.2.20152.2100, Culture=neutral, PublicKeyToken=7dd5c3163f2cd0cb, processorArchitecture=MSIL" />
     <Reference Include="InfragisticsWPF4.v15.2, Version=15.2.20152.2100, Culture=neutral, PublicKeyToken=7dd5c3163f2cd0cb, processorArchitecture=MSIL" />
+    <Reference Include="Interop.SmartCOM3Lib">
+      <HintPath>..\SpeculatorServices\obj\Debug\Interop.SmartCOM3Lib.dll</HintPath>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -458,10 +462,16 @@
     <None Include="Service References\SmartComData\service1.xsd">
       <SubType>Designer</SubType>
     </None>
+    <None Include="Service References\SmartComData\SmartCOM3Lib.xsd">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Service References\SmartComData\SpeculatorModel.MainData.xsd">
       <SubType>Designer</SubType>
     </None>
     <None Include="Service References\SmartComData\SpeculatorModel.SmartCom.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\SmartComData\SpeculatorServices.Trading.xsd">
       <SubType>Designer</SubType>
     </None>
     <None Include="Service References\SpeculatorData\service.wsdl" />
@@ -493,9 +503,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Service References\SpeculatorData\configuration91.svcinfo" />
-  </ItemGroup>
-  <ItemGroup>
     <WCFMetadataStorage Include="Service References\MoexData\" />
     <WCFMetadataStorage Include="Service References\SmartComData\" />
     <WCFMetadataStorage Include="Service References\SpeculatorData\" />
@@ -514,15 +521,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Service References\SpeculatorData\configuration.svcinfo" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Service References\SpeculatorData\Reference.svcmap">
-      <Generator>WCF Proxy Generator</Generator>
-      <LastGenOutput>Reference.cs</LastGenOutput>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Service References\TransaqData\configuration91.svcinfo" />
   </ItemGroup>
   <ItemGroup>
@@ -530,6 +528,18 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Service References\TransaqData\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\SpeculatorData\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\SpeculatorData\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\SpeculatorData\Reference.svcmap">
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>

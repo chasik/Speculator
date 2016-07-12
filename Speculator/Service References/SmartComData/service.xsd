@@ -1,6 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <xs:schema xmlns:tns="http://tempuri.org/" elementFormDefault="qualified" targetNamespace="http://tempuri.org/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
   <xs:import namespace="http://schemas.datacontract.org/2004/07/SpeculatorModel.MainData" />
+  <xs:import namespace="http://schemas.datacontract.org/2004/07/SpeculatorServices.Trading" />
   <xs:import namespace="http://schemas.datacontract.org/2004/07/SpeculatorModel.SmartCom" />
   <xs:element name="DefaultOperation">
     <xs:complexType>
@@ -42,27 +43,116 @@
       <xs:sequence />
     </xs:complexType>
   </xs:element>
+  <xs:element name="PlaceOrder">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q3="http://schemas.datacontract.org/2004/07/SpeculatorServices.Trading" minOccurs="0" name="order" nillable="true" type="q3:TradingOrder" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
   <xs:element name="UpdateBidOrAskEvent">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q3="http://schemas.datacontract.org/2004/07/SpeculatorModel.SmartCom" minOccurs="0" name="symbol" nillable="true" type="q3:SmartComSymbol" />
-        <xs:element xmlns:q4="http://schemas.datacontract.org/2004/07/SpeculatorModel.SmartCom" minOccurs="0" name="value" nillable="true" type="q4:SmartComBidAskValue" />
+        <xs:element xmlns:q4="http://schemas.datacontract.org/2004/07/SpeculatorModel.SmartCom" minOccurs="0" name="symbol" nillable="true" type="q4:SmartComSymbol" />
+        <xs:element xmlns:q5="http://schemas.datacontract.org/2004/07/SpeculatorModel.SmartCom" minOccurs="0" name="value" nillable="true" type="q5:SmartComBidAskValue" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
   <xs:element name="TradeEvent">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q5="http://schemas.datacontract.org/2004/07/SpeculatorModel.SmartCom" minOccurs="0" name="symbol" nillable="true" type="q5:SmartComSymbol" />
-        <xs:element xmlns:q6="http://schemas.datacontract.org/2004/07/SpeculatorModel.SmartCom" minOccurs="0" name="trade" nillable="true" type="q6:SmartComTrade" />
+        <xs:element xmlns:q6="http://schemas.datacontract.org/2004/07/SpeculatorModel.SmartCom" minOccurs="0" name="symbol" nillable="true" type="q6:SmartComSymbol" />
+        <xs:element xmlns:q7="http://schemas.datacontract.org/2004/07/SpeculatorModel.SmartCom" minOccurs="0" name="trade" nillable="true" type="q7:SmartComTrade" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
   <xs:element name="QuoteEvent">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q7="http://schemas.datacontract.org/2004/07/SpeculatorModel.SmartCom" minOccurs="0" name="symbol" nillable="true" type="q7:SmartComSymbol" />
-        <xs:element xmlns:q8="http://schemas.datacontract.org/2004/07/SpeculatorModel.SmartCom" minOccurs="0" name="quote" nillable="true" type="q8:SmartComQuote" />
+        <xs:element xmlns:q8="http://schemas.datacontract.org/2004/07/SpeculatorModel.SmartCom" minOccurs="0" name="symbol" nillable="true" type="q8:SmartComSymbol" />
+        <xs:element xmlns:q9="http://schemas.datacontract.org/2004/07/SpeculatorModel.SmartCom" minOccurs="0" name="quote" nillable="true" type="q9:SmartComQuote" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="OrderSucceeded">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="cookie" type="xs:int" />
+        <xs:element minOccurs="0" name="orderid" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="OrderFailed">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="cookie" type="xs:int" />
+        <xs:element minOccurs="0" name="orderid" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="reason" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="OrderMoveSucceeded">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="orderid" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="OrderMoveFailed">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="orderid" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="OrderCancelSucceeded">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="orderid" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="OrderCancelFailed">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="orderid" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="UpdatePosition">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="portfolio" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="symbol" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="avprice" type="xs:double" />
+        <xs:element minOccurs="0" name="amount" type="xs:double" />
+        <xs:element minOccurs="0" name="planned" type="xs:double" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="UpdateOrder">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="portfolio" nillable="true" type="xs:string" />
+        <xs:element xmlns:q10="http://schemas.datacontract.org/2004/07/SpeculatorServices.Trading" minOccurs="0" name="order" nillable="true" type="q10:TradingOrder" />
+        <xs:element minOccurs="0" name="filled" type="xs:double" />
+        <xs:element minOccurs="0" name="datetime" type="xs:dateTime" />
+        <xs:element minOccurs="0" name="orderid" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="orderno" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="status_mask" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="AddTrade">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="portfolio" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="symbol" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="orderid" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="price" type="xs:double" />
+        <xs:element minOccurs="0" name="amount" type="xs:double" />
+        <xs:element minOccurs="0" name="datetime" type="xs:dateTime" />
+        <xs:element minOccurs="0" name="tradeno" nillable="true" type="xs:string" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>

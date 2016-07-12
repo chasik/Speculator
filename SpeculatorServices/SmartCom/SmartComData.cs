@@ -11,10 +11,11 @@ using SpeculatorModel;
 using SpeculatorModel.MainData;
 using SpeculatorModel.SmartCom;
 using SpeculatorServices.Properties;
+using SpeculatorServices.Trading;
 
 namespace SpeculatorServices.SmartCom
 {
-    [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, ConcurrencyMode = ConcurrencyMode.Multiple)]
+    [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, ConcurrencyMode = ConcurrencyMode.Multiple), CallbackBehavior(ConcurrencyMode = ConcurrencyMode.Multiple)]
     public class SmartComData : DataServiceBase, ISmartComData, IDataBase
     {
         public bool OnlyDuplexForClient { get; private set; }
@@ -22,6 +23,7 @@ namespace SpeculatorServices.SmartCom
         private const string SuffixSymbolsForOil = "-8.16_FT";
         private List<string> _symbolsForSaveToDb = new List<string> {"RTS", "Si", "Eu", "ED", "SBRF", "LKOH", "GAZR", "ROSN", "VTBR", "GOLD"};
         private List<SmartComSymbol> _symbolsInJob;
+        private List<SmartComPortfolio> _portfolios;
 
         private readonly ConcurrentDictionary<string, ConcurrentDictionary<double, SmartComBidAskValue>> _glasses =
             new ConcurrentDictionary<string, ConcurrentDictionary<double, SmartComBidAskValue>>();
@@ -53,7 +55,7 @@ namespace SpeculatorServices.SmartCom
 
         public void ConnectToHistoryDataSource(Symbol symbol, DateTime dayDateTime)
         {
-            dayDateTime += new TimeSpan(12, 20, 0);
+            dayDateTime += new TimeSpan(10, 40, 0);
             var smartComSymbol = new SmartComSymbol
             {
                 Id = symbol.Id,
@@ -160,6 +162,12 @@ namespace SpeculatorServices.SmartCom
             });
         }
 
+        public void PlaceOrder(TradingOrder order)
+        {
+            _smartCom.PlaceOrder(Settings.Default.SmartComPortfolio, order.Symbol, order.Action, order.Type,
+                order.Validity, order.Price, order.Amount, order.Stop, order.Cookie);
+        }
+
         public void ConnectToSmartCom()
         {
             if (_smartCom != null)
@@ -184,6 +192,26 @@ namespace SpeculatorServices.SmartCom
             _smartCom.UpdateBidAsk += _smartCom_UpdateBidAsk;
             _smartCom.AddTick += _smartCom_AddTick;
 
+
+            // GetPortfolioList, ListenPortfolio
+            _smartCom.AddPortfolio += _smartCom_AddPortfolio;
+            _smartCom.SetPortfolio += _smartCom_SetPortfolio;
+            _smartCom.AddTrade += _smartCom_AddTrade;
+            _smartCom.UpdateOrder += _smartCom_UpdateOrder;
+            _smartCom.UpdatePosition += _smartCom_UpdatePosition;
+
+            // CancelOrder
+            _smartCom.OrderCancelFailed += _smartCom_OrderCancelFailed;
+            _smartCom.OrderCancelSucceeded += _smartCom_OrderCancelSucceeded;
+
+            // MoveOrder
+            _smartCom.OrderMoveFailed += _smartCom_OrderMoveFailed;
+            _smartCom.OrderMoveSucceeded += _smartCom_OrderMoveSucceeded;
+
+            // PlaceOrder
+            _smartCom.OrderFailed += _smartCom_OrderFailed;
+            _smartCom.OrderSucceeded += _smartCom_OrderSucceeded;
+
             _dbContext = new SpeculatorContext();
             _dbContext.ChangeTracker.AutoDetectChangesEnabled = false;
 
@@ -199,6 +227,181 @@ namespace SpeculatorServices.SmartCom
             if (!EventLog.SourceExists("SmartComDataServiceHost"))
                 EventLog.CreateEventSource("SmartComDataServiceHost", "Application");
              EventLog.WriteEntry("SmartComDataServiceHost", $"!{Settings.Default.SmartComHost} {Settings.Default.SmartComPort} {Settings.Default.SmartComLogin} {Settings.Default.SmartComPassword}");
+        }
+
+        private void _smartCom_OrderSucceeded(int cookie, string orderid)
+        {
+            GetCommunicationObjects().ForEach(c =>
+            {
+                try
+                {
+                    c.OrderSucceeded(cookie, orderid);
+                }
+                catch (Exception)
+                {
+                    CommunicationObjectsForDelete.Add(c);
+                }
+            });
+            RemoveFailedCommunicationcObjects();
+        }
+
+        private void _smartCom_OrderFailed(int cookie, string orderid, string reason)
+        {
+            GetCommunicationObjects().ForEach(c =>
+            {
+                try
+                {
+                    c.OrderFailed(cookie, orderid, reason);
+                }
+                catch (Exception)
+                {
+                    CommunicationObjectsForDelete.Add(c);
+                }
+            });
+            RemoveFailedCommunicationcObjects();
+        }
+
+        private void _smartCom_OrderMoveSucceeded(string orderid)
+        {
+            GetCommunicationObjects().ForEach(c =>
+            {
+                try
+                {
+                    c.OrderMoveSucceeded(orderid);
+                }
+                catch (Exception)
+                {
+                    CommunicationObjectsForDelete.Add(c);
+                }
+            });
+            RemoveFailedCommunicationcObjects();
+        }
+
+        private void _smartCom_OrderMoveFailed(string orderid)
+        {
+            GetCommunicationObjects().ForEach(c =>
+            {
+                try
+                {
+                    c.OrderMoveFailed(orderid);
+                }
+                catch (Exception)
+                {
+                    CommunicationObjectsForDelete.Add(c);
+                }
+            });
+            RemoveFailedCommunicationcObjects();
+        }
+
+        private void _smartCom_OrderCancelSucceeded(string orderid)
+        {
+            GetCommunicationObjects().ForEach(c =>
+            {
+                try
+                {
+                    c.OrderCancelSucceeded(orderid);
+                }
+                catch (Exception)
+                {
+                    CommunicationObjectsForDelete.Add(c);
+                }
+            });
+            RemoveFailedCommunicationcObjects();
+        }
+
+        private void _smartCom_OrderCancelFailed(string orderid)
+        {
+            GetCommunicationObjects().ForEach(c =>
+            {
+                try
+                {
+                    c.OrderCancelFailed(orderid);
+                }
+                catch (Exception)
+                {
+                    CommunicationObjectsForDelete.Add(c);
+                }
+            });
+            RemoveFailedCommunicationcObjects();
+        }
+
+        private void _smartCom_UpdatePosition(string portfolio, string symbol, double avprice, double amount, double planned)
+        {
+            GetCommunicationObjects().ForEach(c =>
+            {
+                try
+                {
+                    c.UpdatePosition(portfolio, symbol, avprice, amount, planned);
+                }
+                catch (Exception)
+                {
+                    CommunicationObjectsForDelete.Add(c);
+                }
+            });
+            RemoveFailedCommunicationcObjects();
+        }
+
+        private void _smartCom_UpdateOrder(string portfolio, string symbol, StOrder_State state, StOrder_Action action, StOrder_Type type, StOrder_Validity validity,
+            double price, double amount, double stop, double filled, DateTime datetime, string orderid, string orderno,
+            int status_mask, int cookie)
+        {
+            GetCommunicationObjects().ForEach(c =>
+            {
+                try
+                {
+                    c.UpdateOrder(portfolio,
+                        new TradingOrder
+                        {
+                            Action = action,
+                            Amount = amount,
+                            Cookie = cookie,
+                            Price = price,
+                            State = state,
+                            Stop = stop,
+                            Symbol = symbol,
+                            Type = type,
+                            Validity = validity
+                        }, filled, datetime, orderid, orderno, status_mask);
+                }
+                catch (Exception)
+                {
+                    CommunicationObjectsForDelete.Add(c);
+                }
+            });
+            RemoveFailedCommunicationcObjects();
+        }
+
+        private void _smartCom_AddTrade(string portfolio, string symbol, string orderid, double price, double amount, DateTime datetime, string tradeno)
+        {
+            GetCommunicationObjects().ForEach(c =>
+            {
+                try
+                {
+                    c.AddTrade(portfolio, symbol, orderid, price, amount, datetime, tradeno);
+                }
+                catch (Exception)
+                {
+                    CommunicationObjectsForDelete.Add(c);
+                }
+            });
+            RemoveFailedCommunicationcObjects();
+        }
+
+        private void _smartCom_SetPortfolio(string portfolio, double cash, double leverage, double comission, double saldo)
+        {
+            // ignored
+        }
+
+        private void _smartCom_AddPortfolio(int row, int nrows, string portfolioName, string portfolioExch, StPortfolioStatus portfolioStatus)
+        {
+            var portfolio = new SmartComPortfolio {Name = portfolioName};
+            if (_portfolios == null)
+                _portfolios = new List<SmartComPortfolio>();
+            if (_portfolios.All(p => p.Name != portfolio.Name))
+            {
+                _portfolios.Add(portfolio);
+                _smartCom.ListenPortfolio(portfolio.Name);
+            }
         }
 
         private void _smartCom_UpdateBidAsk(string symbol, int row, int nrows, double bid, double bidsize, double ask, double asksize)
@@ -261,8 +464,7 @@ namespace SpeculatorServices.SmartCom
             }
         }
 
-        private void _smartCom_AddTick(string symbol, DateTime datetime, double price, double volume, string tradeno,
-            [System.Runtime.InteropServices.ComAliasName("SmartCOM3Lib.StOrder_Action")] StOrder_Action action)
+        private void _smartCom_AddTick(string symbol, DateTime datetime, double price, double volume, string tradeno, StOrder_Action action)
         {
             var currentSymbol = _symbolsInJob.Single(s => s.Name == symbol);
             long tradenoLong;
@@ -301,6 +503,7 @@ namespace SpeculatorServices.SmartCom
 
             var quote = new SmartComQuote
             {
+                QuoteAdded = DateTime.Now,
                 SmartComSymbolId = currentSymbol.Id,
                 LastTradeDateTime = datetime,
                 LastTradePrice = last,
@@ -325,7 +528,9 @@ namespace SpeculatorServices.SmartCom
             }
         }
 
-        private async void _smartCom_AddSymbol(int row, int nrows, string symbol, string shortName, string longName, string type, int decimals, int lotSize, double punkt, double step, string secExtId, string secExchName, DateTime expiryDate, double daysBeforeExpiry, double strike)
+        private async void _smartCom_AddSymbol(int row, int nrows, string symbol, string shortName, string longName,
+            string type, int decimals, int lotSize, double punkt, double step, string secExtId, string secExchName,
+            DateTime expiryDate, double daysBeforeExpiry, double strike)
         {
             if (OnlyDuplexForClient)
                 return;
@@ -402,6 +607,7 @@ namespace SpeculatorServices.SmartCom
         private void SmartCom_Connected()
         {
             EventLog.WriteEntry("SmartComDataServiceHost", $"SmartCom Connected event!");
+            _smartCom.GetPrortfolioList();
             _smartCom.GetSymbols();
         }
     }

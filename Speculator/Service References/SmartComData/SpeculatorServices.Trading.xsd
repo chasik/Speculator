@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://schemas.datacontract.org/2004/07/SpeculatorServices.Trading" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/SpeculatorServices.Trading" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import namespace="http://schemas.datacontract.org/2004/07/SmartCOM3Lib" />
+  <xs:complexType name="TradingOrder">
+    <xs:sequence>
+      <xs:element xmlns:q1="http://schemas.datacontract.org/2004/07/SmartCOM3Lib" minOccurs="0" name="Action" type="q1:StOrder_Action" />
+      <xs:element minOccurs="0" name="Amount" type="xs:double" />
+      <xs:element minOccurs="0" name="Cookie" type="xs:int" />
+      <xs:element minOccurs="0" name="Price" type="xs:double" />
+      <xs:element xmlns:q2="http://schemas.datacontract.org/2004/07/SmartCOM3Lib" minOccurs="0" name="State" type="q2:StOrder_State" />
+      <xs:element minOccurs="0" name="Stop" type="xs:double" />
+      <xs:element minOccurs="0" name="Symbol" nillable="true" type="xs:string" />
+      <xs:element xmlns:q3="http://schemas.datacontract.org/2004/07/SmartCOM3Lib" minOccurs="0" name="Type" type="q3:StOrder_Type" />
+      <xs:element xmlns:q4="http://schemas.datacontract.org/2004/07/SmartCOM3Lib" minOccurs="0" name="Validity" type="q4:StOrder_Validity" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="TradingOrder" nillable="true" type="tns:TradingOrder" />
+</xs:schema>

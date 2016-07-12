@@ -37,6 +37,11 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Interop.SmartCOM3Lib, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+      <HintPath>obj\Debug\Interop.SmartCOM3Lib.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.AspNetCore.Hosting.Abstractions, Version=1.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNetCore.Hosting.Abstractions.1.0.0-rc2-final\lib\net451\Microsoft.AspNetCore.Hosting.Abstractions.dll</HintPath>
       <Private>True</Private>
@@ -263,6 +268,8 @@
     <Compile Include="SmartCom\ISmartComData.cs" />
     <Compile Include="SmartCom\SmartComData.cs" />
     <Compile Include="SpeculatorData.cs" />
+    <Compile Include="Trading\TradingOrder.cs" />
+    <Compile Include="Trading\TradingTrade.cs" />
     <Compile Include="Transaq\ITransaqData.cs" />
     <Compile Include="Transaq\MarshalUtf8.cs" />
     <Compile Include="Transaq\TransaqConnector.cs" />
@@ -278,17 +285,6 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <COMReference Include="SmartCOM3Lib">
-      <Guid>{8252879C-6E32-4322-A38D-8EBA54E52595}</Guid>
-      <VersionMajor>1</VersionMajor>
-      <VersionMinor>0</VersionMinor>
-      <Lcid>0</Lcid>
-      <WrapperTool>tlbimp</WrapperTool>
-      <Isolated>False</Isolated>
-      <EmbedInteropTypes>False</EmbedInteropTypes>
-    </COMReference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SpeculatorModel\SpeculatorModel.csproj">

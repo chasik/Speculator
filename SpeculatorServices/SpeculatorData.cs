@@ -33,7 +33,8 @@ namespace SpeculatorServices
             using (var dbContext = new SpeculatorContext())
             {
                 if (selecteDataSource.Id == (byte) DataSourceEnum.SmartCom)
-                {return dbContext.SmartComSymbols
+                {
+                    var result = dbContext.SmartComSymbols
                         .Select(
                             s =>
                                 new Symbol
@@ -47,6 +48,7 @@ namespace SpeculatorServices
                                     Punkt = s.Punkt
                                 })
                         .ToArray();
+                    return result;
                 }
                 return null;
             }

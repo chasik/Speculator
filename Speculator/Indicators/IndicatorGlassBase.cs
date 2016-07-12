@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using DevExpress.Mvvm.Native;
 using SpeculatorModel.MainData;
 using SpeculatorModel.SmartCom;
 

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="751680b3-1a10-4dc3-9623-cc1175a97c38" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="2ac0ff16-f61f-4a35-8784-f02c554b283a" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
   <ClientOptions>
     <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
     <GenerateTaskBasedAsynchronousMethod>true</GenerateTaskBasedAsynchronousMethod>
@@ -22,10 +22,10 @@
     <MetadataSource Address="http://127.0.0.1:51001/SpeculatorData/mex" Protocol="mex" SourceId="1" />
   </MetadataSources>
   <Metadata>
-    <MetadataFile FileName="service.wsdl" MetadataType="Wsdl" ID="782755ec-7a79-4b3c-bc2b-83090829727f" SourceId="1" SourceUrl="http://127.0.0.1:51001/SpeculatorData/mex" />
-    <MetadataFile FileName="service.xsd" MetadataType="Schema" ID="da2dd2fb-58c7-4d12-871b-7bd2e624cb40" SourceId="1" SourceUrl="http://127.0.0.1:51001/SpeculatorData/mex" />
-    <MetadataFile FileName="service1.xsd" MetadataType="Schema" ID="54e10b6a-ec11-4eee-9403-8c99288d3ad8" SourceId="1" SourceUrl="http://127.0.0.1:51001/SpeculatorData/mex" />
-    <MetadataFile FileName="SpeculatorModel.MainData.xsd" MetadataType="Schema" ID="e1e58179-c063-4b36-b360-689aafa447dd" SourceId="1" SourceUrl="http://127.0.0.1:51001/SpeculatorData/mex" />
+    <MetadataFile FileName="service.wsdl" MetadataType="Wsdl" ID="185288d9-9b29-469f-bd62-be416a4fae2a" SourceId="1" SourceUrl="http://127.0.0.1:51001/SpeculatorData/mex" />
+    <MetadataFile FileName="service.xsd" MetadataType="Schema" ID="fd83a442-a957-4f2e-aacd-e0259ade68e2" SourceId="1" SourceUrl="http://127.0.0.1:51001/SpeculatorData/mex" />
+    <MetadataFile FileName="service1.xsd" MetadataType="Schema" ID="8cd95e85-747d-4e3b-a744-21162dfe61e9" SourceId="1" SourceUrl="http://127.0.0.1:51001/SpeculatorData/mex" />
+    <MetadataFile FileName="SpeculatorModel.MainData.xsd" MetadataType="Schema" ID="bda55dac-5a36-4382-a52d-d48b3f5ec9bb" SourceId="1" SourceUrl="http://127.0.0.1:51001/SpeculatorData/mex" />
   </Metadata>
   <Extensions>
     <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
