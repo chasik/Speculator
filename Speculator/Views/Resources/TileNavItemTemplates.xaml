@@ -1,0 +1,17 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:dxnav="http://schemas.devexpress.com/winfx/2008/xaml/navigation">
+
+    <DataTemplate x:Key="TileNavItemTemplate">
+        <StackPanel Orientation="Vertical">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Background="Transparent" FontSize="8" Foreground="Black" 
+                         Text="{Binding DataContext.DataSource.Name, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type dxnav:TileNavItem}}}" />
+                <TextBlock Background="Transparent" FontSize="9" Foreground="Black" Margin="6,0,0,0"
+                         Text="{Binding DataContext.Symbol.Name, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type dxnav:TileNavItem}}}" />
+            </StackPanel>
+            <TextBlock Background="Transparent" FontSize="9" Foreground="Black" 
+                     Text="{Binding DataContext.DateStart, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type dxnav:TileNavItem}}}" />
+        </StackPanel>
+    </DataTemplate>
+</ResourceDictionary>

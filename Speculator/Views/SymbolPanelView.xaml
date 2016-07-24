@@ -246,7 +246,7 @@
 
                 <ig:NumericYAxis x:Name="YAxisOpenInterest" MajorStrokeThickness="0" MinorStrokeThickness="0">
                     <ig:NumericYAxis.LabelSettings>
-                        <ig:AxisLabelSettings Location="InsideLeft" FontSize="11" FontWeight="Bold" Foreground="OrangeRed"/>
+                        <ig:AxisLabelSettings Location="InsideLeft" FontSize="10" Foreground="OrangeRed" Angle="-90"/>
                     </ig:NumericYAxis.LabelSettings>
                 </ig:NumericYAxis>
 

@@ -28,7 +28,7 @@
     <xs:complexType>
       <xs:sequence>
         <xs:element xmlns:q1="http://schemas.datacontract.org/2004/07/SpeculatorModel.MainData" minOccurs="0" name="symbol" nillable="true" type="q1:Symbol" />
-        <xs:element minOccurs="0" name="startDateTime" type="xs:dateTime" />
+        <xs:element minOccurs="0" name="startDateTime" nillable="true" type="xs:dateTime" />
         <xs:element minOccurs="0" name="finishDateTime" nillable="true" type="xs:dateTime" />
         <xs:element minOccurs="0" name="returnAllData" type="xs:boolean" />
       </xs:sequence>

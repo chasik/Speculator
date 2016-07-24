@@ -13,7 +13,7 @@ namespace SpeculatorServices
         void ConnectToDataSource();
 
         [OperationContract(IsOneWay = true)]
-        void ConnectToHistoryDataSource(Symbol symbol, DateTime startDateTime, DateTime? finishDateTime = null, bool returnAllData = false);
+        void ConnectToHistoryDataSource(Symbol symbol, DateTime? startDateTime, DateTime? finishDateTime = null, bool returnAllData = false);
 
         [OperationContract]
         void ListenSymbol(Symbol symbol);

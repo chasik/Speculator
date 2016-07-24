@@ -88,10 +88,12 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Components\SelectedSymbol.cs" />
     <Compile Include="Indicators\IchIndicator.cs" />
     <Compile Include="Indicators\IIndicator.cs" />
     <Compile Include="Indicators\IndicatorGlassBase.cs" />
     <Compile Include="Indicators\IndicatorEnum.cs" />
+    <Compile Include="Messages\AddSymbolDocPanelMessage.cs" />
     <Compile Include="Service References\MoexData\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -112,7 +114,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
-    <Compile Include="ViewModels\Converters\AddSymbolCommandParamsConverter.cs" />
     <Compile Include="ViewModels\Converters\RowColorConverter.cs" />
     <Compile Include="ViewModels\DataTemplateSelectors\GlassTemplateSelector.cs" />
     <Compile Include="ViewModels\Data\MoexDataViewModel.cs" />
@@ -394,6 +395,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="Views\Resources\GlassTemplates.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Resources\TileNavItemTemplates.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

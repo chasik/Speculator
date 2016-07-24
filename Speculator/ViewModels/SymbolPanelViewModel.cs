@@ -90,7 +90,7 @@ namespace Speculator.ViewModels
 
         public virtual double StartHeightGlassValueParam { get; set; }
         public virtual double FinishHeightGlassValueParam { get; set; }
-        public virtual DateTime HistoryDate { get; set; }
+        public virtual DateTime? HistoryDate { get; set; }
 
         private TradingState _tradingState;
         private double _lastAsk;
@@ -193,7 +193,7 @@ namespace Speculator.ViewModels
                 DataBaseClient.ListenSymbol(Symbol);
             }
             else
-                await DataBaseClient.ConnectToHistoryDataSourceAsync(Symbol, HistoryDate, HistoryDate, false);
+                await DataBaseClient.ConnectToHistoryDataSourceAsync(Symbol, HistoryDate, null, false);
         }
 
         public void ReturnHistoryData(SmartComSymbol symbol, HistoryDataRow[] historyData)

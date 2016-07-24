@@ -70,10 +70,10 @@ namespace Speculator.SmartComData {
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IDataBase/ConnectToHistoryDataSource")]
         [System.ServiceModel.ServiceKnownTypeAttribute(typeof(SpeculatorModel.SmartCom.SmartComSymbol))]
-        void ConnectToHistoryDataSource(SpeculatorModel.MainData.Symbol symbol, System.DateTime startDateTime, System.Nullable<System.DateTime> finishDateTime, bool returnAllData);
+        void ConnectToHistoryDataSource(SpeculatorModel.MainData.Symbol symbol, System.Nullable<System.DateTime> startDateTime, System.Nullable<System.DateTime> finishDateTime, bool returnAllData);
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IDataBase/ConnectToHistoryDataSource")]
-        System.Threading.Tasks.Task ConnectToHistoryDataSourceAsync(SpeculatorModel.MainData.Symbol symbol, System.DateTime startDateTime, System.Nullable<System.DateTime> finishDateTime, bool returnAllData);
+        System.Threading.Tasks.Task ConnectToHistoryDataSourceAsync(SpeculatorModel.MainData.Symbol symbol, System.Nullable<System.DateTime> startDateTime, System.Nullable<System.DateTime> finishDateTime, bool returnAllData);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IDataBase/ListenSymbol", ReplyAction="http://tempuri.org/IDataBase/ListenSymbolResponse")]
         [System.ServiceModel.ServiceKnownTypeAttribute(typeof(SpeculatorModel.SmartCom.SmartComSymbol))]
@@ -174,11 +174,11 @@ namespace Speculator.SmartComData {
             return base.Channel.ConnectToDataSourceAsync();
         }
         
-        public void ConnectToHistoryDataSource(SpeculatorModel.MainData.Symbol symbol, System.DateTime startDateTime, System.Nullable<System.DateTime> finishDateTime, bool returnAllData) {
+        public void ConnectToHistoryDataSource(SpeculatorModel.MainData.Symbol symbol, System.Nullable<System.DateTime> startDateTime, System.Nullable<System.DateTime> finishDateTime, bool returnAllData) {
             base.Channel.ConnectToHistoryDataSource(symbol, startDateTime, finishDateTime, returnAllData);
         }
         
-        public System.Threading.Tasks.Task ConnectToHistoryDataSourceAsync(SpeculatorModel.MainData.Symbol symbol, System.DateTime startDateTime, System.Nullable<System.DateTime> finishDateTime, bool returnAllData) {
+        public System.Threading.Tasks.Task ConnectToHistoryDataSourceAsync(SpeculatorModel.MainData.Symbol symbol, System.Nullable<System.DateTime> startDateTime, System.Nullable<System.DateTime> finishDateTime, bool returnAllData) {
             return base.Channel.ConnectToHistoryDataSourceAsync(symbol, startDateTime, finishDateTime, returnAllData);
         }
         

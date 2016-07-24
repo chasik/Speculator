@@ -53,9 +53,13 @@ namespace SpeculatorServices.SmartCom
             ConnectToSmartCom();
         }
 
-        public void ConnectToHistoryDataSource(Symbol symbol, DateTime startDateTime, DateTime? finishDateTime = null, bool returnAllData = false)
+        public void ConnectToHistoryDataSource(Symbol symbol, DateTime? startDateTime, DateTime? finishDateTime = null, bool returnAllData = false)
         {
+            if (finishDateTime == DateTime.MinValue || finishDateTime == null)
+                finishDateTime = startDateTime?.AddDays(1);
+
             startDateTime += new TimeSpan(11, 30, 0);
+
             var smartComSymbol = new SmartComSymbol
             {
                 Id = symbol.Id,
@@ -74,13 +78,13 @@ namespace SpeculatorServices.SmartCom
             {
                 allTicks = dbContext.SmartComTicks.Where(t =>
                     t.SmartComSymbolId == symbol.Id && t.TradeAdded >= startDateTime &&
-                    t.TradeAdded < startDateTime.AddDays(1)).OrderBy(t => t.TradeAdded).ToList();
+                    t.TradeAdded < finishDateTime).OrderBy(t => t.TradeAdded).ToList();
                 allBidAsk = dbContext.SmartComBidAskValues.Where(ba =>
                     ba.SmartComSymbolId == symbol.Id && ba.Added >= startDateTime &&
-                    ba.Added < startDateTime.AddDays(1)).OrderBy(ba => ba.Added).ToList();
+                    ba.Added < finishDateTime).OrderBy(ba => ba.Added).ToList();
                 allQuotes = dbContext.SmartComQuotes.Where(q =>
                     q.SmartComSymbolId == symbol.Id && q.QuoteAdded >= startDateTime &&
-                    q.QuoteAdded < startDateTime.AddDays(1)).OrderBy(q => q.QuoteAdded).ToList();
+                    q.QuoteAdded < finishDateTime).OrderBy(q => q.QuoteAdded).ToList();
 
                 var allLoadedBidAsk =
                     from tick in allTicks

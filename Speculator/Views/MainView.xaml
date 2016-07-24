@@ -9,9 +9,27 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:dxwui="http://schemas.devexpress.com/winfx/2008/xaml/windowsui"
              xmlns:navigation="http://schemas.devexpress.com/winfx/2008/xaml/windowsui/navigation"
+             xmlns:dialogs="clr-namespace:Speculator.Views.Dialogs"
              mc:Ignorable="d" Height="625" Width="1100" MinWidth="1100" ShowIcon="False"
              DataContext="{dxmvvm:ViewModelSource Type={x:Type viewModels:MainViewModel}}" >
-    
+
+    <dxmvvm:Interaction.Behaviors>
+        <dx:DialogService x:Name="ChoiceSymbolDialogService" DialogWindowStartupLocation="CenterOwner">
+            <dx:DialogService.ViewTemplate>
+                <DataTemplate>
+                    <dialogs:ChoiceSymbolDialogView/>
+                </DataTemplate>
+            </dx:DialogService.ViewTemplate>
+            <dx:DialogService.DialogStyle>
+                <Style TargetType="dx:DXDialogWindow">
+                    <Setter Property="Width" Value="900"/>
+                    <Setter Property="Height" Value="500"/>
+                    <Setter Property="ShowIcon" Value="False"/>
+                </Style>
+            </dx:DialogService.DialogStyle>
+        </dx:DialogService>
+    </dxmvvm:Interaction.Behaviors>
+
     <Grid d:DataContext="{Binding}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -23,10 +41,11 @@
 					AllowGlyphTheming="True" />
                 <dxnav:NavButton Content="Инструменты" HorizontalAlignment="Left" AllowGlyphTheming="True"
                                  Glyph="{dx:DXImageGrayscale Image=Add_32x32.png}"
-                                 CommandParameter="SymbolsView" Command="{Binding NaveButtonClickCommand}" />
+                                 ItemsSource="{Binding LastSymbolItems}">
+                </dxnav:NavButton>
 
-                <dxnav:NavButton Content="Аналитика..." HorizontalAlignment="Right" AllowGlyphTheming="True" 
-					Glyph="{dx:DXImageGrayscale Image=Pie_32x32.png}">
+                <dxnav:NavButton Content="Аналитика..." HorizontalAlignment="Right" AllowGlyphTheming="True"
+                                 Glyph="{dx:DXImageGrayscale Image=Pie_32x32.png}">
                     <dxnav:TileNavItem Content="Staff">
                         <dxnav:TileNavSubItem Content="Manager" />
                         <dxnav:TileNavSubItem Content="Seller" />
