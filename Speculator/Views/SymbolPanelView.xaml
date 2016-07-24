@@ -46,6 +46,7 @@
         </Grid.RowDefinitions>
 
         <dxb:ToolBarControl VerticalAlignment="Top" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2">
+            <dxb:BarButtonItem Content="{Binding TradeButtonContent}" Command="{Binding AllowTradeCommand}"/>
             <dxb:BarButtonItem>
                 <dxb:BarButtonItem.ContentTemplate>
                     <DataTemplate>
@@ -216,19 +217,28 @@
                         <ig:AxisLabelSettings Visibility="Hidden"/>
                     </ig:CategoryDateTimeXAxis.LabelSettings>
                 </ig:CategoryDateTimeXAxis>
-                
-                
+
+                <ig:CategoryDateTimeXAxis x:Name="XAxisBidAskDifferent" DateTimeMemberPath="Time"
+                                          MinorStrokeThickness="0" MajorStrokeThickness="0"
+                                          MinimumValue="{Binding StartDateValue}" MaximumValue="{Binding FinishDateValue}"
+                                          ItemsSource="{Binding AskAndBidCountsDifferent}">
+                    <ig:CategoryDateTimeXAxis.LabelSettings>
+                        <ig:AxisLabelSettings Visibility="Hidden"/>
+                    </ig:CategoryDateTimeXAxis.LabelSettings>
+                </ig:CategoryDateTimeXAxis>
+
+
 
                 <ig:NumericYAxis x:Name="YAxis" 
                                  MinimumValue="{Binding MinimumVisiblePriceValue, Mode=TwoWay}"
                                  MaximumValue="{Binding MaximumVisiblePriceValue, Mode=TwoWay}">
                     <ig:NumericYAxis.LabelSettings>
-                        <ig:AxisLabelSettings Location="OutsideLeft" FontSize="9" FontWeight="UltraLight" Foreground="Azure" Angle="-90"/>
+                        <ig:AxisLabelSettings Location="OutsideLeft" FontSize="9" FontWeight="UltraLight" Foreground="Azure" Angle="-90" Extent="16"/>
                     </ig:NumericYAxis.LabelSettings>
                 </ig:NumericYAxis>
 
                 <ig:NumericYAxis x:Name="YAxisIndicator" MajorStrokeThickness="1" MinorStrokeThickness="0"
-                                 MajorStroke="OrangeRed" MajorStrokeDashArray="2 20">
+                                 MajorStroke="OrangeRed" MajorStrokeDashArray="2 20" MinimumValue="-1500" MaximumValue="4500">
                     <ig:NumericYAxis.LabelSettings>
                         <ig:AxisLabelSettings Location="InsideRight" FontSize="11" FontWeight="Bold" Foreground="OrangeRed"/>
                     </ig:NumericYAxis.LabelSettings>
@@ -237,6 +247,13 @@
                 <ig:NumericYAxis x:Name="YAxisOpenInterest" MajorStrokeThickness="0" MinorStrokeThickness="0">
                     <ig:NumericYAxis.LabelSettings>
                         <ig:AxisLabelSettings Location="InsideLeft" FontSize="11" FontWeight="Bold" Foreground="OrangeRed"/>
+                    </ig:NumericYAxis.LabelSettings>
+                </ig:NumericYAxis>
+
+                <ig:NumericYAxis x:Name="YAxisBidAskDifferent" MajorStrokeThickness="0" MinorStrokeThickness="0"
+                                 MinimumValue="{DXBinding '-3*MaxAskBidCountDelta'}" MaximumValue="{DXBinding '1*MaxAskBidCountDelta'}">
+                    <ig:NumericYAxis.LabelSettings>
+                        <ig:AxisLabelSettings Location="OutsideLeft" FontSize="9" FontWeight="UltraLight" Foreground="DarkGray" Angle="-90"/>
                     </ig:NumericYAxis.LabelSettings>
                 </ig:NumericYAxis>
 
@@ -255,13 +272,13 @@
                 </ig:StepLineSeries>
 
                 <!--Indicators-->
-                <ig:StepAreaSeries MarkerType="None" ValueMemberPath="Value2" Brush="BlueViolet" Canvas.ZIndex="11" Opacity="0.7"
+                <ig:StepAreaSeries MarkerType="None" ValueMemberPath="Value2" Brush="BlueViolet" Canvas.ZIndex="10" Opacity="0.4"
                                    ItemsSource="{Binding Indicator4.Values}"
                                    XAxis="{Binding ElementName=XAxisIndicator4}"
                                    YAxis="{Binding ElementName=YAxisIndicator}">
                 </ig:StepAreaSeries>
                 
-                <ig:StepAreaSeries MarkerType="None" ValueMemberPath="Value2" Brush="Plum" Canvas.ZIndex="10" Opacity="0.4"
+                <ig:StepAreaSeries MarkerType="None" ValueMemberPath="Value2" Brush="Plum" Canvas.ZIndex="11" Opacity="0.4"
                                    ItemsSource="{Binding Indicator3.Values}"
                                    XAxis="{Binding ElementName=XAxisIndicator3}"
                                    YAxis="{Binding ElementName=YAxisIndicator}">
@@ -286,6 +303,14 @@
                                    XAxis="{Binding ElementName=XAxisOpenInterest}"
                                    YAxis="{Binding ElementName=YAxisOpenInterest}">
                 </ig:StepLineSeries>
+
+                <!--AskBidDifferent-->
+                <ig:StepAreaSeries MarkerType="None" ValueMemberPath="Volume" Brush="SaddleBrown" Canvas.ZIndex="5" Opacity="0.5"
+                                   ItemsSource="{Binding AskAndBidCountsDifferent}" IsHighlightingEnabled="True" Thickness="1"
+                                   XAxis="{Binding ElementName=XAxisBidAskDifferent}"
+                                   YAxis="{Binding ElementName=YAxisBidAskDifferent}">
+                </ig:StepAreaSeries>
+
 
             </ig:XamDataChart.Series>
                         

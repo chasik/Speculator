@@ -53,9 +53,9 @@ namespace SpeculatorServices.SmartCom
             ConnectToSmartCom();
         }
 
-        public void ConnectToHistoryDataSource(Symbol symbol, DateTime dayDateTime)
+        public void ConnectToHistoryDataSource(Symbol symbol, DateTime startDateTime, DateTime? finishDateTime = null, bool returnAllData = false)
         {
-            dayDateTime += new TimeSpan(10, 40, 0);
+            startDateTime += new TimeSpan(11, 30, 0);
             var smartComSymbol = new SmartComSymbol
             {
                 Id = symbol.Id,
@@ -73,14 +73,14 @@ namespace SpeculatorServices.SmartCom
             using (var dbContext = new SpeculatorContext())
             {
                 allTicks = dbContext.SmartComTicks.Where(t =>
-                    t.SmartComSymbolId == symbol.Id && t.TradeAdded >= dayDateTime &&
-                    t.TradeAdded < dayDateTime.AddDays(1)).OrderBy(t => t.TradeAdded).ToList();
+                    t.SmartComSymbolId == symbol.Id && t.TradeAdded >= startDateTime &&
+                    t.TradeAdded < startDateTime.AddDays(1)).OrderBy(t => t.TradeAdded).ToList();
                 allBidAsk = dbContext.SmartComBidAskValues.Where(ba =>
-                    ba.SmartComSymbolId == symbol.Id && ba.Added >= dayDateTime &&
-                    ba.Added < dayDateTime.AddDays(1)).OrderBy(ba => ba.Added).ToList();
+                    ba.SmartComSymbolId == symbol.Id && ba.Added >= startDateTime &&
+                    ba.Added < startDateTime.AddDays(1)).OrderBy(ba => ba.Added).ToList();
                 allQuotes = dbContext.SmartComQuotes.Where(q =>
-                    q.SmartComSymbolId == symbol.Id && q.QuoteAdded >= dayDateTime &&
-                    q.QuoteAdded < dayDateTime.AddDays(1)).OrderBy(q => q.QuoteAdded).ToList();
+                    q.SmartComSymbolId == symbol.Id && q.QuoteAdded >= startDateTime &&
+                    q.QuoteAdded < startDateTime.AddDays(1)).OrderBy(q => q.QuoteAdded).ToList();
 
                 var allLoadedBidAsk =
                     from tick in allTicks
@@ -112,6 +112,19 @@ namespace SpeculatorServices.SmartCom
                 var minDateTime = new DateTime(Math.Min(allTicks.Min(t => t.TradeAdded).Ticks, allBidAsk.Min(ba => ba.Added).Ticks));
                 var maxDateTime = new DateTime(Math.Max(allTicks.Max(t => t.TradeAdded).Ticks, allBidAsk.Max(ba => ba.Added).Ticks));
 
+                if (returnAllData)
+                {
+                    ReturnHistoryData(smartComSymbol,
+                        fullResultEvents.Select(
+                            ev =>
+                                new HistoryDataRow
+                                {
+                                    EventDateTime = ev.EventDateTime,
+                                    Tick = ev.Tick,
+                                    BidAsk = ev.BidAsk,
+                                    Quote = ev.Quote
+                                }).ToArray());
+                }
                 //var tempDictionary = new Dictionary<double, SmartComBidAskValue>();
                 fullResultEvents.ForEach(smartComEvent =>
                 {
@@ -138,7 +151,6 @@ namespace SpeculatorServices.SmartCom
                         QuoteEvent(smartComSymbol, smartComEvent.Quote);
                     }
                 });
-
             }
         }
 
@@ -168,6 +180,11 @@ namespace SpeculatorServices.SmartCom
                 order.Validity, order.Price, order.Amount, order.Stop, order.Cookie);
         }
 
+        public void CancelOrder(string symbol, string orderId)
+        {
+            _smartCom.CancelOrder(Settings.Default.SmartComPortfolio, symbol, orderId);
+        }
+
         public void ConnectToSmartCom()
         {
             if (_smartCom != null)
@@ -192,13 +209,12 @@ namespace SpeculatorServices.SmartCom
             _smartCom.UpdateBidAsk += _smartCom_UpdateBidAsk;
             _smartCom.AddTick += _smartCom_AddTick;
 
-
             // GetPortfolioList, ListenPortfolio
             _smartCom.AddPortfolio += _smartCom_AddPortfolio;
             _smartCom.SetPortfolio += _smartCom_SetPortfolio;
-            _smartCom.AddTrade += _smartCom_AddTrade;
             _smartCom.UpdateOrder += _smartCom_UpdateOrder;
             _smartCom.UpdatePosition += _smartCom_UpdatePosition;
+            _smartCom.AddTrade += _smartCom_AddTrade;
 
             // CancelOrder
             _smartCom.OrderCancelFailed += _smartCom_OrderCancelFailed;

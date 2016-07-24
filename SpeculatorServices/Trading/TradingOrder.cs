@@ -7,6 +7,12 @@ namespace SpeculatorServices.Trading
     public class TradingOrder
     {
         [DataMember]
+        public int Id { get; set; }
+
+        [DataMember]
+        public int ParentId { get; set; }
+
+        [DataMember]
         public string Symbol { get; set; }
 
         [DataMember]
@@ -25,6 +31,9 @@ namespace SpeculatorServices.Trading
         public double Price { get; set; }
 
         [DataMember]
+        public double RealPrice { get; set; }
+
+        [DataMember]
         public double Amount { get; set; }
 
         [DataMember]
@@ -32,5 +41,11 @@ namespace SpeculatorServices.Trading
 
         [DataMember]
         public int Cookie { get; set; }
+
+        [DataMember]
+        public string OrderId { get; set; }
+
+        [DataMember]
+        public string OrderNo { get; set; }
     }
 }

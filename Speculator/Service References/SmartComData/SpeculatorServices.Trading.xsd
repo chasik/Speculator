@@ -6,7 +6,12 @@
       <xs:element xmlns:q1="http://schemas.datacontract.org/2004/07/SmartCOM3Lib" minOccurs="0" name="Action" type="q1:StOrder_Action" />
       <xs:element minOccurs="0" name="Amount" type="xs:double" />
       <xs:element minOccurs="0" name="Cookie" type="xs:int" />
+      <xs:element minOccurs="0" name="Id" type="xs:int" />
+      <xs:element minOccurs="0" name="OrderId" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="OrderNo" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="ParentId" type="xs:int" />
       <xs:element minOccurs="0" name="Price" type="xs:double" />
+      <xs:element minOccurs="0" name="RealPrice" type="xs:double" />
       <xs:element xmlns:q2="http://schemas.datacontract.org/2004/07/SmartCOM3Lib" minOccurs="0" name="State" type="q2:StOrder_State" />
       <xs:element minOccurs="0" name="Stop" type="xs:double" />
       <xs:element minOccurs="0" name="Symbol" nillable="true" type="xs:string" />

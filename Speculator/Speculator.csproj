@@ -437,6 +437,7 @@
     <None Include="Properties\DataSources\SpeculatorModel.MainData.Symbol.datasource" />
     <None Include="Properties\DataSources\SpeculatorModel.MoexHistory.MoexSymbol.datasource" />
     <None Include="Properties\DataSources\SpeculatorModel.MoexHistory.MoexSystem.datasource" />
+    <None Include="Properties\DataSources\SpeculatorServices.SmartCom.HistoryDataRow.datasource" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -469,6 +470,9 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="Service References\SmartComData\SpeculatorModel.SmartCom.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\SmartComData\SpeculatorServices.SmartCom.xsd">
       <SubType>Designer</SubType>
     </None>
     <None Include="Service References\SmartComData\SpeculatorServices.Trading.xsd">

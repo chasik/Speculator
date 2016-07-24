@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.ServiceModel;
 using SpeculatorModel.SmartCom;
+using SpeculatorServices.SmartCom;
 
 namespace SpeculatorServices
 {
@@ -31,6 +32,27 @@ namespace SpeculatorServices
                 // добавляем инструменты, за исключением добавленных ранее
                 ClientsWantGetSymbols[callBack].AddRange(symbols.Except(ClientsWantGetSymbols[callBack]));}
         }
+
+
+        protected void ReturnHistoryData(SmartComSymbol symbol, HistoryDataRow[] historyData)
+        {
+            for (var i = 0; i < ClientsWithCallBack.Count; i++)
+            {
+                var communicationObject = ClientsWithCallBack[i] as ICommunicationObject;
+                if (communicationObject == null || communicationObject.State != CommunicationState.Opened ||
+                    !ClientsWantGetSymbols[ClientsWithCallBack[i]].Contains(symbol.Name))
+                    continue;
+                try
+                {
+                    ClientsWithCallBack[i].ReturnHistoryData(symbol, historyData);
+                }
+                catch (Exception)
+                {
+                    ClientsWithCallBack.RemoveAt(i--);
+                }
+            }
+        }
+
 
         protected void UpdateBidAskEvent(SmartComSymbol symbol, SmartComBidAskValue value, bool isBid = false)
         {

@@ -71,7 +71,7 @@
             <!-- add categories here, if required -->
         </dxnav:TileNavPane>
         <dxwui:NavigationFrame Grid.Row="1" Padding="0,6,0,0"
-                               AnimationType="SlideHorizontal"
+                               AnimationType="SlideHorizontal" Source="SymbolsView"
                                NavigationCacheMode="Required" BackNavigationMode="PreviousScreen">
             <dxmvvm:Interaction.Behaviors>
                 <navigation:FrameNavigationService />

@@ -29,6 +29,7 @@
     <MetadataFile FileName="SpeculatorServices.Trading.xsd" MetadataType="Schema" ID="984750fc-d47f-4a2d-b452-ba1afc435283" SourceId="1" SourceUrl="http://127.0.0.1:51001/Speculator/SmartComData/mex" />
     <MetadataFile FileName="SmartCOM3Lib.xsd" MetadataType="Schema" ID="164ea7d0-48f9-4280-ab56-0680f64076a0" SourceId="1" SourceUrl="http://127.0.0.1:51001/Speculator/SmartComData/mex" />
     <MetadataFile FileName="SpeculatorModel.SmartCom.xsd" MetadataType="Schema" ID="727acae4-9353-4fe3-8ffe-143488e07e92" SourceId="1" SourceUrl="http://127.0.0.1:51001/Speculator/SmartComData/mex" />
+    <MetadataFile FileName="SpeculatorServices.SmartCom.xsd" MetadataType="Schema" ID="85b342e8-9539-4ef7-be56-8b574bd7c09a" SourceId="1" SourceUrl="http://127.0.0.1:51001/Speculator/SmartComData/mex" />
   </Metadata>
   <Extensions>
     <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />

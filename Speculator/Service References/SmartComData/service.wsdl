@@ -24,6 +24,7 @@
       <xsd:import namespace="http://schemas.datacontract.org/2004/07/SpeculatorServices.Trading" />
       <xsd:import namespace="http://schemas.datacontract.org/2004/07/SmartCOM3Lib" />
       <xsd:import namespace="http://schemas.datacontract.org/2004/07/SpeculatorModel.SmartCom" />
+      <xsd:import namespace="http://schemas.datacontract.org/2004/07/SpeculatorServices.SmartCom" />
     </xsd:schema>
   </wsdl:types>
   <wsdl:message name="ISmartComData_DefaultOperation_InputMessage">
@@ -49,6 +50,12 @@
   </wsdl:message>
   <wsdl:message name="IDataBase_PlaceOrder_InputMessage">
     <wsdl:part name="parameters" element="tns:PlaceOrder" />
+  </wsdl:message>
+  <wsdl:message name="IDataBase_CancelOrder_InputMessage">
+    <wsdl:part name="parameters" element="tns:CancelOrder" />
+  </wsdl:message>
+  <wsdl:message name="IDataBase_ReturnHistoryData_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:ReturnHistoryData" />
   </wsdl:message>
   <wsdl:message name="IDataBase_UpdateBidOrAskEvent_OutputCallbackMessage">
     <wsdl:part name="parameters" element="tns:UpdateBidOrAskEvent" />
@@ -106,6 +113,12 @@
     </wsdl:operation>
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="PlaceOrder">
       <wsdl:input wsaw:Action="http://tempuri.org/IDataBase/PlaceOrder" message="tns:IDataBase_PlaceOrder_InputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="CancelOrder">
+      <wsdl:input wsaw:Action="http://tempuri.org/IDataBase/CancelOrder" message="tns:IDataBase_CancelOrder_InputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="ReturnHistoryData">
+      <wsdl:output wsaw:Action="http://tempuri.org/IDataBase/ReturnHistoryData" message="tns:IDataBase_ReturnHistoryData_OutputCallbackMessage" />
     </wsdl:operation>
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="UpdateBidOrAskEvent">
       <wsdl:output wsaw:Action="http://tempuri.org/IDataBase/UpdateBidOrAskEvent" message="tns:IDataBase_UpdateBidOrAskEvent_OutputCallbackMessage" />
@@ -189,6 +202,18 @@
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
+    </wsdl:operation>
+    <wsdl:operation name="CancelOrder">
+      <soap12:operation soapAction="http://tempuri.org/IDataBase/CancelOrder" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+    </wsdl:operation>
+    <wsdl:operation name="ReturnHistoryData">
+      <soap12:operation soapAction="http://tempuri.org/IDataBase/ReturnHistoryData" style="document" />
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="UpdateBidOrAskEvent">
       <soap12:operation soapAction="http://tempuri.org/IDataBase/UpdateBidOrAskEvent" style="document" />

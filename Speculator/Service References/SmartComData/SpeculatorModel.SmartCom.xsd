@@ -28,19 +28,6 @@
     </xs:sequence>
   </xs:complexType>
   <xs:element name="SmartComBidAskValue" nillable="true" type="tns:SmartComBidAskValue" />
-  <xs:complexType name="SmartComTrade">
-    <xs:complexContent mixed="false">
-      <xs:extension xmlns:q2="http://schemas.datacontract.org/2004/07/SpeculatorModel.MainData" base="q2:Trade">
-        <xs:sequence>
-          <xs:element minOccurs="0" name="SmartComSymbol" nillable="true" type="tns:SmartComSymbol" />
-          <xs:element minOccurs="0" name="SmartComSymbolId" type="xs:int" />
-          <xs:element minOccurs="0" name="TradeAdded" type="xs:dateTime" />
-          <xs:element minOccurs="0" name="TradeDateTime" type="xs:dateTime" />
-        </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-  <xs:element name="SmartComTrade" nillable="true" type="tns:SmartComTrade" />
   <xs:complexType name="SmartComQuote">
     <xs:sequence>
       <xs:element minOccurs="0" name="Ask" type="xs:double" />
@@ -59,4 +46,17 @@
     </xs:sequence>
   </xs:complexType>
   <xs:element name="SmartComQuote" nillable="true" type="tns:SmartComQuote" />
+  <xs:complexType name="SmartComTrade">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q2="http://schemas.datacontract.org/2004/07/SpeculatorModel.MainData" base="q2:Trade">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="SmartComSymbol" nillable="true" type="tns:SmartComSymbol" />
+          <xs:element minOccurs="0" name="SmartComSymbolId" type="xs:int" />
+          <xs:element minOccurs="0" name="TradeAdded" type="xs:dateTime" />
+          <xs:element minOccurs="0" name="TradeDateTime" type="xs:dateTime" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="SmartComTrade" nillable="true" type="tns:SmartComTrade" />
 </xs:schema>

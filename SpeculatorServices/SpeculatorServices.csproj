@@ -265,6 +265,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <Compile Include="SmartCom\HistoryDataRow.cs" />
     <Compile Include="SmartCom\ISmartComData.cs" />
     <Compile Include="SmartCom\SmartComData.cs" />
     <Compile Include="SpeculatorData.cs" />

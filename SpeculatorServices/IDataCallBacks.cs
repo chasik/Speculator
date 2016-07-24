@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ServiceModel;
 using SpeculatorModel.SmartCom;
+using SpeculatorServices.SmartCom;
 using SpeculatorServices.Trading;
 
 
@@ -9,6 +10,9 @@ namespace SpeculatorServices
     [ServiceContract]
     public interface IDataCallBacks
     {
+        [OperationContract(IsOneWay = true)]
+        void ReturnHistoryData(SmartComSymbol symbol, HistoryDataRow[] historyData);
+
         [OperationContract(IsOneWay = true)]
         void UpdateBidOrAskEvent(SmartComSymbol symbol, SmartComBidAskValue value);
 

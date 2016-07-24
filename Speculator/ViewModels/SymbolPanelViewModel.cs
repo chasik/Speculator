@@ -4,7 +4,8 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.ServiceModel;
-using System.Timers;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -21,7 +22,9 @@ using Speculator.Indicators;
 using Speculator.SmartComData;
 using SpeculatorModel.MainData;
 using SpeculatorModel.SmartCom;
+using SpeculatorServices.SmartCom;
 using SpeculatorServices.Trading;
+using Timer = System.Timers.Timer;
 
 namespace Speculator.ViewModels
 {
@@ -29,13 +32,28 @@ namespace Speculator.ViewModels
     public class SymbolPanelViewModel : IDataBaseCallback
     {
         private Timer _mainTimer;
-        public virtual bool TradingEnabled { get; set; }
+        public virtual int LotForTradeCount { get; set; }
+
+        public virtual bool TradingEnabled
+        {
+            get { return _tradingEnabled; }
+            set
+            {
+                _tradingEnabled = value;
+                TradeButtonContent = value ? "НЕ ТОРГОВАТЬ" : "ТОРГОВАТЬ";
+            }
+        }
+
+        public virtual string TradeButtonContent { get; set; }
 
         public IDataBase DataBaseClient { get; set; }
         public DataSource DataSource { get; set; }
         public Symbol Symbol { get; set; }
         public virtual short Zoom { get; set; }
 
+
+        private List<TradePairInfo> AllTradePairInfo { get; set; }
+        private ObservableCollection<TradingOrder> AllOrders { get; set; }
         private List<SmartComBidAskValue> _glass { get; set; }
         public virtual BindingList<SmartComBidAskValue> Glass { get; set; }
 
@@ -47,6 +65,9 @@ namespace Speculator.ViewModels
         private OpenInterest _lastOpenInterest;
         public virtual ObservableCollection<OpenInterest> OpenInterest { get; set; }
 
+        private int _lastDeltaBetweenAskAndBid;
+        public virtual ObservableCollection<AskBidCountDifferent> AskAndBidCountsDifferent { get; set; }
+        public virtual int MaxAskBidCountDelta { get; set; }
 
         private List<SmartComTrade> _tradesBuffer;
         private List<SmartComTrade> _tradesBuyBuffer;
@@ -74,17 +95,21 @@ namespace Speculator.ViewModels
         private TradingState _tradingState;
         private double _lastAsk;
         private double _lastBid;
-        private int _lastOrderId;
+
         private List<TradingOrder> _tradingOrders;
-        private const int TradeUpIndicatorLevel = 100;
-        private const int TradeDownIndicatorLevel = -100;
+        private bool _tradingEnabled;
+        private const int TradeUpIndicatorLevel = 300;
+        private const int TradeDownIndicatorLevel = -300;
+        private const int StepForOrderCookie = 100000;
 
         public async void StartListenDataService()
         {
+            TradingEnabled = false;
+            LotForTradeCount = 1;
             _tradingState = TradingState.Free;
 
             var dispatcher = Dispatcher.CurrentDispatcher;
-            _mainTimer = new Timer(HistoryDate == DateTime.MinValue ? 200 : 500);
+            _mainTimer = new Timer(HistoryDate == DateTime.MinValue ? 200 : 300);
             _mainTimer.Elapsed += (sender, args) =>
             {
                 if (_tradesBuffer == null || _tradesBuffer.Count == 0)
@@ -96,7 +121,6 @@ namespace Speculator.ViewModels
 
                     try
                     {
-
                         FinishDateValue = _tradesBuffer.Max(t => t.TradeAdded);
                         MaximumPrice = Math.Max(MaximumPrice, _tradesBuffer.Max(t => t.Price));
                         MinimumPrice = Math.Min(MinimumPrice, _tradesBuffer.Min(t => t.Price));
@@ -121,32 +145,33 @@ namespace Speculator.ViewModels
                     }
 
                     //_chart.Diagram.Series.ForEach(s => s.Points.EndInit());
-                }, DispatcherPriority.Render);
+                }, DispatcherPriority.Loaded);
             };
 
             _mainTimer.Start();
 
             Zoom = 1;
             StartHeightGlassValueParam = 1;
-            FinishHeightGlassValueParam = 11;
+            FinishHeightGlassValueParam = 20;
             Indicator = new IchIndicator
             {
                 Parameters = new List<double> {StartHeightGlassValueParam, FinishHeightGlassValueParam}
             };
             Indicator2 = new IchIndicator
             {
-                Parameters = new List<double> { StartHeightGlassValueParam, 28 }
+                Parameters = new List<double> {StartHeightGlassValueParam, 28}
             };
             Indicator3 = new IchIndicator
             {
-                Parameters = new List<double> { StartHeightGlassValueParam, 49 }
+                Parameters = new List<double> {StartHeightGlassValueParam, 49}
             };
             Indicator4 = new IchIndicator
             {
-                Parameters = new List<double> { 25, 49 }
+                Parameters = new List<double> {25, 49}
             };
 
             OpenInterest = new ObservableCollection<OpenInterest>();
+            AskAndBidCountsDifferent = new ObservableCollection<AskBidCountDifferent>();
 
             TradesBuy = new ObservableCollection<SmartComTrade>();
             TradesSell = new ObservableCollection<SmartComTrade>();
@@ -157,6 +182,9 @@ namespace Speculator.ViewModels
             Glass = new BindingList<SmartComBidAskValue>();
             _glass = new List<SmartComBidAskValue>();
 
+            AllOrders = new ObservableCollection<TradingOrder>();
+            AllTradePairInfo = new List<TradePairInfo>();
+
             DataBaseClient = new DataBaseClient(new InstanceContext(this));
 
             if (HistoryDate == DateTime.MinValue)
@@ -165,7 +193,12 @@ namespace Speculator.ViewModels
                 DataBaseClient.ListenSymbol(Symbol);
             }
             else
-                await DataBaseClient.ConnectToHistoryDataSourceAsync(Symbol, HistoryDate);
+                await DataBaseClient.ConnectToHistoryDataSourceAsync(Symbol, HistoryDate, HistoryDate, false);
+        }
+
+        public void ReturnHistoryData(SmartComSymbol symbol, HistoryDataRow[] historyData)
+        {
+            throw new NotImplementedException();
         }
 
         public void UpdateBidOrAskEvent(SmartComSymbol symbol, SmartComBidAskValue value)
@@ -178,8 +211,18 @@ namespace Speculator.ViewModels
                 {
                     for (var i = 1; i < 250; i++)
                     {
-                        _glass.Add(new SmartComBidAskValue {Price = value.Price + i * (double)symbol.Step, Volume = 0, IsBid = true});
-                        _glass.Add(new SmartComBidAskValue {Price = value.Price - i * (double)symbol.Step, Volume = 0, IsBid = false});
+                        _glass.Add(new SmartComBidAskValue
+                        {
+                            Price = value.Price + i*(double) symbol.Step,
+                            Volume = 0,
+                            IsBid = true
+                        });
+                        _glass.Add(new SmartComBidAskValue
+                        {
+                            Price = value.Price - i*(double) symbol.Step,
+                            Volume = 0,
+                            IsBid = false
+                        });
                     }
                 }
                 _glass = new List<SmartComBidAskValue>(_glass.OrderByDescending(g => g.Price).ToList());
@@ -209,11 +252,10 @@ namespace Speculator.ViewModels
                 return;
             }
 
-            if (trade.DiractionId == (byte)DiractionEnum.Buy)
+            if (trade.DiractionId == (byte) DiractionEnum.Buy)
                 _tradesBuyBuffer.Add(trade);
-            else if (trade.DiractionId == (byte)DiractionEnum.Sell)
+            else if (trade.DiractionId == (byte) DiractionEnum.Sell)
                 _tradesSellBuffer.Add(trade);
-
 
 
             Indicator.AddGlassShear(_glass, symbol, trade.TradeAdded);
@@ -240,37 +282,43 @@ namespace Speculator.ViewModels
             DoTrading(symbol, trade.Price, Indicator, Indicator2, Indicator3, Indicator4);
         }
 
-
-        private void DoTrading(SmartComSymbol symbol, double price, IchIndicator indicator, IchIndicator indicator2, IchIndicator indicator3, IchIndicator indicator4)
+        public void AllowTrade()
         {
-            if (!TradingEnabled || _tradingState != TradingState.Free
-                || (indicator.LastAddedGlassShear.Value2 < TradeUpIndicatorLevel && indicator.LastAddedGlassShear.Value2 > TradeDownIndicatorLevel))
+            TradingEnabled = !TradingEnabled;
+        }
+
+        private void DoTrading(SmartComSymbol symbol, double price, IchIndicator indicator, IchIndicator indicator2,
+            IchIndicator indicator3, IchIndicator indicator4)
+        {
+            if (!TradingEnabled || _tradingState != TradingState.Free || (indicator.LastAddedGlassShear.Value2 < TradeUpIndicatorLevel && indicator.LastAddedGlassShear.Value2 > TradeDownIndicatorLevel))
                 return;
 
+            var localIdOrder = (int) DateTime.Now.TimeOfDay.TotalSeconds;
             var order = new TradingOrder
             {
+                Id = localIdOrder,
                 Symbol = symbol.Name,
-                Type = StOrder_Type.StOrder_Type_Limit,
+                Type = StOrder_Type.StOrder_Type_Market,
                 Validity = StOrder_Validity.StOrder_Validity_Day,
-                Amount = 1,
+                Amount = LotForTradeCount,
                 Stop = 0,
-                Cookie = 100000 + _lastOrderId + 1
+                Cookie = StepForOrderCookie + localIdOrder
             };
-            _lastOrderId += 1;
+
+            _tradingState = TradingState.TryDoMainOrder;
 
             if (indicator.LastAddedGlassShear.Value2 > TradeUpIndicatorLevel && symbol?.Step != null)
             {
-                _tradingState = TradingState.TryDoMainOrder;
                 order.Action = StOrder_Action.StOrder_Action_Buy;
-                order.Price = _lastAsk - 20*(double) symbol.Step;
+                //order.Price = _lastAsk + 10*(double) symbol.Step;
             }
             else if (indicator.LastAddedGlassShear.Value2 < TradeDownIndicatorLevel && symbol?.Step != null)
             {
-                _tradingState = TradingState.TryDoMainOrder;
                 order.Action = StOrder_Action.StOrder_Action_Sell;
-                order.Price = _lastBid + 20*(double) symbol.Step;
+                //order.Price = _lastBid - 10*(double) symbol.Step;
             }
 
+            AllOrders.Add(order);
             DataBaseClient.PlaceOrder(order);
         }
 
@@ -285,17 +333,33 @@ namespace Speculator.ViewModels
             _glass.Where(v => v.Price > quote.Ask && v.IsBid).ForEach(v => v.IsBid = false);
             //_glass.Where(v => v.Price > quote.Ask + 50*symbol.Step).ForEach(v => v.RowId = null);
 
-            if (_lastOpenInterest.Volume != quote.OpenInterest)
+            if (_lastOpenInterest.Amount != quote.OpenInterest)
             {
-                _lastOpenInterest = new OpenInterest {Time = quote.QuoteAdded, Volume = quote.OpenInterest};
+                _lastOpenInterest = new OpenInterest {Time = quote.QuoteAdded, Amount = quote.OpenInterest};
                 OpenInterest.Add(_lastOpenInterest);
             }
+
+            int lastAskBidDelta = quote.BidSize - quote.AskSize;// /quote.BidSize*100;
+            if (lastAskBidDelta != _lastDeltaBetweenAskAndBid)
+            {
+                MaxAskBidCountDelta = Math.Max(Math.Abs(lastAskBidDelta), MaxAskBidCountDelta);
+
+                _lastDeltaBetweenAskAndBid = lastAskBidDelta;
+                AskAndBidCountsDifferent.Add(new AskBidCountDifferent {Time = quote.QuoteAdded, Volume = lastAskBidDelta});
+            }
+
         }
 
         public void OrderSucceeded(int cookie, string orderid)
         {
-            if (cookie < 100000)
+            if (cookie/StepForOrderCookie == 1)
+            {
                 _tradingState = TradingState.MainOrderSucceeded;
+                var order = AllOrders.FirstOrDefault(o => o.Id == cookie - StepForOrderCookie);
+                if (order == null)
+                    return;
+                order.OrderId = orderid;
+            }
         }
 
         public void OrderFailed(int cookie, string orderid, string reason)
@@ -315,7 +379,6 @@ namespace Speculator.ViewModels
 
         public void OrderCancelSucceeded(string orderid)
         {
-            throw new NotImplementedException();
         }
 
         public void OrderCancelFailed(string orderid)
@@ -325,27 +388,193 @@ namespace Speculator.ViewModels
 
         public void UpdatePosition(string portfolio, string symbol, double avprice, double amount, double planned)
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
         }
 
-        public void UpdateOrder(string portfolio, TradingOrder order, double filled, DateTime datetime, string orderid, string orderno,
-            int status_mask)
+        public void UpdateOrder(string portfolio, TradingOrder order, double filled, DateTime datetime, string orderid, string orderno, int status_mask)
         {
-            throw new NotImplementedException();
+            var currentOrder =
+                AllOrders.FirstOrDefault(o => o.Id == order.Cookie % StepForOrderCookie);
+            if (currentOrder == null)
+                return;
+
+            order.Id = currentOrder.Id;
+            currentOrder.OrderNo = orderno;
+            currentOrder.State = order.State;
+
+            Task.Factory.StartNew(() =>
+            {
+                var counterInteration = 0;
+                var tradeInfo = new TradePairInfo();
+                do
+                {
+                    tradeInfo = AllTradePairInfo.FirstOrDefault(p => p.OrderId == orderno);
+                    if (order.State == StOrder_State.StOrder_State_Filled && tradeInfo.Price == 0)
+                        Thread.Sleep(50);
+                    counterInteration++;
+                }
+                while (order.State == StOrder_State.StOrder_State_Filled && tradeInfo.Price == 0);
+
+                if (tradeInfo.Price != 0) // если найдено совпадение
+                {
+                    currentOrder.OrderNo = tradeInfo.OrderId;
+                    currentOrder.RealPrice = tradeInfo.Price;
+                }
+
+
+                switch (order.State)
+                {
+                    case StOrder_State.StOrder_State_Filled:
+                        if (order.Cookie/StepForOrderCookie == 1)
+                        {
+                            // устновка первоначальных loss и profit уровней
+                            _tradingState = TradingState.MainOrderSucceeded;
+                            DoProfitAndLossLimits(order, currentOrder.RealPrice);
+                            DoProfitAndLossLimits(order, currentOrder.RealPrice, isLoss: true);
+                        }
+                        else if (order.Cookie/StepForOrderCookie == 2)
+                        {
+                            // ProfitShot(); если исполнилась профитная лимитка
+                            var parentOrder = AllOrders.First(o => o.Id == currentOrder.ParentId);
+                            var lossOrder =
+                                AllOrders.First(o => o.ParentId == parentOrder.Id && o.Cookie/StepForOrderCookie == 3);
+                            DataBaseClient.CancelOrder(Symbol.Name, lossOrder.OrderNo);
+                        }
+                        else if (order.Cookie/StepForOrderCookie == 3)
+                        {
+                            //LossShot(); если исполнилась лимитка на доливку/усреднение
+                            var parentOrder = AllOrders.First(o => o.Id == currentOrder.ParentId);
+                            var profitOrder =
+                                AllOrders.First(o => o.ParentId == parentOrder.Id && o.Cookie/StepForOrderCookie == 2);
+                            DataBaseClient.CancelOrder(Symbol.Name, profitOrder.OrderNo);
+                        }
+                        else if (order.Cookie/StepForOrderCookie == 4)
+                        {
+                            //если это профит после доливки
+                        }
+                        else if (order.Cookie/StepForOrderCookie == 5)
+                        {
+                            // если это лосс после доливки
+                        }
+                        break;
+                    case StOrder_State.StOrder_State_ContragentReject:
+                        break;
+                    case StOrder_State.StOrder_State_Submited:
+                        break;
+                    case StOrder_State.StOrder_State_Pending:
+                        break;
+                    case StOrder_State.StOrder_State_Open:
+                        break;
+                    case StOrder_State.StOrder_State_Expired:
+                        break;
+                    case StOrder_State.StOrder_State_Cancel:
+                        if (currentOrder.Cookie / StepForOrderCookie == 1)
+                        {
+                        }
+                        else if (currentOrder.Cookie / StepForOrderCookie == 2)
+                        {
+                            var localIdOrder = GetCookieForNewOrder();
+                            var newOrder = new TradingOrder
+                            {
+                                Id = localIdOrder,
+                                ParentId = currentOrder.ParentId,
+                                Symbol = Symbol.Name,
+                                Type = StOrder_Type.StOrder_Type_Limit,
+                                Validity = StOrder_Validity.StOrder_Validity_Day,
+                                Amount = 2 * LotForTradeCount,
+                                Cookie = 4 * StepForOrderCookie + localIdOrder,
+                                Price = currentOrder.RealPrice
+                            };
+
+                            if (currentOrder.Action == StOrder_Action.StOrder_Action_Buy)
+                                newOrder.Action = StOrder_Action.StOrder_Action_Sell;
+                            else if (currentOrder.Action == StOrder_Action.StOrder_Action_Sell)
+                                newOrder.Action = StOrder_Action.StOrder_Action_Buy;
+
+                            AllOrders.Add(newOrder);
+                            DataBaseClient.PlaceOrder(newOrder);
+                        }
+                        else if (currentOrder.Cookie / StepForOrderCookie == 3)
+                        {
+                            //_tradingState = TradingState.Free;
+                        }
+                        else if (currentOrder.Cookie / StepForOrderCookie == 4)
+                        {
+                        }
+                        else if (currentOrder.Cookie / StepForOrderCookie == 5)
+                        {
+                        }
+                        break;
+                    case StOrder_State.StOrder_State_Partial:
+                        break;
+                    case StOrder_State.StOrder_State_ContragentCancel:
+                        break;
+                    case StOrder_State.StOrder_State_SystemReject:
+                        break;
+                    case StOrder_State.StOrder_State_SystemCancel:
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+            });
         }
 
-        public void AddTrade(string portfolio, string symbol, string orderid, double price, double amount, DateTime datetime,
-            string tradeno)
+        public void AddTrade(string portfolio, string symbol, string orderid, double price, double amount, DateTime datetime, string tradeno)
         {
-            throw new NotImplementedException();
+            AllTradePairInfo.Add(new TradePairInfo
+            {
+                OrderId = orderid,
+                TradeNo = tradeno,
+                Price = price,
+                Amount = amount
+            });
         }
 
-        public void ChartControlLoaded(XamDataChart chart)
+        private void DoProfitAndLossLimits (TradingOrder order, double realPrice, bool isLoss = false)
+        {
+            int localIdOrder = GetCookieForNewOrder();
+
+            var newOrder = new TradingOrder
+            {
+                Id = localIdOrder,
+                ParentId = order.Id,
+                Symbol = Symbol.Name,
+                Type = StOrder_Type.StOrder_Type_Limit,
+                Validity = StOrder_Validity.StOrder_Validity_Day,
+                Amount = isLoss ? 2*LotForTradeCount : LotForTradeCount,
+                Cookie = (isLoss ? 3*StepForOrderCookie : 2*StepForOrderCookie) + localIdOrder
+            };
+
+            if (order.Action == StOrder_Action.StOrder_Action_Buy)
+            {
+                newOrder.Action = isLoss ? StOrder_Action.StOrder_Action_Buy : StOrder_Action.StOrder_Action_Sell;
+                newOrder.Price = realPrice + (isLoss ? -3 : 1)*6*(double) Symbol.Step;
+            }
+            else if (order.Action == StOrder_Action.StOrder_Action_Sell)
+            {
+                newOrder.Action = isLoss ? StOrder_Action.StOrder_Action_Sell : StOrder_Action.StOrder_Action_Buy;
+                newOrder.Price = realPrice - (isLoss ? -3 : 1)*6*(double) Symbol.Step;
+            }
+            AllOrders.Add(newOrder);
+            DataBaseClient.PlaceOrder(newOrder);
+        }
+
+        private int GetCookieForNewOrder ()
+        {
+            var localIdOrder = (int) DateTime.Now.TimeOfDay.TotalSeconds;
+            while (AllOrders.Any(o => o.Id == localIdOrder))
+            {
+                localIdOrder++;
+            }
+            return localIdOrder;
+        }
+
+        public void ChartControlLoaded (XamDataChart chart)
         {
             _chart = chart;
         }
 
-        public void TableViewLoaded(RoutedEventArgs eventArgs)
+        public void TableViewLoaded (RoutedEventArgs eventArgs)
         {
             _glassGridControl = (eventArgs.Source as TableView).Parent as GridControl;
             // подписываемся на прокрутку стакана
@@ -360,7 +589,7 @@ namespace Speculator.ViewModels
             }
         }
 
-        private void GlassScrollViewer_ScrollChanged(object sender, ScrollChangedEventArgs e)
+        private void GlassScrollViewer_ScrollChanged (object sender, ScrollChangedEventArgs e)
         {
             var tableView = (e.Source as ScrollViewer)?.TemplatedParent as TableView;
             var gridControl = tableView?.Parent as GridControl;
@@ -368,7 +597,7 @@ namespace Speculator.ViewModels
             if ((Keyboard.GetKeyStates(Key.LeftCtrl) & KeyStates.Down) > 0 ||
                 (Keyboard.GetKeyStates(Key.RightCtrl) & KeyStates.Down) > 0)
             {
-                Zoom += (short) (Math.Sign(e.VerticalChange) * 1);
+                Zoom += (short) (Math.Sign(e.VerticalChange)*1);
                 if (Zoom < 1)
                     Zoom = 1;
                 else if (Zoom > 4)
@@ -380,8 +609,10 @@ namespace Speculator.ViewModels
         }
 
 
-        public void GetVisibleRowsOnScreen(GridControl grid, TableView view, double viewPortHeight, double verticalOffset)
+        public void GetVisibleRowsOnScreen (GridControl grid, TableView view, double viewPortHeight, double verticalOffset)
         {
+            if (grid == null)
+                return;
             var topRowHandle = grid.GetRowHandleByListIndex(view.TopRowIndex);
             var bottomRowHandle = grid.GetRowHandleByVisibleIndex(Convert.ToInt32(viewPortHeight + verticalOffset));
 
@@ -403,7 +634,21 @@ namespace Speculator.ViewModels
         }
     }
 
+    public struct TradePairInfo
+    {
+        public string OrderId;
+        public string TradeNo;
+        public double Price;
+        public double Amount;
+    }
+
     public struct OpenInterest
+    {
+        public DateTime Time { get; set; }
+        public int Amount { get; set; }
+    }
+
+    public struct AskBidCountDifferent
     {
         public DateTime Time { get; set; }
         public int Volume { get; set; }

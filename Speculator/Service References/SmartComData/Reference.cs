@@ -70,10 +70,10 @@ namespace Speculator.SmartComData {
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IDataBase/ConnectToHistoryDataSource")]
         [System.ServiceModel.ServiceKnownTypeAttribute(typeof(SpeculatorModel.SmartCom.SmartComSymbol))]
-        void ConnectToHistoryDataSource(SpeculatorModel.MainData.Symbol symbol, System.DateTime dayDateTime);
+        void ConnectToHistoryDataSource(SpeculatorModel.MainData.Symbol symbol, System.DateTime startDateTime, System.Nullable<System.DateTime> finishDateTime, bool returnAllData);
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IDataBase/ConnectToHistoryDataSource")]
-        System.Threading.Tasks.Task ConnectToHistoryDataSourceAsync(SpeculatorModel.MainData.Symbol symbol, System.DateTime dayDateTime);
+        System.Threading.Tasks.Task ConnectToHistoryDataSourceAsync(SpeculatorModel.MainData.Symbol symbol, System.DateTime startDateTime, System.Nullable<System.DateTime> finishDateTime, bool returnAllData);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IDataBase/ListenSymbol", ReplyAction="http://tempuri.org/IDataBase/ListenSymbolResponse")]
         [System.ServiceModel.ServiceKnownTypeAttribute(typeof(SpeculatorModel.SmartCom.SmartComSymbol))]
@@ -87,10 +87,19 @@ namespace Speculator.SmartComData {
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IDataBase/PlaceOrder")]
         System.Threading.Tasks.Task PlaceOrderAsync(SpeculatorServices.Trading.TradingOrder order);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IDataBase/CancelOrder")]
+        void CancelOrder(string symbol, string orderId);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IDataBase/CancelOrder")]
+        System.Threading.Tasks.Task CancelOrderAsync(string symbol, string orderId);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
     public interface IDataBaseCallback {
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IDataBase/ReturnHistoryData")]
+        void ReturnHistoryData(SpeculatorModel.SmartCom.SmartComSymbol symbol, SpeculatorServices.SmartCom.HistoryDataRow[] historyData);
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IDataBase/UpdateBidOrAskEvent")]
         void UpdateBidOrAskEvent(SpeculatorModel.SmartCom.SmartComSymbol symbol, SpeculatorModel.SmartCom.SmartComBidAskValue value);
@@ -165,12 +174,12 @@ namespace Speculator.SmartComData {
             return base.Channel.ConnectToDataSourceAsync();
         }
         
-        public void ConnectToHistoryDataSource(SpeculatorModel.MainData.Symbol symbol, System.DateTime dayDateTime) {
-            base.Channel.ConnectToHistoryDataSource(symbol, dayDateTime);
+        public void ConnectToHistoryDataSource(SpeculatorModel.MainData.Symbol symbol, System.DateTime startDateTime, System.Nullable<System.DateTime> finishDateTime, bool returnAllData) {
+            base.Channel.ConnectToHistoryDataSource(symbol, startDateTime, finishDateTime, returnAllData);
         }
         
-        public System.Threading.Tasks.Task ConnectToHistoryDataSourceAsync(SpeculatorModel.MainData.Symbol symbol, System.DateTime dayDateTime) {
-            return base.Channel.ConnectToHistoryDataSourceAsync(symbol, dayDateTime);
+        public System.Threading.Tasks.Task ConnectToHistoryDataSourceAsync(SpeculatorModel.MainData.Symbol symbol, System.DateTime startDateTime, System.Nullable<System.DateTime> finishDateTime, bool returnAllData) {
+            return base.Channel.ConnectToHistoryDataSourceAsync(symbol, startDateTime, finishDateTime, returnAllData);
         }
         
         public void ListenSymbol(SpeculatorModel.MainData.Symbol symbol) {
@@ -187,6 +196,14 @@ namespace Speculator.SmartComData {
         
         public System.Threading.Tasks.Task PlaceOrderAsync(SpeculatorServices.Trading.TradingOrder order) {
             return base.Channel.PlaceOrderAsync(order);
+        }
+        
+        public void CancelOrder(string symbol, string orderId) {
+            base.Channel.CancelOrder(symbol, orderId);
+        }
+        
+        public System.Threading.Tasks.Task CancelOrderAsync(string symbol, string orderId) {
+            return base.Channel.CancelOrderAsync(symbol, orderId);
         }
     }
 }

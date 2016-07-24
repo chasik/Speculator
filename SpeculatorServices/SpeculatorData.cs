@@ -30,6 +30,8 @@ namespace SpeculatorServices
 
         public Symbol[] GetSymbols(DataSource selecteDataSource)
         {
+            if (selecteDataSource == null)
+                return null;
             using (var dbContext = new SpeculatorContext())
             {
                 if (selecteDataSource.Id == (byte) DataSourceEnum.SmartCom)
